@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="60-Day Martial Arts Preparation Tracker">
+  <title>Kiai - Martial Arts Prep</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet">
+  
+  <link rel="manifest" href="manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icon.png">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Ambient Background Orbs -->
+  <div class="ambient-orb orb-1"></div>
+  <div class="ambient-orb orb-2"></div>
+  <div class="ambient-orb orb-3"></div>
+
+  <div class="app-container" id="app">
+    
+    <!-- Header / Navbar (Mobile Top, Desktop Side) -->
+    <nav class="glass-nav">
+      <div class="nav-brand">
+        <div class="logo-icon flex items-center justify-center">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-amber-500"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 12a5 5 0 0 1 0-10 5 5 0 0 0 0 10z"></path><circle cx="12" cy="7" r="1" fill="currentColor"></circle><circle cx="12" cy="17" r="1" fill="currentColor"></circle></svg>
+        </div>
+        <h1 class="logo-text">Kiai</h1>
+      </div>
+      <div class="nav-links">
+        <button class="nav-item active" data-view="dashboard" onclick="App.navigate('dashboard')">
+          <span class="icon">🏠</span><span class="label">Dashboard</span>
+        </button>
+        <button class="nav-item" data-view="workout" onclick="App.navigate('workout')">
+          <span class="icon">⚡</span><span class="label">Workout</span>
+        </button>
+        <button class="nav-item" data-view="progress" onclick="App.navigate('progress')">
+          <span class="icon">🏆</span><span class="label">Progress</span>
+        </button>
+        <button class="nav-item" data-view="library" onclick="App.navigate('library')">
+          <span class="icon">📚</span><span class="label">Library</span>
+        </button>
+        <button class="nav-item" data-view="settings" onclick="App.navigate('settings')">
+          <span class="icon">⚙️</span><span class="label">Settings</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      
+      <!-- DASHBOARD VIEW -->
+      <section id="view-dashboard" class="view active">
+        <header class="view-header">
+          <div class="greeting">
+            <h2 id="greetingText">Ready to train?</h2>
+            <p class="subtitle">Day <span id="dashCurrentDay">1</span> of 60</p>
+          </div>
+          <div class="header-actions flex gap-2">
+            <button class="action-btn glass-card p-2" onclick="App.toggleTheme()" title="Toggle Light/Dark Theme">
+              <span class="icon text-xl" id="themeIcon">☀️</span>
+            </button>
+            <div class="streak-badge glass-card pulse-gentle flex items-center p-2">
+              <span class="icon mr-1">🔥</span>
+              <span id="dashStreak">0</span>
+            </div>
+          </div>
+        </header>
+
+        <div class="bento-grid">
+          <!-- Hero Workout Card -->
+          <div class="bento-card hero-card glass-card">
+            <div class="hero-bg-overlay"></div>
+            <div class="hero-content">
+              <span class="badge" id="heroPhaseBadge">Phase 1</span>
+              <h3 id="heroTitle" class="gradient-text">Today's Workout</h3>
+              <p id="heroSubtitle">Build your mobility base</p>
+              <div class="flex gap-2 mt-4 flex-wrap">
+                <button class="action-btn primary-gradient" onclick="App.navigate('workout')">
+                  <span>Start Training</span> <span class="arrow">→</span>
+                </button>
+                <button class="action-btn outlined" onclick="App.startProgressFlow()">Daily Kiai Training</button>
+              </div>
+            </div>
+            <div class="hero-graphic" style="opacity: 0.15; font-size: 8rem;">
+              <svg width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--accent-secondary)"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z"></path><path d="M12 12a5 5 0 0 1 0-10 5 5 0 0 0 0 10z"></path><circle cx="12" cy="7" r="1" fill="currentColor"></circle><circle cx="12" cy="17" r="1" fill="currentColor"></circle></svg>
+            </div>
+          </div>
+
+          <!-- Progress Ring Card -->
+          <div class="bento-card stats-card glass-card">
+            <h4>Program Progress</h4>
+            <div class="circular-progress-container">
+              <svg viewBox="0 0 100 100" class="circular-progress">
+                <circle cx="50" cy="50" r="40" class="bg-circle"></circle>
+                <circle cx="50" cy="50" r="40" class="progress-circle" id="dashProgressRing"></circle>
+              </svg>
+              <div class="progress-text">
+                <span id="dashProgressPct">0%</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Stats -->
+          <div class="bento-card metrics-card glass-card">
+            <div class="metric">
+              <div class="metric-icon">✅</div>
+              <div class="metric-info">
+                <span class="metric-val" id="dashCompleted">0</span>
+                <span class="metric-lbl">Completed</span>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-icon">⏱️</div>
+              <div class="metric-info">
+                <span class="metric-val" id="dashTime">0h</span>
+                <span class="metric-lbl">Total Time</span>
+              </div>
+            </div>
+            <div class="metric">
+              <div class="metric-icon">🏆</div>
+              <div class="metric-info">
+                <span class="metric-val" id="dashBadges">0</span>
+                <span class="metric-lbl">Badges</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Random Tip Card -->
+          <div class="bento-card glass-card" id="randomLibCard">
+            <div class="flex justify-between items-center mb-4 border-b border-glass pb-2">
+              <h4 class="text-sm tracking-wide uppercase text-secondary font-bold">Random Tip</h4>
+              <button class="action-btn outlined p-1 text-sm rounded" onclick="App.rollRandomLibrary(event)">🔄</button>
+            </div>
+            <div class="cursor-pointer" onclick="App.navigate('library')">
+              <div class="text-4xl mb-2" id="randomLibIcon">💡</div>
+              <h3 id="randomLibTitle" class="font-bold mb-1 text-lg">Did you know?</h3>
+              <p id="randomLibDesc" class="text-sm text-secondary" style="display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden;">Tap refresh to get a new martial arts tip.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- WORKOUT PLAYER VIEW -->
+      <section id="view-workout" class="view">
+        <!-- Gym Schedule Overrides -->
+        <div class="gym-context glass-card mb-4 p-4">
+          <h3 class="mb-3 text-lg font-bold">Today's Gym Schedule:</h3>
+          <div class="segmented-control" id="gymToggleControl">
+            <button class="seg-btn active" data-gym="rest" onclick="App.setGym('rest')">Rest</button>
+            <button class="seg-btn" data-gym="upper-a" onclick="App.setGym('upper-a')">Up A</button>
+            <button class="seg-btn" data-gym="lower-a" onclick="App.setGym('lower-a')">Low A</button>
+            <button class="seg-btn" data-gym="upper-b" onclick="App.setGym('upper-b')">Up B</button>
+            <button class="seg-btn" data-gym="lower-b" onclick="App.setGym('lower-b')">Low B</button>
+          </div>
+        </div>
+
+        <!-- Pre-workout Intro -->
+        <div id="workout-intro" class="workout-state-panel active">
+          <div class="glass-card p-6 text-center">
+            <h2 id="introWorkoutTitle" class="gradient-text huge-title mb-2">Day 1 Focus</h2>
+            <blockquote id="introQuote" class="inspirational-quote mb-6"></blockquote>
+            <div class="workout-overview-list text-left mb-6" id="introOverview"></div>
+            <div class="flex gap-4 flex-col sm:flex-row mb-4">
+              <button class="action-btn massive-btn primary-gradient flex-1" onclick="App.startWorkout()">
+                BEGIN WORKOUT
+              </button>
+              <button class="action-btn massive-btn outlined flex-1" onclick="App.openWorkoutBrowser()">
+                Browse All
+              </button>
+            </div>
+            <button class="action-btn outlined w-full" onclick="App.startProgressFlow()">Daily Kiai Training (18m)</button>
+          </div>
+        </div>
+
+        <!-- Active Workout Player -->
+        <div id="workout-active" class="workout-state-panel" style="display:none;">
+          <div class="player-header mb-4">
+            <h3 id="playerSectionTitle" class="gradient-text">Warm Up</h3>
+            <div class="progress-bar-container mt-2">
+              <div class="progress-fill" id="playerTotalProgress" style="width:0%"></div>
+            </div>
+          </div>
+          
+          <div class="exercise-display glass-card p-6 text-center mb-6">
+            <div class="ex-visual mb-2" id="exIcon" style="font-size: 3.5rem;">🏃</div>
+            <h2 id="exName" class="gradient-text text-2xl mb-1">Jumping Jacks</h2>
+            <div id="exTargetBadges" class="flex justify-center gap-1 mb-3 flex-wrap"></div>
+            
+            <p id="exDesc" class="text-secondary text-sm mb-4"></p>
+            
+            <div id="exInstructions" class="text-left text-sm text-secondary bg-black/30 p-4 rounded mb-4 border border-white/10" style="display:none;"></div>
+            <p id="exTip" class="text-amber-500 text-sm mb-6"></p>
+            
+            <div class="ex-meta flex justify-center gap-2 mb-6">
+              <span id="exDurBadge" class="badge outlined">60s</span>
+              <button class="badge outlined cursor-pointer hover:bg-white/10" onclick="const el = document.getElementById('exInstructions'); el.style.display = el.style.display === 'none' ? 'block' : 'none';">📖 How to do it</button>
+            </div>
+
+            <div class="timer-widget mx-auto">
+              <svg viewBox="0 0 200 200" class="timer-svg">
+                <circle cx="100" cy="100" r="90" class="timer-bg"></circle>
+                <circle cx="100" cy="100" r="90" class="timer-fill" id="timerRing" style="stroke-dasharray: 565; stroke-dashoffset: 0;"></circle>
+              </svg>
+              <div class="timer-text">
+                <span id="timerClock" class="text-3xl font-bold">0:60</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="player-controls flex justify-center gap-4 mb-8">
+            <button class="control-btn glass-btn" onclick="App.prevExercise()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polygon points="19 20 9 12 19 4 19 20"></polygon><line x1="5" y1="19" x2="5" y2="5"></line></svg></button>
+            <button class="control-btn play-btn primary-gradient flex items-center justify-center" id="playPauseBtn" onclick="App.toggleTimer()">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+            </button>
+            <button class="control-btn glass-btn" onclick="App.skipExercise()"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="pointer-events: none;"><polygon points="5 4 15 12 5 20 5 4"></polygon><line x1="19" y1="5" x2="19" y2="19"></line></svg></button>
+          </div>
+
+          <div class="up-next-panel glass-card p-4">
+            <h4 class="text-secondary text-sm mb-2 uppercase tracking-wide">Up Next</h4>
+            <div id="upNextList" class="flex flex-col gap-2"></div>
+          </div>
+        </div>
+
+        <!-- Workout Complete -->
+        <div id="workout-complete" class="workout-state-panel text-center" style="display:none;">
+          <div class="completion-hero py-12">
+            <div class="trophy-icon text-6xl mb-4 animate-bounce">🎉</div>
+            <h2 class="gradient-text huge-title mb-2">Workout Complete!</h2>
+            <p id="completeSubtitle" class="text-secondary">You are one step closer to mastery.</p>
+          </div>
+          <div class="bento-grid mb-8">
+            <div class="bento-card glass-card p-4"><span id="cTime" class="text-2xl font-bold block">30m</span><small class="text-secondary">Time</small></div>
+            <div class="bento-card glass-card p-4"><span id="cEx" class="text-2xl font-bold block">20</span><small class="text-secondary">Exercises</small></div>
+            <div class="bento-card glass-card p-4"><span id="cStreak" class="text-2xl font-bold block">5</span><small class="text-secondary">Streak</small></div>
+          </div>
+          <div id="newAchievementsList" class="mb-8"></div>
+          
+          <div class="glass-panel p-6 mb-8 mt-8 rounded-xl border border-white/10 bg-white/5">
+            <h3 class="text-xl font-bold mb-4">How was the difficulty?</h3>
+            <div class="flex gap-4 flex-col sm:flex-row">
+              <button class="action-btn outlined flex-1 border-red-500/50 text-red-500 hover:bg-red-500/10" onclick="App.rateWorkout('hard')">Too Hard</button>
+              <button class="action-btn outlined flex-1 border-green-500/50 text-green-500 hover:bg-green-500/10" onclick="App.rateWorkout('perfect')">Perfect</button>
+              <button class="action-btn outlined flex-1 border-amber-500/50 text-amber-500 hover:bg-amber-500/10" onclick="App.rateWorkout('easy')">Too Easy</button>
+            </div>
+            <p class="text-sm text-secondary mt-4">Too Easy/Hard will automatically scale future timers by 10%.</p>
+          </div>
+          
+          <button class="action-btn primary-gradient w-full" onclick="App.navigate('dashboard')">Skip & Return to Dashboard</button>
+        </div>
+      </section>
+
+      <!-- PROGRESS & ACHIEVEMENTS VIEW -->
+      <section id="view-progress" class="view">
+        <header class="view-header">
+          <h2 class="gradient-text">Progress & Benchmarks</h2>
+        </header>
+
+        <div class="bento-grid">
+          <!-- Measurement Form -->
+          <div class="bento-card glass-card">
+            <h3 class="mb-4">Record Measurements</h3>
+            <div class="input-form flex flex-col gap-3" id="benchmarkForm">
+              <!-- Rendered via JS -->
+            </div>
+            <button class="action-btn primary-gradient mt-4 w-full" onclick="App.saveBenchmarks()">Save Data</button>
+          </div>
+
+          <!-- Benchmark Stats -->
+          <div class="bento-card glass-card">
+            <h3 class="mb-4">Your Benchmarks</h3>
+            <div class="benchmarks-grid flex flex-col gap-3" id="benchmarkStats">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+
+          <!-- Achievements -->
+          <div class="bento-card glass-card span-full mt-4">
+            <h3 class="mb-4">Achievements</h3>
+            <div class="achievements-grid grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));" id="achievementsList">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- LIBRARY VIEW -->
+      <section id="view-library" class="view">
+        <header class="view-header">
+          <h2 class="gradient-text">Technique & Tip Library</h2>
+          <div class="segmented-control mt-4" id="libraryToggle">
+            <button class="seg-btn active" onclick="App.setLibraryTab('techniques')">Techniques</button>
+            <button class="seg-btn" onclick="App.setLibraryTab('tips')">Tips & Recovery</button>
+          </div>
+        </header>
+        
+        <div id="lib-techniques" class="lib-tab active mt-6">
+          <!-- Filters -->
+          <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide" id="discFilters">
+            <button class="badge outlined cursor-pointer whitespace-nowrap active" onclick="App.filterLibrary('wushu')">Wushu</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('muaythai')">Muay Thai</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('taichi')">Tai Chi</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('sanda')">Sanda</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('shaolin')">Shaolin</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('shuaijiao')">Shuai Jiao</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('judo')">Judo</button>
+            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('aikido')">Aikido</button>
+          </div>
+          <div class="technique-cards grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));" id="techCards"></div>
+        </div>
+        
+        <div id="lib-tips" class="lib-tab mt-6" style="display:none;">
+          <div class="tips-accordion flex flex-col gap-4" id="tipsAccordion"></div>
+        </div>
+      </section>
+
+      <!-- SETTINGS VIEW -->
+      <section id="view-settings" class="view">
+        <header class="view-header">
+          <h2 class="gradient-text">Settings</h2>
+        </header>
+        <div class="bento-card glass-card mb-4">
+          <h3 class="mb-4">Dates</h3>
+          <div class="setting-row flex justify-between items-center py-2 border-b border-white/10">
+            <label>Program Start Date</label>
+            <input type="date" id="startDateInp" class="glass-input p-2 rounded bg-white/5 border border-white/10 text-white" onchange="App.updateDates()">
+          </div>
+        </div>
+        <div class="bento-card glass-card mb-4">
+          <h3 class="mb-4">Gym Schedule Automation</h3>
+          <p class="text-sm text-secondary mb-4">Select the days you normally lift weights so Kiai can automatically adapt your stretching intensity on those days.</p>
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-2" id="settingsGymSchedule">
+            <!-- Injected by JS -->
+          </div>
+        </div>
+
+        <div class="bento-card glass-card mb-4">
+          <h3 class="mb-4 flex items-center gap-2">📈 Dynamic Progression</h3>
+          <p class="text-secondary text-sm mb-4">
+            Your workout timers automatically scale based on your feedback. 
+            Current Multiplier: <strong id="multiplierDisplay" class="text-amber-500 font-bold ml-1">1.0x</strong>
+          </p>
+          <button class="action-btn outlined w-full" onclick="App.resetMultiplier()">Reset Multiplier to 1.0x</button>
+        </div>
+
+        <div class="bento-card glass-card mb-4">
+          <h3 class="mb-4">Data Management</h3>
+          <button class="action-btn outlined w-full mb-3" onclick="App.exportData()">Export Backup (JSON)</button>
+          <button class="action-btn outlined w-full mb-3" onclick="document.getElementById('fileInp').click()">Import Backup</button>
+          <input type="file" id="fileInp" style="display:none" accept=".json" onchange="App.importData(event)">
+          
+          <div class="danger-zone mt-8 pt-4 border-t" style="border-color: var(--border-glass)">
+            <h4 class="text-sm font-bold text-red-500 mb-2">Danger Zone</h4>
+            <button class="action-btn danger w-full" onclick="App.resetData()">Reset All Progress & Data</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Toast / Notifications -->
+  <div id="toast" class="toast glass-card fixed bottom-4 right-4 translate-y-[150%] transition-transform duration-300 flex items-center gap-4 p-4 z-50">
+    <div class="toast-icon text-3xl" id="toastIcon">✨</div>
+    <div class="toast-body">
+      <h4 id="toastTitle" class="font-bold">Achievement Unlocked!</h4>
+      <p id="toastDesc" class="text-sm text-secondary">Streak Master</p>
+    </div>
+  </div>
+
+  <!-- Reusable Modal -->
+  <div class="modal-overlay" id="appModal" onclick="App.closeModal(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle" class="text-xl font-bold">Modal Title</h3>
+        <button class="action-btn outlined p-2" onclick="App.closeModal(true)">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody">
+        <!-- Injected content -->
+      </div>
+    </div>
+  </div>
+
+  <script src="data/tips.js"></script>
+  <script src="data/benchmarks.js"></script>
+  <script src="data/exercises.js"></script>
+  <script src="data/workouts.js"></script>
+  <script src="data/achievements.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW Registration failed: ', err));
+      });
+    }
+  </script>
+</body>
+</html>
