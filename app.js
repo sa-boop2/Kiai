@@ -551,10 +551,10 @@ const App = {
     document.getElementById('appModal').classList.add('show');
   },
 
-  closeModal(force = false) {
-    // If it's an event, verify target is the overlay
-    if (force === true || (force.target && force.target.id === 'appModal')) {
-      document.getElementById('appModal').classList.remove('show');
+  closeModal(force = true) {
+    if (force === true || force === false || force === undefined || (force.target && force.target.id === 'appModal')) {
+      const modalEl = document.getElementById('appModal');
+      if (modalEl) modalEl.classList.remove('show');
     }
   },
 
@@ -1198,6 +1198,30 @@ const App = {
     if (totMins) totMins.textContent = `${Math.floor((this.state.totalTimeSeconds || 0) / 60)}m`;
     const strDays = document.getElementById('statStreakDays');
     if (strDays) strDays.textContent = this.state.streak || 0;
+
+    // Solo Technique Repertoire Analytics
+    const sSess = document.getElementById('progSoloSessions');
+    if (sSess) sSess.textContent = this.state.soloPracticesCompleted || 0;
+    const sUniq = document.getElementById('progSoloUnique');
+    if (sUniq) sUniq.textContent = (this.state.soloMasteredTechs || []).length;
+    const sFlaw = document.getElementById('progSoloFlawless');
+    if (sFlaw) sFlaw.textContent = this.state.soloCleanForms || 0;
+    const sStr = document.getElementById('progSoloStrikes');
+    if (sStr) sStr.textContent = this.state.soloTotalReps || 0;
+
+    const bList = document.getElementById('progSoloBadgeList');
+    if (bList) {
+      const mastered = this.state.soloMasteredTechs || [];
+      if (mastered.length > 0) {
+        bList.innerHTML = mastered.map(id => {
+          const ex = window.EXERCISES?.[id];
+          return `<span class="badge" style="background:rgba(245,158,11,0.15); border:1px solid rgba(245,158,11,0.35); color:#fef08a; padding:0.25rem 0.65rem; border-radius:6px; font-size:0.75rem; font-weight:600; display:inline-flex; align-items:center; gap:4px;">${ex?.icon || '🥋'} ${ex?.name || id}</span>`;
+        }).join('');
+      } else {
+        bList.innerHTML = `<span class="text-xs text-muted italic">No solo moves mastered yet. Launch studio to earn badges!</span>`;
+      }
+    }
+
     const uCount = document.getElementById('unlockedCount');
     if (uCount && window.ACHIEVEMENTS) uCount.textContent = this.state.unlockedAchievements ? this.state.unlockedAchievements.length : 0;
   },
@@ -1798,6 +1822,26 @@ const App = {
           💡 <b>Kiai Technique Practice:</b> Pick any stance, strike, or kick to practice outside the daily structured routine. Set your timer or rep goal and track holds.
         </div>
 
+        <!-- Solo Stats Banner -->
+        <div style="background: rgba(0,0,0,0.35); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; padding: 0.85rem; display: grid; grid-template-columns: repeat(4, 1fr); text-align: center; gap: 0.4rem;">
+          <div style="border-right: 1px solid rgba(255,255,255,0.08);">
+            <div style="font-size: 1.25rem; font-weight: 800; color: #fbbf24; font-family: monospace;">${this.state.soloPracticesCompleted || 0}</div>
+            <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Sessions</div>
+          </div>
+          <div style="border-right: 1px solid rgba(255,255,255,0.08);">
+            <div style="font-size: 1.25rem; font-weight: 800; color: #a855f7; font-family: monospace;">${(this.state.soloMasteredTechs || []).length}</div>
+            <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Mastered</div>
+          </div>
+          <div style="border-right: 1px solid rgba(255,255,255,0.08);">
+            <div style="font-size: 1.25rem; font-weight: 800; color: #34d399; font-family: monospace;">${this.state.soloCleanForms || 0}</div>
+            <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Flawless</div>
+          </div>
+          <div>
+            <div style="font-size: 1.25rem; font-weight: 800; color: #38bdf8; font-family: monospace;">${this.state.soloTotalReps || 0}</div>
+            <div style="font-size: 0.65rem; color: #94a3b8; text-transform: uppercase; font-weight: bold;">Strikes</div>
+          </div>
+        </div>
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="block text-xs uppercase tracking-wider text-secondary font-bold mb-1">1. Select Discipline</label>
@@ -1951,7 +1995,7 @@ const App = {
           </div>
         </div>
 
-        <button class="action-btn outlined w-full py-3 text-sm font-bold text-red-400 border-red-500/30 hover:bg-red-500/10" onclick="App.finishSoloDrill('${tech.name.replace(/'/g, "\\'")}')">
+        <button class="action-btn outlined w-full py-3 text-sm font-bold text-red-400 border-red-500/30 hover:bg-red-500/10" onclick="App.finishSoloDrill('${tech.id}')">
           COMPLETE SOLO PRACTICE
         </button>
       </div>
@@ -1998,20 +2042,34 @@ const App = {
     }
   },
 
-  finishSoloDrill(techName) {
+  finishSoloDrill(techId) {
     if (this._soloActiveTimer) clearInterval(this._soloActiveTimer);
     this._soloActiveTimer = null;
 
+    const techObj = window.EXERCISES?.[techId];
+    const techName = techObj ? techObj.name : (typeof techId === 'string' && !techId.includes('_') ? techId : "Technique");
+
+    // Track statistics safely
+    this.state.soloPracticesCompleted = (this.state.soloPracticesCompleted || 0) + 1;
+    if (!this.state.soloMasteredTechs) this.state.soloMasteredTechs = [];
+    if (techId && !this.state.soloMasteredTechs.includes(techId)) {
+      this.state.soloMasteredTechs.push(techId);
+    }
     if (this._soloLoggedClean) {
+      this.state.soloCleanForms = (this.state.soloCleanForms || 0) + 1;
       this.state.masteryStances = (this.state.masteryStances || 0) + 1;
     }
-    const addedTime = this._soloMode === 'timer' ? this._soloTargetVal : Math.ceil(this._soloCurrentReps * 2);
+    if (this._soloMode === 'reps') {
+      this.state.soloTotalReps = (this.state.soloTotalReps || 0) + (this._soloCurrentReps || 10);
+    }
+
+    const addedTime = this._soloMode === 'timer' ? (this._soloTargetVal || 30) : Math.ceil((this._soloCurrentReps || 10) * 2);
     this.state.totalTimeSeconds = (this.state.totalTimeSeconds || 0) + addedTime;
     this.saveState();
     this.updateDashRank();
 
-    this.closeModal();
-    this.showToast('🥋', 'Solo Drill Recorded!', `Mastered ${techName}. +XP Earned!`);
+    this.closeModal(true);
+    this.showToast('🥋', 'Solo Practice Completed!', `Logged ${techName}. Total Sessions: ${this.state.soloPracticesCompleted}`);
   },
 
   // --- SETTINGS ---

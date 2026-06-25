@@ -1,4 +1,4 @@
-const CACHE_NAME = 'kiai-premium-v4';
+const CACHE_NAME = 'kiai-premium-v5';
 const ASSETS = [
   './',
   './index.html',
