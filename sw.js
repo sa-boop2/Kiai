@@ -1,10 +1,15 @@
-const CACHE_NAME = 'kiai-premium-v1';
+const CACHE_NAME = 'kiai-premium-v4';
 const ASSETS = [
   './',
   './index.html',
   './styles.css',
   './app.js',
   './manifest.json',
+  './icon.png',
+  './data/martial_arts.js',
+  './data/martial_arts_extra.js',
+  './data/martial_arts_history.js',
+  './data/techniques.js',
   './data/tips.js',
   './data/benchmarks.js',
   './data/exercises.js',

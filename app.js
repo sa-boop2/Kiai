@@ -200,6 +200,90 @@ const App = {
       { id:'tai_fajin', name:'Fa Jin (Explosive Energy Release)', discipline:'taichi', subcategory:'strike', duration:45, difficulty:4, icon:'💥', description:'Sudden discharge of internal power generated from the earth through relaxed joints.', tips:'Store energy like a compressed spring then release instantaneously.' }
     ];
 
+    const customInst = {
+      kar_oizuki: ['Step forward deep into Zenkutsu-Dachi.', 'Drive your rear hip straight along the centerline.', 'Strike straight out at solar plexus level while snapping Hikite back.'],
+      kar_gyakuzuki: ['Maintain strong rooted posture in front stance.', 'Explosively rotate your hips forward from rear leg.', 'Extend punch cleanly turning palm down at impact.'],
+      kar_maegeri: ['Lift your chambering knee high above waist.', 'Snap lower leg out striking with ball of foot (Koshi).', 'Instantaneously retract heel back to chamber before landing.'],
+      kar_mawashigeri: ['Pivot 180 degrees on ball of supporting foot.', 'Whip knee around horizontally parallel to floor.', 'Extend lower leg striking with instep and snap back immediately.'],
+      kar_yokogeri: ['Chamber knee tightly across chest pointing heel at target.', 'Thrust hips outward driving heel and blade of foot straight through.', 'Hold full extension momentarily before snapping knee back.'],
+      kar_shutouchi: ['Chamber knife hand near opposite ear with palm facing out.', 'Slice diagonally outward rotating wrist sharply upon impact.', 'Keep shoulders sunken and relaxed.'],
+      kar_ageuke: ['Cross blocking forearm across chest at shoulder level.', 'Drive forearm upward rotating wrist outward above forehead.', 'Deflect incoming downward force at a 45-degree angle.'],
+      kar_zenkutsu: ['Step forward bending front knee until front toe is obscured.', 'Lock rear leg completely straight with heel pressed into floor.', 'Keep hips square and posture erect.'],
+      kar_kiba: ['Set feet twice shoulder-width apart with outer edges parallel.', 'Sink hips low until thighs are nearly parallel to mat.', 'Push knees firmly outward and tuck tailbone forward.'],
+      kar_heian1: ['Begin in Musubi-Dachi bowing cleanly.', 'Step left into downward block with crisp rhythm.', 'Snap head turns clearly before moving into each stepping strike.'],
+      tkd_apchagi: ['Fold knee tightly directly toward chest.', 'Extend lower leg snapping ball of foot straight into target.', 'Re-fold knee completely before returning to stance.'],
+      tkd_dollyo: ['Pivot support foot completely away from target.', 'Turn hips over whipping roundhouse kick from outside.', 'Strike cleanly with instep keeping guard tight.'],
+      tkd_yeopchagi: ['Chamber leg pulling knee across body sighting over shoulder.', 'Drive straight out aligning shoulder, hip, knee, and heel.', 'Push through target with bottom edge of heel.'],
+      tkd_dwichagi: ['Spin head and shoulders looking straight back.', 'Thrust kicking leg straight back like a mule kick.', 'Keep torso low and recover instantly into guard.'],
+      tkd_dwihuryeo: ['Perform full 360-degree spin whipping leg across horizontal plane.', 'Hook heel sharply through target zone at peak velocity.', 'Let momentum carry you back into balanced guard.'],
+      tkd_naeryeo: ['Raise kicking leg soaring high above opponent head level.', 'Pull down forcefully driving heel onto collarbone or face.', 'Land softly with knees bent to absorb impact.'],
+      tkd_narae: ['Launch first roundhouse kick mid-air.', 'Switch hips instantaneously before landing to fire second kick.', 'Stay light on balls of feet maintaining cadence.'],
+      tkd_apseogi: ['Step naturally forward one walking step length.', 'Maintain shoulder-width horizontal separation.', 'Keep weight evenly distributed 50-50 on both legs.'],
+      tkd_kyorugi: ['Adopt bladed side-facing posture on balls of feet.', 'Maintain light rhythmic bouncing cadence.', 'Keep lead hand low to parry kicks and rear hand high at chin.'],
+      tkd_taegeuk1: ['Inhale calmly before snapping first block.', 'Coordinate breathing exhale with every sharp strike.', 'Maintain exact footwork pattern along Keon diagram.'],
+      wc_chainpunch: ['Launch vertical fist centerline punches cycling one over the other.', 'Keep elbows heavy pointing down toward ground.', 'Whip from triceps maintaining continuous forward pressure.'],
+      wc_tansau: ['Extend forearm forward along centerline with palm up.', 'Form a rigid wedge angle from elbow to wrist.', 'Deflect incoming force outward without chasing hands.'],
+      wc_bongsau: ['Roll elbow upward and forward while relaxing wrist down.', 'Keep elbow positioned higher than wrist.', 'Pivot from waist to disperse heavy incoming straight force.'],
+      wc_paksau: ['Slap incoming limb laterally using crisp palm deflection.', 'Parry just enough to clear centerline.', 'Simultaneously counter-strike straight down open gap.'],
+      wc_ygkym: ['Stand with feet shoulder width and toes turned inward.', 'Clamp knees toward each other creating triangular rooting.', 'Tuck pelvis forward keeping upper body completely relaxed.'],
+      wc_chisao: ['Maintain constant rolling contact with partner forearms.', 'Listen to tactile pressure changes through skin.', 'Flow into gaps whenever partner forward pressure collapses.'],
+      wc_siunimtao: ['Stand motionless in YGKYM isolating upper body energy.', 'Execute third section Tan Sau with slow meditative tension.', 'Focus entirely on cultivating immovable elbow structure.'],
+      wc_fakkuen: ['Whip horizontal chopping hand outward from elbow.', 'Strike with outer edge of palm toward throat.', 'Relax wrist completely until exact microsecond of impact.'],
+      km_palmstrike: ['Thrust base of palm forcefully straight into attacker nose or chin.', 'Keep fingers curled back tightly to avoid jamming.', 'Follow through aggressively driving attacker backward.'],
+      km_hammerfist: ['Raise clenched fist high bringing downward pounding force.', 'Strike with bottom meaty edge of fist.', 'Drop entire body weight into the strike.'],
+      km_groinkick: ['Whip lead or rear shin straight upward between attacker legs.', 'Strike with instep or lower shin directly into groin.', 'Recover leg instantly to avoid being grabbed.'],
+      km_360defense: ['Meet circular incoming attacks at a sharp 90-degree angle.', 'Burst forward aggressively closing distance inside strike.', 'Simultaneously deliver counter punches with free hand.'],
+      km_knifedefense: ['Redirect weapon hand outward using explosive forearm parry.', 'Burst inside weapon arc controlling attacker wrist.', 'Deliver continuous combative strikes to terminate threat.'],
+      km_bearhug: ['Drop center of gravity instantly widening base.', 'Create space driving violent elbow strikes into attacker ribs.', 'Turn inside hold and finish with knee strikes.'],
+      km_chokedefense: ['Pluck violently outward at attacker thumbs at your throat.', 'Tuck chin deep into chest to protect airway.', 'Drive aggressive counter knee straight into midsection.'],
+      km_combatives: ['Chain non-stop aggressive strikes combining elbows, palms, knees.', 'Push relentlessly forward overwhelming target.', 'Maintain fierce combative mindset breathing out sharply.'],
+      hp_sonmok: ['Relax trapped wrist moving entire body around grip.', 'Trace circular escape path against attacker thumb opening.', 'Immediately apply counter wrist-lock or unbalancing pressure.'],
+      hp_nakbeop: ['Tuck chin tightly avoiding head contact with mat.', 'Slap mat forcefully with palms and forearms before landing.', 'Dissipate falling momentum smoothly across rounded back.'],
+      hp_deonjigi: ['Blend smoothly with advancing opponent forward momentum.', 'Step deep underneath their center lowering hips.', 'Rotate waist violently wheeling opponent over hip.'],
+      hp_jointflow: ['Maintain constant pain compliance pressure on trapped joint.', 'Transition seamlessly from wrist-bend to elbow-armbar.', 'Keep posture upright and rooted during transitions.'],
+      hp_spinheel: ['Drop torso slightly whipping straight leg low across floor.', 'Sweep back of heel through opponent calves or support ankle.', 'Maintain continuous momentum returning cleanly to guard.'],
+      hp_kamae: ['Keep hands open and supple in circular guard.', 'Maintain weight lightly centered ready to pivot.', 'Project calm alertness inviting incoming force to be redirected.'],
+      sil_kudakuda: ['Sink deep into wide low stance like a coiled tiger.', 'Keep center of gravity close to earth with spine supple.', 'Distribute weight firmly ready for sudden lunges.'],
+      sil_sapu: ['Hook opponent lead ankle from outside with sole.', 'Reap leg violently backward just as opponent shifts weight.', 'Simultaneously push upper body in opposite direction.'],
+      sil_sikut: ['Step in close range folding arm into tight horizontal elbow.', 'Drive tip of elbow bone like a heavy blade into target.', 'Engage core rotation to generate maximum blunt force.'],
+      sil_langkah: ['Step along triangular floor patterns navigating off-line angles.', 'Glide soles lightly over mat without bouncing head level.', 'Position body outside opponent weapons corridor.'],
+      sil_kuncian: ['Entangle fallen opponent limbs using leg scissors and arm wraps.', 'Pin their center of gravity immovably against ground.', 'Apply leverage against elbow or shoulder joints.'],
+      sil_jurus1: ['Execute solo preset fighting sequence with rhythmic grace.', 'Transition between low evasion sweeps and explosive strikes.', 'Coordinate breathing with every sudden change in tempo.'],
+      ken_men: ['Raise Shinai cleanly overhead above center line.', 'Step forward explosively delivering downward cut to helmet top.', 'Squeeze hilt with pinky and ring fingers upon crisp impact.'],
+      ken_kote: ['Target opponent right wrist gauntlet with descending strike.', 'Drop blade tip quickly with concise snap of wrists.', 'Step forward sharply maintaining upright balanced posture.'],
+      ken_do: ['Slice diagonally across opponent torso breastplate.', 'Step slightly off-center to right clearing blade path.', 'Draw blade cleanly through target without stopping momentum.'],
+      ken_chudan: ['Position Shinai tip pointing directly at opponent throat.', 'Keep left hand centered roughly one fist from navel.', 'Project calm immovable mental presence (Kigamae).'],
+      ken_fumikomi: ['Stomp lead right foot flat onto floor with resounding percussion.', 'Synchronize foot impact exactly with blade striking target.', 'Pull rear foot forward instantaneously to maintain seamless base.'],
+      ken_kirikaeshi: ['Deliver continuous alternating left and right diagonal head cuts.', 'Use wide overhead shoulder motions shouting spirited Kiai.', 'Advance and retreat with smooth sliding footwork.'],
+      box_jab: ['Snap lead fist straight out from guard turning palm down.', 'Keep rear hand glued firmly to jawline.', 'Retract punch along exact same linear path instantaneously.'],
+      box_cross: ['Pivot rear foot and hip driving rear shoulder forward.', 'Extend rear punch straight down centerline with full reach.', 'Keep chin tucked behind lead shoulder throughout extension.'],
+      box_leadhook: ['Pivot lead foot and hip whipping arm in tight 90-degree arc.', 'Keep elbow parallel to mat and torso rotating as one unit.', 'Stop punch sharply right in front of opposite jawline.'],
+      box_uppercut: ['Dip slightly at knees loading weight onto support leg.', 'Drive fist straight upward launching power from hips and legs.', 'Keep free hand high protecting chin against counters.'],
+      box_12combo: ['Fire crisp lead jab snapping head back.', 'Immediately follow with power cross rotating rear hip.', 'Ensure jab retracts at exact speed cross advances.'],
+      box_slip: ['Slightly bend knees and waist slipping head outside punch line.', 'Let incoming punch graze harmlessly past ear.', 'Immediately load weight onto support leg to fire counter.'],
+      box_bobweave: ['Bend deep at knees ducking in smooth U-shaped trajectory.', 'Slip underneath swinging hook coming up cleanly on opposite side.', 'Keep eyes on opponent and hands high at cheeks.'],
+      box_pendulum: ['Bounce rhythmically forward and backward on balls of feet.', 'Maintain constant boxing stance width managing distance.', 'Stay light ready to dart in or dart out instantaneously.'],
+      bjj_armbar: ['Pivot hips perpendicular trapping opponent arm between thighs.', 'Clamp knees tightly together isolating elbow joint.', 'Control wrist with thumb pointing up and lift hips.'],
+      bjj_triangle: ['Shoot one leg over opponent shoulder trapping neck and one arm.', 'Lock figure-4 configuration placing shin behind opposite knee.', 'Cut angle perpendicular and pull head down to strangle.'],
+      bjj_rnc: ['Slide choking forearm deep under chin from back mount.', 'Lock hands grabbing opposite biceps placing palm behind head.', 'Expand chest and squeeze elbows together.'],
+      jud_osoto: ['Step outside opponent right foot pulling sleeve to chest.', 'Drive chest forward loading opponent weight onto heel.', 'Reap their right leg forcefully backward with hamstring.'],
+      jud_seoi: ['Squat low turning back completely underneath opponent center.', 'Pull opponent sleeve and lapel forward loading onto back.', 'Spring legs upward extending arms to wheel over shoulder.'],
+      jud_uchimata: ['Pull opponent forward and off balance onto toes.', 'Step in deep driving sweeping leg upward between thighs.', 'Tilt torso forward lifting leg high like a soaring pendulum.'],
+      cap_ginga: ['Step continuously in rhythmic triangular rocking pattern.', 'Keep lead arm raised protecting face switching naturally.', 'Maintain fluid continuous motion staying light on balls of feet.'],
+      cap_meialua: ['Step across planting both hands firmly onto floor.', 'Whip straight heel in rapid spinning circular trajectory.', 'Keep eyes sighted on opponent between legs throughout spin.'],
+      cap_au: ['Kick legs up into fluid lateral acrobatic cartwheel.', 'Keep torso arched facing opponent throughout inverted movement.', 'Land softly in low escape stance ready to counter.'],
+      sj_baoshuai: ['Change level shooting deep driving shoulder into midsection.', 'Wrap arms tightly around both thighs locking grip behind knees.', 'Drive legs forward driving opponent flat onto back.'],
+      sj_gouchan: ['Hook inside of opponent lead ankle with foot.', 'Drive upper body backward while kicking heel forward.', 'Destroy vertical base with sudden shearing force.'],
+      aik_tenkan: ['Blend with advancing attacker stepping off-line to outside.', 'Pivot 180 degrees on lead foot swinging rear leg around.', 'Redirect attacker forward momentum smoothly along circular arc.'],
+      aik_shiho: ['Catch attacker wrist raising arm high like drawing a sword.', 'Step completely underneath raised arm pivoting hips 180 degrees.', 'Cut both hands straight down driving opponent into pin.'],
+      sha_5animals: ['Adopt fierce mindset channeling Dragon, Tiger, Leopard, Snake, Crane.', 'Execute Tiger claw strikes with explosive dynamic contraction.', 'Express deep internal calm during Crane transitions.'],
+      sha_ironforearm: ['Strike inner and outer forearms together in steady cadence.', 'Exhale sharply with loud Kiai upon every physical contact.', 'Gradually increase striking intensity to build Qi.'],
+      san_sidekick: ['Chamber lead knee high as advancing rusher closes distance.', 'Thrust side kick straight into midsection stopping rusher dead.', 'Retract kicking leg instantly maintaining balanced guard.'],
+      san_kuashuai: ['Catch incoming roundhouse kick under armpit.', 'Step deep across opponent supporting hip destroying balance.', 'Wheel torso forward dumping opponent hard onto mat.'],
+      tai_cloudhands: ['Rotate waist slowly shifting weight smoothly from leg to leg.', 'Float palms across horizontal plane like drifting clouds.', 'Keep shoulders completely sunken and breath meditative.'],
+      tai_fajin: ['Store internal Qi sinking weight into rooted legs like compressed spring.', 'Coordinate sudden hip rotation with explosive forward discharge.', 'Release power instantaneously through relaxed striking palms.']
+    };
+
     extraTechs.forEach(t => {
       if (!window.EXERCISES[t.id]) {
         window.EXERCISES[t.id] = {
@@ -212,7 +296,7 @@ const App = {
           sets: 1,
           reps: null,
           description: t.description,
-          instructions: [ 'Maintain proper stance and balance.', 'Execute the technique with sharp intent.', 'Return immediately to guard position.' ],
+          instructions: customInst[t.id] || [ `Form solid structure in ${t.discipline || 'martial arts'} guard.`, `Execute ${t.name} with sharp focus.`, `Return immediately to balanced posture.` ],
           tips: t.tips,
           difficulty: t.difficulty,
           targetArea: ['martial arts', t.subcategory],
@@ -220,6 +304,22 @@ const App = {
         };
       }
     });
+
+    if (window.EXERCISES) {
+      Object.values(window.EXERCISES).forEach(ex => {
+        if (ex.instructions && ex.instructions.join('').includes('Maintain proper stance and balance')) {
+          ex.instructions = [ `Form solid structure in ${ex.discipline || 'martial arts'} guard.`, `Execute ${ex.name} with precise focus.`, `Return immediately to balanced posture.` ];
+        }
+      });
+    }
+
+    if (window.EXTRA_TECHNIQUES && window.EXERCISES) {
+      window.EXTRA_TECHNIQUES.forEach(t => {
+        if (!window.EXERCISES[t.id]) {
+          window.EXERCISES[t.id] = t;
+        }
+      });
+    }
   },
 
   // --- NAVIGATION ---
@@ -879,7 +979,10 @@ const App = {
         }
 
         if (this.workout.timeRemainingMs <= 0) {
-          this.playChime();
+          const nextItem = this.workout.queue[this.workout.currentIndex + 1];
+          if (!nextItem || !nextItem.isRest) {
+            this.playChime();
+          }
           this.skipExercise();
           return;
         }
@@ -1257,10 +1360,9 @@ const App = {
             <div class="art-card-icon" style="border-color: ${art.color}40;">${art.icon}</div>
             <div class="art-card-info">
               <div class="art-card-name">${art.name}</div>
-              <div class="art-card-origin">${art.origin}</div>
+              <div class="art-card-origin">${art.origin ? art.origin.split('—')[0].replace('🌍','').trim() : ''}</div>
             </div>
           </div>
-          <div class="art-card-desc">${art.description}</div>
           <div class="art-card-footer">
             <span class="art-type-badge" style="color: ${tc}; border-color: ${tc}40; background: ${tc}15;">${art.type}</span>
             <span class="meta-badge">${count} techniques</span>
@@ -1275,102 +1377,211 @@ const App = {
     if (!window.MARTIAL_ARTS) return;
     const art = window.MARTIAL_ARTS[artId];
     if (!art) return;
-    // Hide arts grid, show detail
     document.getElementById('lib-arts').style.display = 'none';
     document.getElementById('lib-art-detail').style.display = 'block';
-    // Get techniques for this art
+
     const techniques = window.EXERCISES ? Object.values(window.EXERCISES).filter(ex => ex.category === 'technique' && ex.discipline === artId) : [];
     const container = document.getElementById('artDetailContent');
+
     container.innerHTML = `
       <div class="art-detail-view">
-        <!-- Back Button -->
-        <button class="art-detail-back" onclick="App.setLibraryTab('arts')">&larr; Back to Arts</button>
-        <!-- Header -->
-        <div class="art-detail-header" style="background: linear-gradient(135deg, ${art.color}30 0%, ${art.color}08 100%); border: 1px solid ${art.color}40;">
-          <div class="art-detail-title-row">
-            <div class="art-detail-icon" style="border-color: ${art.color}50;">${art.icon}</div>
+        <button class="art-detail-back" onclick="App.setLibraryTab('arts')">&larr; Back to Martial Arts Catalog</button>
+        
+        <!-- Hero Header -->
+        <div class="art-detail-header" style="background: linear-gradient(135deg, ${art.color}35 0%, ${art.color}08 100%); border: 1px solid ${art.color}50; border-radius: 16px; padding: 1.5rem; margin-bottom: 1.5rem;">
+          <div class="art-detail-title-row" style="display:flex; align-items:center; gap: 1.2rem;">
+            <div class="art-detail-icon" style="font-size: 3.2rem; background: rgba(0,0,0,0.3); width: 80px; height: 80px; display:flex; align-items:center; justify-content:center; border-radius: 20px; border: 2px solid ${art.color}60;">${art.icon}</div>
             <div>
-              <div class="art-detail-name">${art.name}</div>
-              <div class="art-detail-origin">${art.origin} \u2022 ${art.type.charAt(0).toUpperCase() + art.type.slice(1)}</div>
+              <div class="art-detail-name" style="font-size: 1.8rem; font-weight: 800; color: #fff;">${art.name}</div>
+              <div class="art-detail-origin" style="color: ${art.color}; font-weight: 600; font-size: 0.9rem; margin-top: 0.2rem;">${art.origin ? art.origin.split('—')[0] : ''} • <span style="text-transform: uppercase;">${art.type}</span></div>
             </div>
           </div>
         </div>
-        <!-- Description -->
-        <div class="art-section">
-          <div class="art-section-title">\ud83d\udcd6 About</div>
-          <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.7; margin-bottom: 0.75rem;">${art.description}</p>
-          ${art.history ? `<p style="font-size: 0.8rem; color: var(--text-faint); line-height: 1.6; font-style: italic;">${art.history}</p>` : ''}
+
+        <!-- 1. Origin, Development & History -->
+        <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.5rem; margin-bottom: 1.25rem;">
+          <div class="art-section-title" style="font-size: 1.15rem; font-weight: 700; color: #fff; margin-bottom: 1rem; display:flex; align-items:center; gap:0.5rem;">🌍 Origin, Historical Development & Modern Application</div>
+          
+          ${art.origin ? `
+            <div style="margin-bottom: 1.2rem;">
+              <div style="font-size:0.75rem; text-transform:uppercase; color:${art.color}; font-weight:800; letter-spacing:0.06em; margin-bottom:0.35rem;">📍 Geographic & Cultural Origin</div>
+              <div style="font-size: 0.9rem; color: #e2e8f0; line-height: 1.8;">
+                ${art.origin.split('\n\n').map(p => `<p style="margin-bottom: 0.75rem; margin-top:0;">${p}</p>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${art.history ? `
+            <div style="margin-bottom: 1.2rem; padding-top: 1.1rem; border-top: 1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:0.75rem; text-transform:uppercase; color:#38bdf8; font-weight:800; letter-spacing:0.06em; margin-bottom:0.35rem;">📜 Historical Lineage & Evolution</div>
+              <div style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.8;">
+                ${art.history.split('\n\n').map(p => `<p style="margin-bottom: 0.75rem; margin-top:0;">${p}</p>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${art.description ? `
+            <div style="margin-bottom: 1.2rem; padding-top: 1.1rem; border-top: 1px solid rgba(255,255,255,0.08);">
+              <div style="font-size:0.75rem; text-transform:uppercase; color:#f43f5e; font-weight:800; letter-spacing:0.06em; margin-bottom:0.35rem;">🥊 Combat Philosophy & Modern Practice</div>
+              <div style="font-size: 0.88rem; color: #cbd5e1; line-height: 1.8;">
+                ${art.description.split('\n\n').map(p => `<p style="margin-bottom: 0.75rem; margin-top:0;">${p}</p>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+
+          ${art.purpose ? `
+            <div style="background: rgba(255,255,255,0.03); padding: 0.9rem; border-left: 3px solid ${art.color}; border-radius: 8px; margin-top: 0.5rem;">
+              <strong style="color:#fff; font-size:0.88rem;">Primary Purpose 🎯:</strong> <span style="color:var(--text-muted); font-size: 0.86rem; line-height: 1.6;">${art.purpose}</span>
+            </div>
+          ` : ''}
         </div>
-        <!-- Characteristics -->
-        ${art.characteristics && art.characteristics.length > 0 ? `
-          <div class="art-section">
-            <div class="art-section-title">\u2728 Characteristics</div>
-            <div class="art-traits-list">
-              ${art.characteristics.map(c => `<div class="art-trait">${c}</div>`).join('')}
+
+        <!-- 2. Core Philosophy & Principles -->
+        ${art.corePrinciples && art.corePrinciples.length > 0 ? `
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="art-section-title" style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;">🧠 Core Philosophy & Principles</div>
+            <div class="art-traits-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 0.75rem;">
+              ${art.corePrinciples.map(p => `
+                <div style="background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 0.75rem; display:flex; align-items:flex-start; gap:0.6rem;">
+                  <span style="color:${art.color}; font-weight:bold;">❖</span>
+                  <span style="font-size: 0.83rem; color: #e2e8f0; line-height:1.4;">${p}</span>
+                </div>
+              `).join('')}
             </div>
           </div>
         ` : ''}
-        <!-- Key Principles -->
-        ${art.keyPrinciples && art.keyPrinciples.length > 0 ? `
-          <div class="art-section">
-            <div class="art-section-title">\ud83e\uddd8 Key Principles</div>
-            <div class="art-traits-list">
-              ${art.keyPrinciples.map(p => `<div class="art-trait">${p}</div>`).join('')}
+
+        <!-- 3. Combat Effectiveness Grid -->
+        ${art.effectiveness ? `
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="art-section-title" style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;">⚔️ Combat Effectiveness & Fitness Profile</div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.8rem;">
+              <div style="background: rgba(231, 76, 60, 0.1); border: 1px solid rgba(231, 76, 60, 0.3); border-radius: 10px; padding: 0.9rem;">
+                <div style="font-size: 0.75rem; text-transform:uppercase; color:#E74C3C; font-weight:700;">🛡️ Street Self-Defense</div>
+                <div style="font-size: 0.84rem; color:#fff; margin-top:0.3rem;">${art.effectiveness.selfDefense || art.effectiveness.street || 'High'}</div>
+              </div>
+              <div style="background: rgba(46, 204, 113, 0.1); border: 1px solid rgba(46, 204, 113, 0.3); border-radius: 10px; padding: 0.9rem;">
+                <div style="font-size: 0.75rem; text-transform:uppercase; color:#2ECC71; font-weight:700;">🥊 Modern MMA Translation</div>
+                <div style="font-size: 0.84rem; color:#fff; margin-top:0.3rem;">${art.effectiveness.mma || 'High'}</div>
+              </div>
+              <div style="background: rgba(241, 196, 15, 0.1); border: 1px solid rgba(241, 196, 15, 0.3); border-radius: 10px; padding: 0.9rem;">
+                <div style="font-size: 0.75rem; text-transform:uppercase; color:#F1C40F; font-weight:700;">💪 Physical Fitness Conditioning</div>
+                <div style="font-size: 0.84rem; color:#fff; margin-top:0.3rem;">${art.effectiveness.fitness || 'Elite'}</div>
+              </div>
             </div>
           </div>
         ` : ''}
-        <!-- Ranking System -->
-        ${art.rankingSystem && art.rankingSystem.ranks && art.rankingSystem.ranks.length > 0 ? `
-          <div class="art-section">
-            <div class="art-section-title">\ud83c\udfc5 Ranking System (${art.rankingSystem.type})</div>
-            <div class="rank-list">
-              ${art.rankingSystem.ranks.map(r => `
-                <div class="rank-badge" style="color: ${r.color}; border-color: ${r.color}60; background: ${r.color}15;">
-                  <span class="rank-dot" style="background: ${r.color};"></span>
+
+        <!-- 4. Technique Repertoire Overview -->
+        ${art.techniquesOverview ? `
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="art-section-title" style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;">🥋 Technical Arsenal Breakdown</div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0.75rem;">
+              ${Object.entries(art.techniquesOverview).map(([key, val]) => val ? `
+                <div style="background:rgba(0,0,0,0.2); border-left:3px solid ${art.color}; padding:0.7rem; border-radius:4px;">
+                  <span style="font-size:0.75rem; text-transform:uppercase; color:${art.color}; font-weight:bold;">${key}</span>
+                  <p style="font-size:0.82rem; color:#cbd5e1; margin-top:0.2rem; line-height:1.4;">${val}</p>
+                </div>
+              ` : '').join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <!-- 5. Live Practice Hub Techniques -->
+        <div class="art-section" style="background: linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(0,0,0,0.3) 100%); border: 1px solid rgba(212,175,55,0.35); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+          <div class="art-section-title" style="font-size: 1.15rem; font-weight: 800; color: #FFD700; margin-bottom: 0.75rem; display:flex; justify-content:space-between; align-items:center;">
+            <span>⚔️ Interactive Technique Practice (${techniques.length})</span>
+            <span style="font-size:0.75rem; font-weight:normal; color:#cbd5e1;">Click any move to launch Live Practice Hub</span>
+          </div>
+          ${techniques.length > 0 ? `
+            <div class="art-tech-list" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap:0.75rem;">
+              ${techniques.map(t => `
+                <div class="art-tech-item" onclick="App.openTechniqueModal('${t.id}')" style="background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.1); padding:0.8rem; border-radius:10px; cursor:pointer; display:flex; align-items:center; gap:0.7rem; transition: all 0.2s;">
+                  <span class="art-tech-icon" style="font-size:1.5rem;">${t.icon}</span>
+                  <div>
+                    <div class="art-tech-name" style="font-weight:700; font-size:0.88rem; color:#fff;">${t.name}</div>
+                    <div style="font-size:0.72rem; color:var(--text-muted); text-transform:capitalize;">${t.subcategory || 'move'} • ${t.duration}s</div>
+                  </div>
+                </div>
+              `).join('')}
+            </div>
+          ` : `<p style="font-size:0.85rem; color:var(--text-muted);">No interactive live studio moves registered for this discipline yet.</p>`}
+        </div>
+
+        <!-- 6. Training Methodology & Competition -->
+        ${art.trainingMethods ? `
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="art-section-title" style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;">💪 Training Methods & Competition</div>
+            <ul style="padding-left:1.2rem; margin-bottom: 0.8rem;">
+              ${art.trainingMethods.map(m => `<li style="font-size:0.84rem; color:#cbd5e1; margin-bottom:0.4rem; line-height:1.5;">${m}</li>`).join('')}
+            </ul>
+            ${art.competition ? `<div style="font-size:0.84rem; color:var(--text-muted); background:rgba(0,0,0,0.25); padding:0.8rem; border-radius:6px; border-top: 1px solid rgba(255,255,255,0.05);"><strong>🏆 Ruleset:</strong> ${art.competition}</div>` : ''}
+          </div>
+        ` : ''}
+
+        <!-- 7. Ranking System -->
+        ${art.rankingSystem && art.rankingSystem.ranks ? `
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="art-section-title" style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;">🎖️ Ranking & Progression (${art.rankingSystem.type})</div>
+            <div class="rank-list" style="display:flex; flex-wrap:wrap; gap:0.6rem;">
+              ${art.rankingSystem.ranks.map(r => {
+                const isDark = (r.color === '#1A1A2E' || r.color === '#000000' || r.color === '#111111');
+                const borderColor = isDark ? '#64748b' : (r.color || '#fff');
+                return `
+                <div class="rank-badge" style="color: #f8fafc; border: 1px solid ${borderColor}60; background: rgba(255,255,255,0.06); padding: 0.45rem 0.85rem; border-radius: 20px; font-size: 0.82rem; font-weight: 600; display:flex; align-items:center; gap:0.5rem;">
+                  <span class="rank-dot" style="background: ${r.color || '#fff'}; width:10px; height:10px; border-radius:50%; display:inline-block; border: 1px solid rgba(255,255,255,0.35);"></span>
                   ${r.name}
                 </div>
-              `).join('')}
+                `;
+              }).join('')}
             </div>
           </div>
         ` : ''}
-        <!-- Weapons -->
+
+        <!-- 8. Traditional Weapons -->
         ${art.weapons && art.weapons.length > 0 ? `
-          <div class="art-section">
-            <div class="art-section-title">\u2694\ufe0f Traditional Weapons</div>
-            <div class="weapon-list">
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.25rem;">
+            <div class="art-section-title" style="font-size: 1.1rem; font-weight: 700; color: #fff; margin-bottom: 0.75rem;">🗡️ Traditional Weaponry</div>
+            <div class="weapon-list" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:0.75rem;">
               ${art.weapons.map(w => `
-                <div class="weapon-card">
-                  <div class="weapon-card-icon">${w.icon}</div>
-                  <div class="weapon-card-name">${w.name}</div>
-                  <div class="weapon-card-desc">${w.description}</div>
+                <div class="weapon-card" style="background:rgba(0,0,0,0.25); border:1px solid rgba(255,255,255,0.06); padding:0.8rem; border-radius:8px;">
+                  <div style="font-size:1.6rem;">${w.icon}</div>
+                  <div style="font-weight:700; font-size:0.9rem; color:#fff; margin-top:0.3rem;">${w.name}</div>
+                  <div style="font-size:0.78rem; color:var(--text-muted); margin-top:0.2rem;">${w.description}</div>
                 </div>
               `).join('')}
             </div>
           </div>
         ` : ''}
-        <!-- Techniques -->
-        ${techniques.length > 0 ? `
-          <div class="art-section">
-            <div class="art-section-title">\ud83e\udd4b Techniques (${techniques.length})</div>
-            <div class="art-tech-list">
-              ${techniques.map(t => `
-                <div class="art-tech-item" onclick="App.openTechniqueModal('${t.id}')">
-                  <span class="art-tech-icon">${t.icon}</span>
-                  <span class="art-tech-name">${t.name}</span>
-                </div>
-              `).join('')}
+
+        <!-- 9. Criticisms & Notable Masters -->
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:1.25rem; margin-bottom:1.5rem;">
+          ${art.criticisms ? `
+            <div class="art-section" style="background: rgba(231,76,60,0.08); border: 1px solid rgba(231,76,60,0.25); border-radius: 14px; padding: 1.25rem; margin:0;">
+              <div class="art-section-title" style="font-size: 1rem; font-weight: 700; color: #E74C3C; margin-bottom: 0.6rem;">⚠️ Common Criticisms</div>
+              <ul style="padding-left:1.2rem; margin:0;">
+                ${art.criticisms.map(c => `<li style="font-size:0.82rem; color:#fca5a5; margin-bottom:0.3rem;">${c}</li>`).join('')}
+              </ul>
             </div>
+          ` : ''}
+          ${art.famousPractitioners ? `
+            <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin:0;">
+              <div class="art-section-title" style="font-size: 1rem; font-weight: 700; color: #FFD700; margin-bottom: 0.6rem;">⭐ Famous Practitioners</div>
+              <div style="display:flex; flex-wrap:wrap; gap:0.5rem;">
+                ${art.famousPractitioners.map(p => `<span style="background:rgba(255,215,0,0.12); border:1px solid rgba(255,215,0,0.3); color:#fef08a; padding:0.3rem 0.65rem; border-radius:6px; font-size:0.78rem; font-weight:600;">${p}</span>`).join('')}
+              </div>
+            </div>
+          ` : ''}
+        </div>
+
+        <!-- 10. Best For & Related Arts -->
+        ${art.bestFor || art.relatedArts ? `
+          <div class="art-section" style="background: var(--bg-card-glass); border: 1px solid rgba(255,255,255,0.07); border-radius: 14px; padding: 1.25rem; margin-bottom: 1.5rem; display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem;">
+            ${art.bestFor ? `<div style="background:rgba(0,0,0,0.2); padding:0.8rem; border-radius:8px;"><div style="font-size:0.75rem; text-transform:uppercase; color:#a855f7; font-weight:bold; margin-bottom:0.25rem;">🎯 Ideal Practitioner Profile</div><p style="color:#cbd5e1; font-size:0.84rem; margin:0; line-height:1.55;">${art.bestFor}</p></div>` : ''}
+            ${art.relatedArts && art.relatedArts.length > 0 ? `<div style="background:rgba(0,0,0,0.2); padding:0.8rem; border-radius:8px;"><div style="font-size:0.75rem; text-transform:uppercase; color:#06b6d4; font-weight:bold; margin-bottom:0.35rem;">🔗 Sister & Related Styles</div><div style="display:flex; flex-wrap:wrap; gap:0.4rem;">${art.relatedArts.map(ra => `<span style="background:rgba(6,182,212,0.15); border:1px solid rgba(6,182,212,0.3); color:#a5f3fc; padding:0.2rem 0.55rem; border-radius:4px; font-size:0.76rem; font-weight:500;">${ra}</span>`).join('')}</div></div>` : ''}
           </div>
         ` : ''}
-        <!-- Famous Practitioners -->
-        ${art.famousPractitioners && art.famousPractitioners.length > 0 ? `
-          <div class="art-section">
-            <div class="art-section-title">\u2b50 Notable Practitioners</div>
-            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
-              ${art.famousPractitioners.map(p => `<span class="meta-badge" style="font-size: 0.72rem;">${p}</span>`).join('')}
-            </div>
-          </div>
-        ` : ''}
+
       </div>
     `;
     window.scrollTo(0, 0);
@@ -1541,13 +1752,266 @@ const App = {
         ` : ''}
         ${ex.tips ? `
           <div style="padding: 0.75rem; border-radius: 8px; border: 1px solid ${artColor}40; background: ${artColor}10;">
-            <strong style="color: ${artColor}; font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">\ud83d\udca1 Pro Tip</strong>
+            <strong style="color: ${artColor}; font-size: 0.8rem; display: block; margin-bottom: 0.25rem;">💡 Pro Tip</strong>
             <p style="font-size: 0.78rem; color: var(--text-muted); line-height: 1.5;">${ex.tips}</p>
           </div>
+        ` : ''}
+        ${ex.category === 'technique' || ex.subcategory ? `
+          <button type="button" class="action-btn primary-gradient w-full py-3.5 font-bold uppercase tracking-wider text-sm flex items-center justify-center gap-2 mt-3 shadow-2xl rounded-xl" onclick="App.practiceFromLibrary('${ex.id || exId}')">
+            <span>⚔️ Practice This Technique Live</span> <span class="arrow">→</span>
+          </button>
         ` : ''}
       </div>
     `;
     this.openModal(ex.name, html);
+  },
+
+  // --- PRACTICAL SOLO PRACTICE HUB ---
+  _soloMode: 'timer',
+  _soloTargetVal: 30,
+  _soloActiveTimer: null,
+  _soloCurrentReps: 0,
+  _soloLoggedClean: true,
+
+  practiceFromLibrary(exId) {
+    this.openSoloPracticeHub();
+    setTimeout(() => {
+      const techSel = document.getElementById('soloTechSelect');
+      const discEl = document.getElementById('soloDiscSelect');
+      const tech = window.EXERCISES[exId];
+      if (tech && discEl && techSel) {
+        discEl.value = tech.discipline || 'all';
+        this.filterSoloTechs();
+        techSel.value = exId;
+      }
+    }, 50);
+  },
+
+  openSoloPracticeHub() {
+    if (!window.EXERCISES) return;
+    const allTechs = Object.values(window.EXERCISES).filter(ex => ex.category === 'technique');
+    const disciplines = [...new Set(allTechs.map(t => t.discipline))];
+    
+    let html = `
+      <div class="solo-practice-container text-left flex flex-col gap-4">
+        <div class="glass-card p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-xs text-amber-300">
+          💡 <b>Kiai Technique Practice:</b> Pick any stance, strike, or kick to practice outside the daily structured routine. Set your timer or rep goal and track holds.
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-secondary font-bold mb-1">1. Select Discipline</label>
+            <select id="soloDiscSelect" class="glass-input w-full p-2 text-sm outline-none" onchange="App.filterSoloTechs()">
+              <option value="all">All Disciplines (${allTechs.length})</option>
+              ${disciplines.map(d => `<option value="${d}">${window.MARTIAL_ARTS?.[d]?.name || d}</option>`).join('')}
+            </select>
+          </div>
+
+          <div>
+            <label class="block text-xs uppercase tracking-wider text-secondary font-bold mb-1">2. Select Technique</label>
+            <select id="soloTechSelect" class="glass-input w-full p-2 text-sm outline-none">
+              ${allTechs.map(t => `<option value="${t.id}" data-disc="${t.discipline}">${t.icon} ${t.name}</option>`).join('')}
+            </select>
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs uppercase tracking-wider text-secondary font-bold mb-1.5">3. Training Mode & Goal</label>
+          <div class="grid grid-cols-2 gap-2 mb-2.5">
+            <button type="button" class="solo-mode-btn active p-2.5 rounded-xl border text-center font-bold text-xs" id="btnModeTimer" onclick="App.setSoloMode('timer')">
+              ⏱️ Timed Hold / Drills
+            </button>
+            <button type="button" class="solo-mode-btn p-2.5 rounded-xl border text-center font-bold text-xs opacity-60" id="btnModeReps" onclick="App.setSoloMode('reps')">
+              👊 Repetition Striking
+            </button>
+          </div>
+
+          <div id="soloTimerOptions" class="grid grid-cols-4 gap-2">
+            <button type="button" class="solo-opt-btn active py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 30)">30s</button>
+            <button type="button" class="solo-opt-btn py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 60)">60s</button>
+            <button type="button" class="solo-opt-btn py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 90)">90s</button>
+            <button type="button" class="solo-opt-btn py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 180)">3 mins</button>
+          </div>
+
+          <div id="soloRepsOptions" class="grid grid-cols-4 gap-2" style="display: none;">
+            <button type="button" class="solo-opt-btn active py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 10)">10 Reps</button>
+            <button type="button" class="solo-opt-btn py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 25)">25 Reps</button>
+            <button type="button" class="solo-opt-btn py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 50)">50 Reps</button>
+            <button type="button" class="solo-opt-btn py-2 px-2 rounded-lg border text-xs font-bold text-center" onclick="App.selectSoloOpt(this, 100)">100 Reps</button>
+          </div>
+        </div>
+
+        <button class="action-btn massive-btn primary-gradient mt-2 py-3 font-bold uppercase tracking-wide" onclick="App.startSoloDrill()">
+          BEGIN PRACTICE
+        </button>
+      </div>
+    `;
+    this.openModal("Kiai Technique Practice", html);
+    this.filterSoloTechs();
+  },
+
+  setSoloMode(m) {
+    this._soloMode = m;
+    const bT = document.getElementById('btnModeTimer');
+    const bR = document.getElementById('btnModeReps');
+    if (bT) { bT.classList.toggle('active', m === 'timer'); bT.style.opacity = m === 'timer' ? '1' : '0.6'; }
+    if (bR) { bR.classList.toggle('active', m === 'reps'); bR.style.opacity = m === 'reps' ? '1' : '0.6'; }
+    const tOpt = document.getElementById('soloTimerOptions');
+    const rOpt = document.getElementById('soloRepsOptions');
+    if (tOpt) tOpt.style.display = m === 'timer' ? 'grid' : 'none';
+    if (rOpt) rOpt.style.display = m === 'reps' ? 'grid' : 'none';
+    this._soloTargetVal = m === 'timer' ? 30 : 10;
+    document.querySelectorAll(m === 'timer' ? '#soloTimerOptions .solo-opt-btn' : '#soloRepsOptions .solo-opt-btn').forEach((b, idx) => {
+      b.classList.toggle('active', idx === 0);
+    });
+  },
+
+  selectSoloOpt(btn, val) {
+    btn.parentElement.querySelectorAll('.solo-opt-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    this._soloTargetVal = val;
+  },
+
+  filterSoloTechs() {
+    const discEl = document.getElementById('soloDiscSelect');
+    const techSel = document.getElementById('soloTechSelect');
+    if (!discEl || !techSel) return;
+    const disc = discEl.value;
+    Array.from(techSel.options).forEach(opt => {
+      opt.style.display = (disc === 'all' || opt.getAttribute('data-disc') === disc) ? 'block' : 'none';
+    });
+    const firstVis = Array.from(techSel.options).find(o => o.style.display !== 'none');
+    if (firstVis) techSel.value = firstVis.value;
+  },
+
+  startSoloDrill() {
+    const techIdEl = document.getElementById('soloTechSelect');
+    if (!techIdEl) return;
+    const techId = techIdEl.value;
+    const tech = window.EXERCISES[techId];
+    if (!tech) return;
+
+    this._soloCurrentReps = 0;
+    this._soloLoggedClean = true;
+    this.initAudio();
+
+    let areaHtml = `
+      <div class="text-center flex flex-col items-center gap-4 py-2">
+        <div class="flex items-center gap-3 w-full border-b border-white/10 pb-3">
+          <span class="text-4xl">${tech.icon}</span>
+          <div class="text-left">
+            <h3 class="text-lg font-bold text-amber-400 leading-tight">${tech.name}</h3>
+            <span class="text-xs text-secondary uppercase">${window.MARTIAL_ARTS?.[tech.discipline]?.name || tech.discipline} • Live Drill</span>
+          </div>
+        </div>
+
+        <div class="p-3 rounded-xl bg-white/5 border border-white/10 text-xs text-muted text-left w-full leading-relaxed">
+          ${tech.description}
+        </div>
+
+        ${tech.instructions && tech.instructions.length > 0 ? `
+          <div class="w-full text-left bg-black/60 p-3.5 rounded-xl border border-amber-500/30 shadow-lg">
+            <h4 class="text-xs uppercase tracking-wider font-bold text-amber-400 mb-2 border-b border-white/10 pb-1.5 flex items-center gap-1.5">📋 How to Execute</h4>
+            <ol class="list-none text-xs text-white/90 flex flex-col gap-2 m-0 p-0">
+              ${tech.instructions.map((step, sIdx) => `<li class="flex items-start gap-2"><strong class="text-amber-400 font-mono text-sm leading-none mt-0.5">${sIdx + 1}.</strong> <span class="leading-relaxed">${step}</span></li>`).join('')}
+            </ol>
+          </div>
+        ` : ''}
+
+        ${tech.tips ? `
+          <div class="w-full text-left bg-amber-500/15 p-3 rounded-xl border border-amber-500/40">
+            <span class="text-xs text-amber-300 font-bold block mb-1">💡 Pro Tip</span>
+            <p class="text-xs text-white/90 m-0 leading-relaxed">${tech.tips}</p>
+          </div>
+        ` : ''}
+
+        ${this._soloMode === 'timer' ? `
+          <div class="my-2">
+            <div class="text-6xl font-black text-white tracking-tight font-mono" id="soloLiveTimer">${this._soloTargetVal}s</div>
+            <span class="text-xs text-secondary mt-1 block">Hold / Execute continuously</span>
+          </div>
+        ` : `
+          <div class="my-1 w-full max-w-sm">
+            <div class="text-5xl font-black text-amber-500 mb-3 font-mono" id="soloLiveReps">0 / ${this._soloTargetVal}</div>
+            <button type="button" class="action-btn primary-gradient w-full py-7 text-xl font-black uppercase tracking-wider shadow-2xl rounded-2xl active:scale-95 transition-transform select-none" onclick="App.incrementSoloRep()">
+              👊 TAP HERE (+1 REP)
+            </button>
+          </div>
+        `}
+
+        <div class="w-full p-3.5 rounded-xl bg-black/60 border border-white/15 text-left">
+          <label class="block text-xs uppercase font-bold text-amber-400 mb-2">Self-Assessment Log:</label>
+          <div class="flex gap-2">
+            <button type="button" class="solo-assess-btn active flex-1 py-2 px-2 rounded-lg border border-green-500/50 bg-green-500/20 text-green-300 text-xs font-bold text-center" id="btnAssessClean" onclick="App.setSoloAssess(true)">
+              ✨ Pure Kiai (0 fails)
+            </button>
+            <button type="button" class="solo-assess-btn flex-1 py-2 px-2 rounded-lg border border-white/10 bg-white/5 text-secondary text-xs font-bold text-center" id="btnAssessFail" onclick="App.setSoloAssess(false)">
+              ⚠️ Broke Form / Stood
+            </button>
+          </div>
+        </div>
+
+        <button class="action-btn outlined w-full py-3 text-sm font-bold text-red-400 border-red-500/30 hover:bg-red-500/10" onclick="App.finishSoloDrill('${tech.name.replace(/'/g, "\\'")}')">
+          COMPLETE SOLO PRACTICE
+        </button>
+      </div>
+    `;
+
+    this.openModal("Live Practice — " + tech.name, areaHtml);
+
+    if (this._soloMode === 'timer') {
+      let rem = this._soloTargetVal;
+      this.playTransitionTone();
+      if (this._soloActiveTimer) clearInterval(this._soloActiveTimer);
+      this._soloActiveTimer = setInterval(() => {
+        rem--;
+        const tel = document.getElementById('soloLiveTimer');
+        if (tel) tel.textContent = `${rem}s`;
+        if (rem <= 3 && rem > 0) this.playTick();
+        if (rem <= 0) {
+          clearInterval(this._soloActiveTimer);
+          this._soloActiveTimer = null;
+          this.playChime();
+          if (tel) tel.textContent = "DONE!";
+        }
+      }, 1000);
+    }
+  },
+
+  incrementSoloRep() {
+    this._soloCurrentReps++;
+    this.playTick();
+    const rel = document.getElementById('soloLiveReps');
+    if (rel) rel.textContent = `${this._soloCurrentReps} / ${this._soloTargetVal}`;
+    if (this._soloCurrentReps === this._soloTargetVal) {
+      this.playChime();
+    }
+  },
+
+  setSoloAssess(clean) {
+    this._soloLoggedClean = clean;
+    const bClean = document.getElementById('btnAssessClean');
+    const bFail = document.getElementById('btnAssessFail');
+    if (bClean && bFail) {
+      bClean.className = clean ? "solo-assess-btn active flex-1 py-2 px-2 rounded-lg border border-green-500/50 bg-green-500/20 text-green-300 text-xs font-bold text-center" : "solo-assess-btn flex-1 py-2 px-2 rounded-lg border border-white/10 bg-white/5 text-secondary text-xs font-bold text-center";
+      bFail.className = !clean ? "solo-assess-btn active flex-1 py-2 px-2 rounded-lg border border-amber-500/50 bg-amber-500/20 text-amber-300 text-xs font-bold text-center" : "solo-assess-btn flex-1 py-2 px-2 rounded-lg border border-white/10 bg-white/5 text-secondary text-xs font-bold text-center";
+    }
+  },
+
+  finishSoloDrill(techName) {
+    if (this._soloActiveTimer) clearInterval(this._soloActiveTimer);
+    this._soloActiveTimer = null;
+
+    if (this._soloLoggedClean) {
+      this.state.masteryStances = (this.state.masteryStances || 0) + 1;
+    }
+    const addedTime = this._soloMode === 'timer' ? this._soloTargetVal : Math.ceil(this._soloCurrentReps * 2);
+    this.state.totalTimeSeconds = (this.state.totalTimeSeconds || 0) + addedTime;
+    this.saveState();
+    this.updateDashRank();
+
+    this.closeModal();
+    this.showToast('🥋', 'Solo Drill Recorded!', `Mastered ${techName}. +XP Earned!`);
   },
 
   // --- SETTINGS ---

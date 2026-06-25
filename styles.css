@@ -1321,3 +1321,10 @@ h1, h2, h3, h4, h5 {
 .scrollbar-hide::-webkit-scrollbar { display: none; }
 .line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
 .transition-colors { transition: color 0.2s, background-color 0.2s, border-color 0.2s; }
+
+/* Solo Practice UI */
+.solo-mode-btn { background: rgba(255,255,255,0.05); border-color: var(--border-glass); color: var(--text-muted); transition: all 0.2s; cursor: pointer; }
+.solo-mode-btn.active { background: rgba(245,158,11,0.15); border-color: #f59e0b; color: #f59e0b; }
+.solo-opt-btn { background: rgba(0,0,0,0.5); border-color: var(--border-glass); color: var(--text-muted); transition: all 0.2s; cursor: pointer; }
+.solo-opt-btn.active { background: #f59e0b; border-color: #f59e0b; color: black; }
+.solo-assess-btn { transition: all 0.2s; cursor: pointer; }

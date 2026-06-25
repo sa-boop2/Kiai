@@ -1,786 +1,893 @@
+/* ============================================================
+   Kiai Premium - Martial Arts Encyclopedia (Part 1: Arts 1 - 15)
+   Comprehensive Deep Research: Origin, Purpose, Philosophy, 
+   Techniques, Training, Competition, Effectiveness & Ranks
+   ============================================================ */
+
 window.MARTIAL_ARTS = {
   wushu: {
     id: 'wushu',
     name: 'Wushu',
-    origin: 'China',
     icon: '🐉',
     color: '#E63946',
     type: 'hybrid',
-    description: 'Wushu is a modern exhibition and full-contact sport derived from traditional Chinese martial arts. It encompasses both taolu (choreographed forms) and sanda (free fighting), blending breathtaking acrobatics with powerful combat techniques. Recognized internationally, Wushu is governed by the International Wushu Federation and has been a medal event at the Asian Games since 1990.',
-    history: 'Wushu\'s roots trace back thousands of years through China\'s rich martial heritage, but its modern form was standardized in 1949 when the People\'s Republic of China sought to codify traditional fighting styles into a national sport. The Chinese State Physical Culture and Sports Commission established official curricula for competition wushu in the 1950s. The International Wushu Federation (IWUF) was founded in 1990, bringing the art to a global stage. Wushu was included as a demonstration sport at the 2008 Beijing Olympics and continues to push for full Olympic inclusion.',
-    characteristics: [
-      'Explosive aerial acrobatics and gymnastics-level flexibility',
-      'Codified competition forms (changquan, nanquan, taijiquan)',
-      'Integration of traditional weapons into choreographed routines',
-      'Emphasis on speed, power, and aesthetic presentation',
-      'Dual-discipline structure: taolu (forms) and sanda (sparring)',
-      'Scoring based on difficulty, technique, and overall performance'
+    origin: 'China 🌍 — Standardized in 1949 by the PRC Sports Commission to codify centuries of traditional Chinese martial heritage (shaped by Taoist energy cultivation, Buddhist monastic discipline, and Confucian ethics) into a unified national athletic curriculum.',
+    purpose: 'Exhibition performance, extreme acrobatic competition, cultural preservation, and full-contact combat sparring (Sanda).',
+    corePrinciples: [
+      'Unity of internal Qi and external mechanical speed',
+      'Explosive kinetic discharge with absolute posture control',
+      'Continuous dynamic flow and zero wasted motion',
+      'Aesthetic perfection combined with extreme athletic flexibility'
     ],
-    keyPrinciples: [
-      'Unity of internal energy and external movement',
-      'Speed and power derived from proper body mechanics',
-      'Precision in every technique—no wasted motion',
-      'Balance between martial effectiveness and artistic beauty',
-      'Continuous self-improvement through disciplined repetition'
-    ],
-    rankingSystem: {
-      type: 'sash',
-      ranks: [
-        { name: 'White Sash (Beginner)', color: '#FFFFFF' },
-        { name: 'Yellow Sash', color: '#FFD700' },
-        { name: 'Blue Sash', color: '#1E90FF' },
-        { name: 'Green Sash', color: '#2ECC71' },
-        { name: 'Red Sash', color: '#E74C3C' },
-        { name: 'Black Sash (Advanced)', color: '#1A1A2E' },
-        { name: 'Gold Sash (Master)', color: '#DAA520' }
-      ]
+    techniquesOverview: {
+      punches: 'Extended long-range straight punches (Changquan) and explosive close-range hooks/uppercuts.',
+      kicks: 'High acrobatic tornado kicks, butterfly twists, sweeping low dragon sweeps, and snapping side kicks.',
+      throws: 'Fast reactive hip throws and leg catches integrated directly into Sanda competition.',
+      grappling: 'Standing clinch control and rapid takedowns (prolonged ground grappling is intentionally omitted).',
+      locks: 'Traditional standing joint manipulations (Qin Na) taught in foundational curricula.',
+      weapons: 'Choreographed mastery of broadsword (Dao), straight sword (Jian), staff (Gun), and spear (Qiang).'
     },
+    trainingMethods: [
+      'Taolu: Choreographed solo performance routines executed at high velocity.',
+      'Sanda: Full-contact kickboxing sparring wearing boxing gloves and chest protectors.',
+      'Jibengong: Crucial daily foundational flexibility, balance holding, and jumping conditioning.',
+      'Qigong: Meditative breathing exercises to regulate nervous system and energy.'
+    ],
+    competition: 'Governed by the IWUF. Taolu events are judged on execution difficulty, speed, and aesthetic precision. Sanda events are 3-round full contact matches won by knockout or point scoring via strikes and takedowns.',
+    effectiveness: {
+      selfDefense: 'High (Sanda sparring develops proven elite striking and takedown defense).',
+      mma: 'Very High (Sanda side kicks, spinning back kicks, and reactive throws are elite in modern UFC).',
+      street: 'Moderate-High (Elite distance management and lightning striking velocity).',
+      fitness: 'Elite (Unmatched cardiovascular endurance, extreme plyometric agility, and core strength).'
+    },
+    physicalBenefits: ['Extreme dynamic flexibility', 'Plyometric vertical jumping power', 'Acrobatic spatial awareness', 'Lightning hand-eye coordination'],
+    mentalBenefits: ['Iron discipline through rigorous repetition', 'High-pressure performance focus', 'Artistic confidence and emotional equilibrium'],
     weapons: [
-      { name: 'Dao (Broadsword)', icon: '⚔️', description: 'A single-edged curved blade known as the "General of All Weapons" for its versatility in slashing attacks.' },
-      { name: 'Jian (Straight Sword)', icon: '🗡️', description: 'A double-edged straight sword called the "Gentleman of Weapons" requiring precise, elegant technique.' },
-      { name: 'Gun (Staff)', icon: '🥢', description: 'A long wooden staff considered the foundation of all Chinese weapons training.' },
-      { name: 'Qiang (Spear)', icon: '🔱', description: 'A flexible-shafted spear known as the "King of Weapons" for its lethal reach and thrusting power.' },
-      { name: 'Nandao (Southern Broadsword)', icon: '⚔️', description: 'A heavier, broader blade used in Southern-style wushu with powerful chopping techniques.' }
-    ],
-    famousPractitioners: ['Jet Li', 'Donnie Yen', 'Wu Jing', 'Zhao Changjun'],
-    techniqueCount: 0
-  },
-
-  muaythai: {
-    id: 'muaythai',
-    name: 'Muay Thai',
-    origin: 'Thailand',
-    icon: '🥊',
-    color: '#FF6B35',
-    type: 'striking',
-    description: 'Muay Thai, known as the "Art of Eight Limbs," is Thailand\'s national combat sport that utilizes fists, elbows, knees, and shins as points of contact. Renowned for its devastating clinch work and bone-crushing strikes, it is widely considered one of the most effective stand-up fighting systems in the world. Muay Thai forms the striking foundation of most modern mixed martial arts fighters.',
-    history: 'Muay Thai evolved from the ancient battlefield art of Muay Boran, which Thai soldiers used in close-quarters combat for centuries. The sport became formalized in the early 20th century when rules, weight classes, and boxing gloves were introduced under King Rama VII. The legendary Nai Khanom Tom is celebrated as the father of Muay Thai, said to have defeated ten Burmese fighters in 1774 after being captured during the fall of Ayutthaya. Today, Muay Thai stadiums like Lumpinee and Rajadamnern in Bangkok are considered sacred grounds for the sport.',
-    characteristics: [
-      'Use of all eight limbs: fists, elbows, knees, and shins',
-      'Devastating clinch fighting and neck wrestling',
-      'Powerful low kicks targeting the legs and body',
-      'Pre-fight Wai Kru Ram Muay ritual dance',
-      'Emphasis on conditioning through shin hardening and pad work',
-      'Mongkhon (headband) and Pra Jiad (armband) ceremonial gear'
-    ],
-    keyPrinciples: [
-      'Maximum power through hip rotation and body commitment',
-      'Control distance with teep (push kick) and long guard',
-      'Dominate the clinch to impose your will',
-      'Mental toughness and warrior spirit (Jai Dee)',
-      'Respect for tradition, teacher (Kru), and opponents'
-    ],
-    rankingSystem: {
-      type: 'none',
-      ranks: [
-        { name: 'Beginner', color: '#FFFFFF' },
-        { name: 'Intermediate', color: '#FFD700' },
-        { name: 'Advanced', color: '#FF6B35' },
-        { name: 'Fighter', color: '#E74C3C' },
-        { name: 'Professional', color: '#8B0000' },
-        { name: 'Kru (Instructor)', color: '#2C3E50' },
-        { name: 'Ajarn (Master)', color: '#1A1A2E' }
-      ]
-    },
-    weapons: [],
-    famousPractitioners: ['Buakaw Banchamek', 'Samart Payakaroon', 'Saenchai', 'Dieselnoi Chor Thanasukarn'],
-    techniqueCount: 0
-  },
-
-  taichi: {
-    id: 'taichi',
-    name: 'Tai Chi',
-    origin: 'China',
-    icon: '☯️',
-    color: '#4ECDC4',
-    type: 'internal',
-    description: 'Tai Chi (Taijiquan) is an internal Chinese martial art practiced for both its defense training and profound health benefits. Characterized by slow, flowing movements performed with deep breathing and meditative focus, it embodies the Taoist philosophy of yin and yang. Practiced by millions worldwide, Tai Chi has been proven by modern science to improve balance, reduce stress, and enhance cardiovascular health.',
-    history: 'The origins of Tai Chi are traditionally attributed to the Taoist monk Zhang Sanfeng on Wudang Mountain in the 12th or 13th century, though historical records are debated. The Chen family of Chenjiagou village in Henan province developed the first verifiable style of Tai Chi in the 17th century. From Chen style, Yang Luchan learned and modified the art to create Yang style in the 19th century, which became the most widely practiced form globally. Today, five major family styles exist: Chen, Yang, Wu, Wu (Hao), and Sun.',
-    characteristics: [
-      'Slow, continuous, flowing circular movements',
-      'Deep diaphragmatic breathing synchronized with motion',
-      'Rooting—maintaining a stable, grounded stance',
-      'Push hands (Tui Shou) two-person sensitivity drills',
-      'Emphasis on relaxation and softness overcoming hardness',
-      'Multiple family styles with distinct characteristics'
-    ],
-    keyPrinciples: [
-      'Yield to overcome—softness defeats hardness',
-      'Root the feet, relax the body, concentrate the mind',
-      'Move from the dantian (energy center below the navel)',
-      'Continuity—movements flow without interruption',
-      'Balance of yin and yang in all things'
-    ],
-    rankingSystem: {
-      type: 'level',
-      ranks: [
-        { name: 'Level 1 - Foundation', color: '#FFFFFF' },
-        { name: 'Level 2 - Form Practice', color: '#B0C4DE' },
-        { name: 'Level 3 - Push Hands', color: '#4ECDC4' },
-        { name: 'Level 4 - Weapons Forms', color: '#2ECC71' },
-        { name: 'Level 5 - Internal Power', color: '#9B59B6' },
-        { name: 'Level 6 - Master', color: '#1A1A2E' }
-      ]
-    },
-    weapons: [
-      { name: 'Tai Chi Jian (Sword)', icon: '🗡️', description: 'A double-edged straight sword used in flowing, precise forms that emphasize extension and intent.' },
-      { name: 'Tai Chi Dao (Saber)', icon: '⚔️', description: 'A single-edged curved blade used with wrapping, coiling movements that express martial power.' },
-      { name: 'Tai Chi Fan', icon: '🪭', description: 'A folding fan used as both a blocking tool and a striking weapon in elegant, dance-like forms.' }
-    ],
-    famousPractitioners: ['Yang Luchan', 'Chen Fake', 'Cheng Man-ching', 'Wang Zongyue'],
-    techniqueCount: 0
-  },
-
-  sanda: {
-    id: 'sanda',
-    name: 'Sanda',
-    origin: 'China',
-    icon: '👊',
-    color: '#FF4757',
-    type: 'hybrid',
-    description: 'Sanda (also known as Sanshou) is the official Chinese kickboxing and full-contact fighting sport, combining punches, kicks, and throws on an elevated lei tai platform. Developed by the Chinese military as a practical combat system, it distills the most effective techniques from traditional Chinese martial arts into a modern competitive framework. Sanda fighters are known for their explosive takedowns and powerful sidekicks.',
-    history: 'Sanda was developed in the 1960s and 1970s by the Chinese military and the Beijing Physical Education University as a standardized combat sport for the People\'s Liberation Army. Drawing techniques from traditional styles like Shuai Jiao, Changquan, and various kung fu systems, it was designed to test martial skill in realistic full-contact competition. The sport was formalized for civilian competition in the 1980s and became a staple event at the World Wushu Championships. Sanda fighters have successfully crossed over into international kickboxing and MMA competitions.',
-    characteristics: [
-      'Full-contact fighting on an elevated lei tai platform',
-      'Integration of punches, kicks, and wrestling throws',
-      'Ring-out (pushing opponent off platform) scores points',
-      'Fast-paced three-round bouts with protective gear',
-      'Strong emphasis on takedowns and sweeps',
-      'Derived from traditional Chinese martial arts for practical combat'
-    ],
-    keyPrinciples: [
-      'Combine striking and grappling seamlessly',
-      'Use the opponent\'s momentum for throws and sweeps',
-      'Maintain aggressive forward pressure',
-      'Adapt traditional techniques to modern combat situations',
-      'Physical conditioning is as important as technical skill'
-    ],
-    rankingSystem: {
-      type: 'level',
-      ranks: [
-        { name: 'Beginner', color: '#FFFFFF' },
-        { name: 'Intermediate', color: '#3498DB' },
-        { name: 'Advanced', color: '#2ECC71' },
-        { name: 'Competition Level', color: '#FF4757' },
-        { name: 'National Level', color: '#E74C3C' },
-        { name: 'Elite/Professional', color: '#8B0000' },
-        { name: 'Coach/Instructor', color: '#1A1A2E' }
-      ]
-    },
-    weapons: [],
-    famousPractitioners: ['Cung Le', 'Liu Hailong', 'Muslim Salikhov', 'Wei Rui'],
-    techniqueCount: 0
-  },
-
-  shaolin: {
-    id: 'shaolin',
-    name: 'Shaolin Kung Fu',
-    origin: 'China',
-    icon: '🏯',
-    color: '#D4A017',
-    type: 'hybrid',
-    description: 'Shaolin Kung Fu is one of the oldest, most comprehensive, and most revered martial arts systems in the world, originating from the legendary Shaolin Temple in Henan Province, China. Encompassing hundreds of fighting forms, qigong exercises, and meditation practices, it represents the pinnacle of Chinese martial heritage. The art integrates Chan (Zen) Buddhist philosophy with devastating combat techniques, producing warriors monks renowned throughout history.',
-    history: 'The Shaolin Temple was founded in 495 AD by Emperor Xiaowen of the Northern Wei Dynasty. According to legend, the Indian monk Bodhidharma arrived at the temple around 527 AD and taught the monks exercises to improve their health, which evolved into martial training. The temple monks gained fame when 13 of them helped Li Shimin (future Emperor Taizong) defeat the rebel Wang Shichong in 621 AD. Over centuries, Shaolin monks developed hundreds of fighting styles inspired by animals, elements, and Buddhist philosophy, making the temple a cradle of Chinese martial arts.',
-    characteristics: [
-      'Hundreds of distinct fighting forms and animal styles',
-      'Integration of Chan Buddhism with martial practice',
-      'Legendary iron body conditioning and pain resistance',
-      'Five Animal styles: Tiger, Crane, Leopard, Snake, Dragon',
-      'Qigong and meditation as foundations of training',
-      'Weapon mastery across dozens of traditional arms'
-    ],
-    keyPrinciples: [
-      'Chan (Zen) and Quan (Fist) are one—martial arts as moving meditation',
-      'Endurance through suffering builds unbreakable spirit',
-      'Mastery requires decades of daily, disciplined practice',
-      'Martial skill serves to protect, never to bully',
-      'Harmony of body, mind, and spirit'
+      { name: 'Dao (Broadsword)', icon: '⚔️', description: 'Single-edged curved blade known as the "General of All Weapons" for sweeping slashing attacks.' },
+      { name: 'Jian (Straight Sword)', icon: '🗡️', description: 'Double-edged straight blade called the "Gentleman of Weapons" requiring precise thrusting.' },
+      { name: 'Gun (Staff)', icon: '🪵', description: 'Tapered wooden pole treated as the "Grandfather of Weapons".' },
+      { name: 'Qiang (Spear)', icon: '🔱', description: 'Flexible spear tip with red horsehair tassel designed to distract and bleed opponents.' }
     ],
     rankingSystem: {
       type: 'sash',
       ranks: [
         { name: 'White Sash (Novice)', color: '#FFFFFF' },
         { name: 'Yellow Sash', color: '#FFD700' },
-        { name: 'Orange Sash', color: '#FF8C00' },
         { name: 'Green Sash', color: '#2ECC71' },
         { name: 'Blue Sash', color: '#1E90FF' },
-        { name: 'Brown Sash', color: '#8B4513' },
-        { name: 'Black Sash', color: '#1A1A2E' },
-        { name: 'Gold Sash (Grandmaster)', color: '#DAA520' }
+        { name: 'Red Sash (Advanced)', color: '#E74C3C' },
+        { name: 'Black Sash (Master)', color: '#1A1A2E' }
       ]
     },
-    weapons: [
-      { name: 'Gun (Staff)', icon: '🥢', description: 'The signature weapon of Shaolin monks, used in sweeping, spinning attacks and considered the foundation of weapons training.' },
-      { name: 'Dao (Broadsword)', icon: '⚔️', description: 'A curved, single-edged blade wielded with powerful chopping and slashing techniques.' },
-      { name: 'Qiang (Spear)', icon: '🔱', description: 'A long-reaching thrusting weapon that trains precision and timing at distance.' },
-      { name: 'Sanjiegun (Three-Section Staff)', icon: '⛓️', description: 'Three short sticks connected by chains, requiring exceptional coordination and dexterity.' },
-      { name: 'Jiu Jie Bian (Nine-Section Whip)', icon: '⛓️', description: 'A flexible chain weapon with nine metal segments that can wrap, strike, and entangle.' }
+    bestFor: ['Athletic youth and children', 'Agility athletes and stunt performers', 'Fighters seeking elite striking footwork'],
+    criticisms: ['Modern Taolu forms are criticized as gymnastics rather than practical combat', 'Omission of ground fighting submissions'],
+    relatedArts: {
+      influencedBy: ['Traditional Shaolin Kung Fu', 'Bajiquan', 'Tai Chi', 'Military Qin Na'],
+      evolvedInto: ['Modern Olympic Wushu', 'Professional Combat Sanda']
+    },
+    famousPractitioners: ['Jet Li (5-time National Champion)', 'Donnie Yen', 'Wu Jing', 'Cung Le (Sanda World Champion)'],
+    description: 'Wushu is the modern exhibition and full-contact combat sport derived from traditional Chinese martial arts.',
+    history: 'Codified in 1949 by the Chinese government to unify traditional fighting styles into a standardized athletic discipline.'
+  },
+
+  muaythai: {
+    id: 'muaythai',
+    name: 'Muay Thai',
+    icon: '🥊',
+    color: '#F4A261',
+    type: 'striking',
+    origin: 'Thailand 🌍 — Evolved over 700 years from traditional battlefield combat (Muay Boran) during the Sukhothai and Ayutthaya kingdoms. Deeply shaped by Thai Buddhist spirituality, animist warrior rituals (Wai Kru Ram Muay), and royal military defense against Burmese invasions.',
+    purpose: 'Elite ring sport competition, military close-quarters combat, practical street self-defense, and supreme physical conditioning.',
+    corePrinciples: [
+      'The Art of Eight Limbs: Weaponizing fists, elbows, knees, and shins simultaneously',
+      'Unflinching aggression and forward pressure',
+      'Dominance in the standing plum clinch',
+      'Conditioning the human body into an impenetrable weapon'
     ],
-    famousPractitioners: ['Bodhidharma', 'Shi Yan Ming', 'Shi De Yang', 'Jet Li'],
-    techniqueCount: 0
+    techniquesOverview: {
+      punches: 'Heavy boxing jabs, crosses, hooks, and overhands integrated with immediate clinch entries.',
+      kicks: 'Devastating Teep (push kick) for distance control and the signature Thai Roundhouse delivered with the dense shin bone.',
+      throws: 'Plum clinch sweeps, off-balancing dumps, and catch-kick trips (judo/wrestling hip throws are illegal in ring rules).',
+      grappling: 'Supreme standing neck clinch (Thai Plum) used to control posture and deliver devastating knee strikes.',
+      locks: 'Standing arm traps inside the clinch (submissions are illegal in ring sport competition).',
+      weapons: 'Derived directly from Krabi-Krabong sword and staff battlefield weaponry.'
+    },
+    trainingMethods: [
+      'Pad Work: Grueling 5-round high-intensity striking sessions on heavy Thai pads.',
+      'Clinch Sparring: Daily prolonged neck wrestling and posture breaking rounds.',
+      'Bag Conditioning: Thousands of repeated heavy bag kicks to deaden shin nerves.',
+      'Roadwork: 10km daily running combined with jump rope to build elite cardio base.'
+    ],
+    competition: 'Governed by IFMA and stadium commissions (Lumpinee, Rajadamnern). Fought in 5 three-minute rounds. Matches are scored heavily on visible damage, balance composure under fire, and clean landing of kicks/knees.',
+    effectiveness: {
+      selfDefense: 'Elite (Unmatched standing striking velocity, clinch dominance, and physical toughness).',
+      mma: 'Mandatory / Elite (The undisputed gold standard for standing striking in modern MMA).',
+      street: 'Very High (Elbows and knees end close-quarters altercations instantly).',
+      fitness: 'Elite ( Burns up to 1,000 calories an hour; builds forged core and leg bone density).'
+    },
+    physicalBenefits: ['Increased cortical bone density in shins', 'Titan core rotational strength', 'Elite anaerobic lactic acid threshold', 'Razor hip mobility'],
+    mentalBenefits: ['Absolute pain tolerance', 'Unshakeable composure under fire', 'Humility and spiritual respect'],
+    weapons: [],
+    rankingSystem: {
+      type: 'mongkhon (armband/headband)',
+      ranks: [
+        { name: 'White Mongkhon (Beginner)', color: '#FFFFFF' },
+        { name: 'Yellow Mongkhon', color: '#FFD700' },
+        { name: 'Green Mongkhon', color: '#2ECC71' },
+        { name: 'Blue Mongkhon', color: '#1E90FF' },
+        { name: 'Red Mongkhon (Fighter)', color: '#E74C3C' },
+        { name: 'Gold / Silver Mongkhon (Master Kru)', color: '#DAA520' }
+      ]
+    },
+    bestFor: ['People seeking highly practical self-defense', 'Competitive combat athletes', 'Anyone wanting extreme fitness transformation'],
+    criticisms: ['Lack of ground grappling and submission defense', 'High physical wear and tear during hard camps'],
+    relatedArts: {
+      influencedBy: ['Muay Boran', 'Krabi-Krabong', 'Lethwei', 'Western Boxing'],
+      evolvedInto: ['Modern Dutch Kickboxing', 'One Championship Muay Thai']
+    },
+    famousPractitioners: ['Buakaw Banchamek', 'Saenchai', 'Samart Payakaroon', 'Rodtang Jitmuangnon', 'Valentina Shevchenko'],
+    description: 'Known as the "Art of Eight Limbs", Muay Thai utilizes fists, elbows, knees, and shins with devastating power.',
+    history: 'Transitioned from lethal battlefield combat into a regulated ring sport in the 1920s with the introduction of boxing gloves and timed rounds.'
+  },
+
+  taichi: {
+    id: 'taichi',
+    name: 'Tai Chi Chuan',
+    icon: '☯️',
+    color: '#A8DADC',
+    type: 'internal',
+    origin: 'China 🌍 — Developed in the 17th century in Chenjiagou village by Chen Wangting. Deeply rooted in Taoist Yin-Yang cosmology, traditional Chinese medicine (meridian flow), and Neo-Confucian internal alchemy.',
+    purpose: 'Supreme internal energy cultivation, longevity and holistic health, moving meditation, and subtle redirective self-defense (Tuishou).',
+    corePrinciples: [
+      'Four Ounces Deflect One Thousand Pounds: Overcoming brute force with soft yielding',
+      'Yin and Yang harmony: Rooting into the earth while maintaining light upper body suspension',
+      'Continuous circular spiral movement (Chan Si Jin / Silk Reeling)',
+      'Mind leads the Qi, and Qi leads the physical body'
+    ],
+    techniquesOverview: {
+      punches: 'Internal explosive palm strikes (Fa Jin) and hidden fist thrusts issued from the lower Dantian.',
+      kicks: 'Low sweeping heel kicks, separating leg snaps, and balance-testing heel stomps.',
+      throws: 'Subtle off-balancing uprooting throws utilizing the opponent\'s own forward momentum.',
+      grappling: 'Pushing Hands (Tuishou) sensitivity training to detect and neutralize incoming force.',
+      locks: 'Gentle spiral standing joint manipulations integrated into form postures.',
+      weapons: 'Mastery of Tai Chi straight sword (Jian), saber (Dao), and long bamboo fan.'
+    },
+    trainingMethods: [
+      'Zhan Zhuang: Standing post isometric meditation to build deep structural rooting.',
+      'Solo Form: Slow, continuous flowing routines practicing absolute postural alignment.',
+      'Tuishou: Two-person partner sensitivity drills to train yielding and redirection.',
+      'Fa Jin: Explosive short-range kinetic energy discharge drills.'
+    ],
+    competition: 'Features traditional form exhibition judging and Tuishou (Pushing Hands) wrestling tournaments where competitors attempt to unbalance each other outside a fixed circle.',
+    effectiveness: {
+      selfDefense: 'Moderate (Requires decades of dedicated internal mastery to apply against resisting brawlers).',
+      mma: 'Low-Moderate (Excellent balance and sensitivity, but lacks modern high-tempo striking defense).',
+      street: 'Moderate (Effective clinch uprooting if trained martially).',
+      fitness: 'High (World-renowned for lowering blood pressure, curing joint pain, and elite balance).'
+    },
+    physicalBenefits: ['Bulletproof joint lubrication', 'Superior postural balance and fall prevention', 'Deep diaphragmatic lung capacity', 'Reduced cortisol levels'],
+    mentalBenefits: ['Profound stress relief and mental clarity', 'Heightened proprioceptive mindfulness', 'Deep emotional tranquility'],
+    weapons: [
+      { name: 'Taiji Jian (Straight Sword)', icon: '🗡️', description: 'Double-edged flexible blade practicing fluid meditative thrusts.' },
+      { name: 'Taiji Fan', icon: '🪖', description: 'Concealed signaling fan making sharp snapping sounds to distract.' }
+    ],
+    rankingSystem: {
+      type: 'level / Duan',
+      ranks: [
+        { name: 'Level 1-3 (Primary Practitioner)', color: '#FFFFFF' },
+        { name: 'Level 4-6 (Intermediate Teacher)', color: '#457B9D' },
+        { name: 'Level 7-9 (Grandmaster)', color: '#1D3557' }
+      ]
+    },
+    bestFor: ['Older adults and seniors', 'Individuals recovering from physical injury or chronic stress', 'Martial artists seeking deep internal balance'],
+    criticisms: ['Often taught purely as geriatric aerobics with all combat application stripped away', 'Steep learning curve for martial application'],
+    relatedArts: {
+      influencedBy: ['Shaolin Red Boxing', 'Taoist Daoyin Breathing', 'I Ching Philosophy'],
+      evolvedInto: ['Yang, Wu, and Sun Tai Chi styles', 'Modern Aikido philosophy']
+    },
+    famousPractitioners: ['Zhang Sanfeng (Legendary Founder)', 'Chen Wangting', 'Yang Luchan (The Invincible)', 'Wu Jianquan'],
+    description: 'An internal Chinese martial art practiced for defense training, health benefits, and meditative peace.',
+    history: 'Originally a closely guarded family combat system before Yang Luchan began teaching the public and imperial guards in Beijing in the 1800s.'
+  },
+
+  sanda: {
+    id: 'sanda',
+    name: 'Sanda / Sanshou',
+    icon: '⚡',
+    color: '#457B9D',
+    type: 'striking',
+    origin: 'China 🌍 — Developed in the 1920s by the Whampoa Military Academy and modernized in the 1980s by the PLA. Shaped by military pragmatism, traditional Leitai (raised platform) bare-knuckle fighting culture, and modern sports science.',
+    purpose: 'Military close-quarters hand-to-hand combat, high-intensity kickboxing competition, and practical street self-defense.',
+    corePrinciples: [
+      'Kick, Punch, Shuai (Throw): Seamless integration of striking and reactive wrestling',
+      'Rapid takedowns executed inside a 2-second window',
+      'Platform spatial awareness (uprooting opponents off the raised Leitai)',
+      'Aggressive interception and catch-kick counters'
+    ],
+    techniquesOverview: {
+      punches: 'Crisp western boxing combinations (jabs, crosses, overhands) used to set up double-leg entries.',
+      kicks: 'Snapping side kicks to the liver, spinning back kicks, and fast roundhouses.',
+      throws: 'The absolute hallmark of Sanda: catching incoming kicks and dumping opponents instantly.',
+      grappling: 'Standing clinch takedowns (ground fighting is prohibited; referee stands fighters up instantly).',
+      locks: 'Quick standing arm drags and head-and-arm manipulations.',
+      weapons: []
+    },
+    trainingMethods: [
+      'Catch-and-Dump Drills: Endless partner repetition catching roundhouse kicks and sweeping the support leg.',
+      'Leitai Sparring: Full contact sparring on an elevated platform without ropes.',
+      'Pad & Mitt Work: High-tempo kickboxing combinations combined with sprawl conditioning.'
+    ],
+    competition: 'Fought on an elevated 8x8 meter platform without ropes (Leitai). Fighters win rounds by outscoring opponents with strikes/throws or throwing them off the platform twice.',
+    effectiveness: {
+      selfDefense: 'Very High (Teaches elite takedown defense, heavy striking, and staying on your feet).',
+      mma: 'Elite (Sanda fighters boast some of the highest striking and takedown accuracy stats in the UFC).',
+      street: 'Very High (Throwing an attacker onto hard pavement while remaining standing is decisive).',
+      fitness: 'Elite (Builds explosive core strength, titanium cardio, and extreme agility).'
+    },
+    physicalBenefits: ['Explosive reactive agility', 'Iron core rotational torque', 'Superior leg catch balance', 'High cardiovascular anaerobic capacity'],
+    mentalBenefits: ['Fearless combat aggression', 'Split-second tactical decision making', 'Confidence under fire'],
+    weapons: [],
+    rankingSystem: {
+      type: 'belt / star',
+      ranks: [
+        { name: 'Bronze Star (Novice)', color: '#CD7F32' },
+        { name: 'Silver Star (Amateur)', color: '#C0C0C0' },
+        { name: 'Gold Star (Professional Champ)', color: '#FFD700' }
+      ]
+    },
+    bestFor: ['MMA aspirants', 'Kickboxers wanting elite takedown skills', 'Self-defense seekers'],
+    criticisms: ['Absence of ground submission defense once taken down', 'Amateur gear (headgear/chest pads) can foster bad defensive habits'],
+    relatedArts: {
+      influencedBy: ['Traditional Kung Fu', 'Shuai Jiao Wrestling', 'Western Boxing', 'Muay Thai'],
+      evolvedInto: ['Modern Chinese MMA', 'Professional Kunlun Fight Kickboxing']
+    },
+    famousPractitioners: ['Cung Le', 'Zabit Magomedsharipov', 'Muslim Salikhov (King of Kung Fu)', 'Zhang Weili'],
+    description: 'The official full-contact Chinese kickboxing sport integrating heavy striking with explosive fast takedowns.',
+    history: 'Synthesized by the Chinese military to distill the most practical combat applications of traditional Kung Fu into a functional fighting system.'
+  },
+
+  shaolin: {
+    id: 'shaolin',
+    name: 'Shaolin Kung Fu',
+    icon: '📿',
+    color: '#D90429',
+    type: 'hybrid',
+    origin: 'China 🌍 — Born in 495 AD at the Shaolin Monastery in Henan province. Heavily shaped by Chan (Zen) Buddhism introduced by Bodhidharma (Da Mo), Indian yogic breathing, and monastic defense against bandits.',
+    purpose: 'Spiritual enlightenment through extreme physical hardship, monastic self-defense, preservation of animal combat mechanics, and cultural heritage.',
+    corePrinciples: [
+      'Chan Wu He Yi: Zen meditation and martial combat are inseparable one entity',
+      'Hard and Soft integration: Iron body conditioning combined with fluid animal adaptability',
+      'Explosive force generated from low rooted horse stances',
+      'Cultivation of the Three Treasures: Jing (essence), Qi (breath), Shen (spirit)'
+    ],
+    techniquesOverview: {
+      punches: 'Tiger claw tearing strikes, leopard knuckle thrusts, snake finger jabs, and iron fist punches.',
+      kicks: 'Monastic sweeping iron broom kicks, flying crane stomps, and piercing side kicks.',
+      throws: 'Traditional Chin Na takedowns, leg sweeps, and hip throws.',
+      grappling: 'Standing joint locking and pressure point manipulation (Dian Xue).',
+      locks: 'Advanced 72 Chin Na seizing and locking techniques.',
+      weapons: 'Renowned worldwide for Shaolin staff (Gun), twin broadswords, chain whip, and Bodhidharma cane.'
+    },
+    trainingMethods: [
+      '72 Arts of Shaolin: Extreme conditioning including finger punching trees and head-butt conditioning.',
+      'Animal Forms: Mastering the spirit and mechanics of Dragon, Tiger, Leopard, Snake, and Crane.',
+      'Meihua Zhuang: Balancing and fighting atop tall wooden plum blossom poles.',
+      'Meditation: Hours of seated Chan meditation to achieve indomitable mental silence.'
+    ],
+    competition: 'Traditional exhibition tournaments judging authentic form execution, weapon mastery, and traditional Leitai combat matches.',
+    effectiveness: {
+      selfDefense: 'High (Extreme physical conditioning and striking versatility).',
+      mma: 'Moderate (Requires adaptation to modern rulesets, but provides elite kicking and discipline).',
+      street: 'High (Unflinching pain tolerance and lethal dirty boxing/joint locks).',
+      fitness: 'Elite (Develops superhuman functional tendon strength, flexibility, and iron bone density).'
+    },
+    physicalBenefits: ['Superhuman tendon elasticity', 'Iron bone conditioning', 'Unmatched full-body spatial coordination', 'Extreme longevity'],
+    mentalBenefits: ['Indomitable willpower', 'Absolute emotional control', 'Deep spiritual mindfulness and humility'],
+    weapons: [
+      { name: 'Shaolin Staff (Gun)', icon: '🪵', description: 'The premier monastic weapon used to disarm blades without killing.' },
+      { name: 'Jiujiebian (9-Section Whip)', icon: '⛓️', description: 'Metal segmented chain whip spun at lethal velocities.' }
+    ],
+    rankingSystem: {
+      type: 'monastic disciple generation',
+      ranks: [
+        { name: 'Secular Disciple (Su Jia Di Zi)', color: '#FFFFFF' },
+        { name: 'Monastic Disciple', color: '#F4A261' },
+        { name: 'Shaolin Warrior Monk (Wu Seng)', color: '#D90429' },
+        { name: 'Abbot Grandmaster', color: '#FFD700' }
+      ]
+    },
+    bestFor: ['Traditional martial arts enthusiasts', 'Individuals seeking profound mental discipline', 'Action performers'],
+    criticisms: ['Too vast and complex; takes decades to achieve fighting proficiency', 'Commercialization of modern monastic tourism'],
+    relatedArts: {
+      influencedBy: ['Indian Kalaripayattu', 'Traditional Chinese Archery & Wrestling'],
+      evolvedInto: ['Okinawan Karate', 'Wing Chun', 'Hung Gar', 'Wushu']
+    },
+    famousPractitioners: ['Bodhidharma', 'General Yue Fei', 'Shi De Yang', 'Shi Yan Ming'],
+    description: 'The legendary cradle of Chinese martial arts, famous for its animal forms, iron conditioning, and Zen philosophy.',
+    history: 'Shaolin monks historically served as imperial elite warriors, famously saving Emperor Taizong during the Tang Dynasty.'
   },
 
   judo: {
     id: 'judo',
     name: 'Judo',
-    origin: 'Japan',
     icon: '🥋',
-    color: '#2E86AB',
+    color: '#1D3557',
     type: 'grappling',
-    description: 'Judo, meaning "the gentle way," is a modern Japanese martial art and Olympic sport created by Jigoro Kano in 1882. It focuses on throwing opponents to the ground with maximum efficiency and minimum effort, followed by pins, joint locks, and chokes for submission. Judo\'s emphasis on randori (free sparring) and its philosophy of mutual welfare and benefit have made it one of the most widely practiced martial arts in the world.',
-    history: 'Jigoro Kano founded Judo in 1882 at the Kodokan in Tokyo, synthesizing techniques from various jujutsu schools—primarily Tenjin Shin\'yo-ryu and Kito-ryu. Kano removed the most dangerous techniques to create a safe yet effective system that could be practiced at full intensity. Judo became the first Asian martial art admitted to the Olympic Games in 1964 at the Tokyo Olympics. The International Judo Federation now boasts over 200 member nations, making Judo one of the most globally practiced combat sports.',
-    characteristics: [
-      'Emphasis on throws (nage-waza) using leverage and timing',
-      'Ground techniques (ne-waza) including pins, locks, and chokes',
-      'Randori (free sparring) as primary training method',
-      'Standardized competition rules under IJF governance',
-      'Ukemi (breakfall) training for safe falling',
-      'Gi (judogi) grip fighting as tactical foundation'
+    origin: 'Japan 🌍 — Founded in 1882 in Tokyo by Jigoro Kano. Created by stripping lethal battlefield strikes from traditional Tenjin Shinyo-ryu and Kito-ryu Jujutsu, replacing them with scientific pedagogical physics and Neo-Confucian moral education.',
+    purpose: 'Olympic athletic competition, supreme self-defense grappling, physical education, and character development.',
+    corePrinciples: [
+      'Seiryoku Zenyo: Maximum efficiency with minimum physical effort',
+      'Jita Kyoei: Mutual welfare and benefit for all society',
+      'Kuzushi: The absolute prerequisite of breaking the opponent\'s structural balance before throwing',
+      'Yielding to overcome brute pushing or pulling'
     ],
-    keyPrinciples: [
-      'Seiryoku Zenyo—maximum efficiency with minimum effort',
-      'Jita Kyoei—mutual welfare and benefit',
-      'Use the opponent\'s force and momentum against them',
-      'Kuzushi (breaking balance) precedes every technique',
-      'Continuous improvement through disciplined practice'
+    techniquesOverview: {
+      punches: 'Strikes (Atemi-waza) are strictly limited to advanced preset forms (Kata) and forbidden in sparring.',
+      kicks: 'Leg sweeps and reaping trips (Ashi-waza) used to remove the opponent\'s base.',
+      throws: 'The undisputed king of jacket throws: explosive shoulder throws (Seoi Nage), hip sweeps, and sacrifice throws.',
+      grappling: 'Elite ground pinning (Osaekomi), scarf holds, and top heavy control.',
+      locks: 'Armbars (Juji-Gatame) and Kimura shoulder locks (leg locks are illegal in Olympic rules).',
+      weapons: 'Disarming defenses taught exclusively in self-defense Kata (Kime-no-kata).'
+    },
+    trainingMethods: [
+      'Randori: High-intensity daily live sparring rounds against full resistance.',
+      'Uchi-komi: Thousands of rapid repetitive throw entry fitting drills without completing the dump.',
+      'Ukemi: Extensive daily breakfall conditioning to absorb high-impact throws safely on the tatami.'
     ],
+    competition: 'A premier Olympic sport. Matches are won instantly by executing a perfect flat-back throw (Ippon), holding a ground pin for 20 seconds, or forcing a submission via choke or armbar.',
+    effectiveness: {
+      selfDefense: 'Elite (Throwing an attacker onto hard concrete while wearing a winter jacket is devastating).',
+      mma: 'Very High (Elite clinch balance, trips, and submission transitions; famously utilized by Ronda Rousey).',
+      street: 'Very High (Dominates standing brawls; standing chokes end fights quickly).',
+      fitness: 'Elite (Develops freakish grip strength, explosive posterior chain power, and iron anaerobic cardio).'
+    },
+    physicalBenefits: ['Superhuman Gi grip strength', 'Titan explosive hip velocity', 'Indestructible fall-absorption reflexes', 'Deep core stability'],
+    mentalBenefits: ['Humility and respect', 'Extreme mental resilience under crushing pressure', 'Calm strategic problem solving'],
+    weapons: [],
     rankingSystem: {
-      type: 'belt',
+      type: 'belt / Dan',
       ranks: [
-        { name: 'White Belt (6th Kyu)', color: '#FFFFFF' },
-        { name: 'Yellow Belt (5th Kyu)', color: '#FFD700' },
-        { name: 'Orange Belt (4th Kyu)', color: '#FF8C00' },
-        { name: 'Green Belt (3rd Kyu)', color: '#2ECC71' },
-        { name: 'Blue Belt (2nd Kyu)', color: '#1E90FF' },
-        { name: 'Brown Belt (1st Kyu)', color: '#8B4513' },
-        { name: 'Black Belt (1st-5th Dan)', color: '#1A1A2E' },
-        { name: 'Red and White Belt (6th-8th Dan)', color: '#E74C3C' }
+        { name: 'White Belt (Beginner)', color: '#FFFFFF' },
+        { name: 'Yellow / Orange / Green Belt', color: '#2ECC71' },
+        { name: 'Blue / Brown Belt', color: '#1E90FF' },
+        { name: 'Black Belt (1st - 5th Dan)', color: '#1A1A2E' },
+        { name: 'Red and White Belt (6th - 8th Dan Master)', color: '#E74C3C' },
+        { name: 'Solid Red Belt (9th - 10th Dan Grandmaster)', color: '#D90429' }
       ]
     },
-    weapons: [],
-    famousPractitioners: ['Jigoro Kano', 'Masahiko Kimura', 'Yasuhiro Yamashita', 'Teddy Riner'],
-    techniqueCount: 0
+    bestFor: ['Children and youth (best foundational martial art)', 'Grapplers and MMA fighters', 'Anyone wanting elite self-defense'],
+    criticisms: ['Modern Olympic rules have banned leg grabs (double legs), reducing street realism', 'Hard impact on knees and lower back over time'],
+    relatedArts: {
+      influencedBy: ['Traditional Japanese Jujutsu', 'Sumo'],
+      evolvedInto: ['Brazilian Jiu-Jitsu', 'Russian Sambo', 'Kudo']
+    },
+    famousPractitioners: ['Jigoro Kano', 'Masahiko Kimura', 'Yasuhiro Yamashita', 'Shohei Ono', 'Teddy Riner', 'Ronda Rousey'],
+    description: 'The premier Olympic jacket-grappling art emphasizing explosive throws, pinning, and joint locks.',
+    history: 'Famously proved its superiority over traditional Jujutsu at the legendary 1886 Tokyo Police tournament.'
   },
 
   bjj: {
     id: 'bjj',
     name: 'Brazilian Jiu-Jitsu',
-    origin: 'Brazil',
-    icon: '🤼',
-    color: '#6C5CE7',
+    icon: '🤙',
+    color: '#2A9D8F',
     type: 'grappling',
-    description: 'Brazilian Jiu-Jitsu (BJJ) is a ground-fighting martial art that emphasizes positional control and submission techniques, enabling a smaller practitioner to defeat a larger opponent through leverage and technique. Born from the Gracie family\'s adaptation of Japanese Judo and Jujutsu, BJJ revolutionized modern combat sports and proved its effectiveness in the early UFC tournaments. It is now considered an essential component of any complete mixed martial arts skillset.',
-    history: 'BJJ traces its lineage to Mitsuyo Maeda, a Kodokan Judo expert who emigrated to Brazil in 1914 and taught his art to Carlos Gracie and his brothers. The Gracie family, particularly Helio Gracie, refined the techniques with an emphasis on ground fighting and leverage-based submissions suitable for smaller practitioners. Royce Gracie\'s dominant performances in the first UFC events in 1993 shocked the martial arts world and proved BJJ\'s effectiveness against larger, stronger opponents from other disciplines. Today, BJJ is practiced in virtually every country with a thriving competition scene under organizations like the IBJJF.',
-    characteristics: [
-      'Dominant positional control on the ground (mount, back, guard)',
-      'Submission techniques: chokes, joint locks, and compression locks',
-      'Guard play—fighting effectively from the bottom position',
-      'Gi and No-Gi variations with distinct strategies',
-      'Rolling (live sparring) as the primary training method',
-      'Emphasis on technique and leverage over strength and size'
+    origin: 'Brazil 🌍 — Evolved in Belem and Rio de Janeiro in the 1920s by Carlos and Helio Gracie, modified from Mitsuyo Maeda\'s Kodokan Judo ground fighting (Newaza). Shaped by Brazilian Vale Tudo no-holds-barred street challenge culture.',
+    purpose: 'Supreme ground submission grappling, specialized self-defense against larger attackers, and modern combat sport.',
+    corePrinciples: [
+      'Position before Submission: Achieving dominant control before attacking joints or neck',
+      'Leverage overcomes brute strength and size disadvantages',
+      'The Guard: Weaponizing your back on the floor to sweep or submit standing opponents',
+      'Continuous pressure and energy conservation'
     ],
-    keyPrinciples: [
-      'Position before submission—establish control first',
-      'Use leverage and frames to overcome size and strength',
-      'Every position has an escape, sweep, or submission',
-      'Flow with resistance rather than fight against it',
-      'Constant problem-solving and adaptation'
+    techniquesOverview: {
+      punches: 'Strikes are omitted in sport grappling, but taught in traditional Gracie self-defense curricula.',
+      kicks: 'Up-kicks from guard and foot sweeps.',
+      throws: 'Wrestling single/double legs, guard pulls, and judo trips.',
+      grappling: 'The undisputed pinnacle of ground grappling: guard passing, side control, mount, and back control.',
+      locks: 'Comprehensive joint destruction: heel hooks, kneebars, kimuras, armbars, and wristlocks.',
+      weapons: 'Basic gun and knife disarms included in traditional self-defense courses.'
+    },
+    trainingMethods: [
+      'Rolling (Live Sparring): 5 to 10 minute continuous high-intensity submission sparring rounds.',
+      'Positional Sparring: Starting from specific bad positions (e.g. escaping bottom mount) against resistance.',
+      'Drilling: Repetitive technical sequence practicing.'
     ],
+    competition: 'Governed by IBJJF and ADCC. Competed in Gi and No-Gi attire. Won by forcing an immediate tapout via choke/lock or accumulating points via dominant position advances (guard passes, mounts).',
+    effectiveness: {
+      selfDefense: 'Elite (Once a fight hits the ground, an untrained attacker is helpless against a BJJ practitioner).',
+      mma: 'Mandatory / Elite (The foundational backbone of modern MMA; Royce Gracie shocked the world at UFC 1).',
+      street: 'High (Supreme 1v1 control, though staying on the ground against multiple attackers is dangerous).',
+      fitness: 'High (Develops elite functional isometric strength, intense cardio, and supreme flexibility).'
+    },
+    physicalBenefits: ['Insane core isometric endurance', 'Razor hip dexterity and flexibility', 'Full-body functional torque', 'High metabolic conditioning'],
+    mentalBenefits: ['Ego destruction and profound humility', 'Chess-like tactical calm under extreme claustrophobia', 'High addiction to learning'],
+    weapons: [],
     rankingSystem: {
-      type: 'belt',
+      type: 'belt / stripe',
       ranks: [
         { name: 'White Belt', color: '#FFFFFF' },
-        { name: 'Blue Belt', color: '#1E90FF' },
-        { name: 'Purple Belt', color: '#9B59B6' },
-        { name: 'Brown Belt', color: '#8B4513' },
-        { name: 'Black Belt', color: '#1A1A2E' },
-        { name: 'Red and Black Belt (Coral)', color: '#E74C3C' },
-        { name: 'Red Belt (Grandmaster)', color: '#C0392B' }
+        { name: 'Blue Belt (Technical Competence)', color: '#1E90FF' },
+        { name: 'Purple Belt (Advanced Conceptual Flow)', color: '#8A2BE2' },
+        { name: 'Brown Belt (Refinement)', color: '#8B4513' },
+        { name: 'Black Belt (Mastery — takes ~10 years)', color: '#1A1A2E' },
+        { name: 'Coral / Red Belt (Grandmaster)', color: '#D90429' }
       ]
     },
-    weapons: [],
-    famousPractitioners: ['Helio Gracie', 'Royce Gracie', 'Marcelo Garcia', 'Gordon Ryan'],
-    techniqueCount: 0
+    bestFor: ['Smaller individuals seeking realistic self-defense', 'Problem solvers and chess lovers', 'MMA aspirants'],
+    criticisms: ['Modern sport BJJ has developed unrealistic guard-pulling habits unsuitable for street brawls or MMA strikes', 'Lack of standing takedown emphasis in many schools'],
+    relatedArts: {
+      influencedBy: ['Kodokan Judo (Newaza)', 'Catch Wrestling'],
+      evolvedInto: ['10th Planet BJJ', 'Modern No-Gi Submission Grappling']
+    },
+    famousPractitioners: ['Helio Gracie', 'Rickson Gracie', 'Marcelo Garcia', 'Roger Gracie', 'Gordon Ryan', 'Charles Oliveira'],
+    description: 'A specialized ground-grappling art focusing on joint locks, chokeholds, and defeating larger opponents through leverage.',
+    history: 'Created when Helio Gracie, physically frail as a youth, adapted Judo techniques to rely entirely on mechanical leverage rather than athletic strength.'
   },
 
   aikido: {
     id: 'aikido',
     name: 'Aikido',
-    origin: 'Japan',
-    icon: '🌀',
-    color: '#00B894',
+    icon: '🕊️',
+    color: '#E9C46A',
     type: 'grappling',
-    description: 'Aikido is a Japanese martial art created by Morihei Ueshiba that focuses on harmonizing with an attacker\'s energy and redirecting it through flowing throws and joint locks. Often called "the way of harmony with spirit," Aikido uniquely seeks to neutralize aggression without causing unnecessary harm to the attacker. Its circular movements and emphasis on blending make it one of the most philosophically rich martial arts ever developed.',
-    history: 'Morihei Ueshiba (1883-1969), known as O-Sensei, developed Aikido from his extensive training in Daito-ryu Aiki-jujutsu under Sokaku Takeda, combined with his deep spiritual beliefs in the Omoto-kyo religion. Ueshiba formally established Aikido in the 1920s-1930s, seeking to create a martial art that could defend effectively while also protecting the attacker. After World War II, the Aikikai Foundation was established in Tokyo to spread Aikido worldwide. Today, Aikido is practiced in over 140 countries, though it remains a topic of debate regarding its practical combat effectiveness.',
-    characteristics: [
-      'Circular, flowing movements that redirect attacking energy',
-      'Joint locks (kansetsu-waza) applied with minimal force',
-      'Throws that use the attacker\'s momentum against them',
-      'Ukemi (falling techniques) essential for safe practice',
-      'No competitive sparring in most traditional schools',
-      'Weapons training with jo (staff), bokken (wooden sword), and tanto (knife)'
+    origin: 'Japan 🌍 — Synthesized in the late 1920s and 1930s by Morihei Ueshiba (O-Sensei) from Daito-ryu Aiki-jujutsu, traditional Kenjutsu (sword footwork), and the pacifist spiritual teachings of the Omoto-kyo Shinto religion.',
+    purpose: 'Pacifist self-defense (neutralizing aggression without causing permanent injury), spiritual harmony, and blending energy.',
+    corePrinciples: [
+      'Masakatsu Agatsu: True victory is absolute victory over oneself',
+      'Entering (Irimi) and Turning (Tenkan) to blend seamlessly with the attacker\'s kinetic trajectory',
+      'Non-resistance: Never clashing force against incoming force',
+      'Protecting the attacker from their own destructive violence'
     ],
-    keyPrinciples: [
-      'Harmony (Ai)—blend with the attacker, do not oppose force',
-      'Enter and turn (Irimi and Tenkan)—the two fundamental movements',
-      'Protect both yourself and your attacker',
-      'Ki (internal energy) flows through relaxed technique',
-      'True victory is victory over oneself (Masakatsu Agatsu)'
+    techniquesOverview: {
+      punches: 'Strikes (Atemi) are used purely as feints to distract the opponent and open joint locking angles.',
+      kicks: 'Low sweeping distractions.',
+      throws: 'Circular wrist-turn throws (Shihonage), breath throws (Kokyunage), and rotary projections.',
+      grappling: 'Standing wrist locks, elbow pinning (Nikyo), and shoulder pins (ground fighting is omitted).',
+      locks: 'Intricate standing wrist and elbow manipulations (Ikkyo, Sankyo, Kotegaeshi).',
+      weapons: 'Extensive traditional training with wooden sword (Bokken), staff (Jo), and wooden knife (Tanto).'
+    },
+    trainingMethods: [
+      'Kata & Partner Practice: Tori (defender) executes fluid redirective locks against preset attacks from Uke.',
+      'Aiki-Ken & Aiki-Jo: Weapons choreography practicing distance and cutting angles.',
+      'Ukemi: High-speed rolling breakfalls.'
+    ],
+    competition: 'Traditional Aikido strictly prohibits competitive tournaments, as O-Sensei believed competition fostered ego and aggression. (Tomiki Aikido is the sole exception with sparring rules).',
+    effectiveness: {
+      selfDefense: 'Low-Moderate (Highly effective against committed, off-balance lunging grabs, but struggles against fast modern boxing combinations).',
+      mma: 'Low (Lacks striking defense and ground grappling; though joint manipulations are conceptually useful).',
+      street: 'Moderate (Great for law enforcement restraining uncooperative subjects without striking them).',
+      fitness: 'Moderate (Develops supreme wrist flexibility, graceful posture, and low-impact cardio).'
+    },
+    physicalBenefits: ['Extreme wrist and shoulder joint mobility', 'Flawless posture and dynamic balance', 'Graceful spatial reflexes'],
+    mentalBenefits: ['Profound emotional tranquility', 'De-escalation mindset', 'Deep spiritual empathy'],
+    weapons: [
+      { name: 'Bokken (Wooden Katana)', icon: '🗡️', description: 'Used to teach cutting trajectories and center-line defense.' },
+      { name: 'Jo (Wooden Staff)', icon: '🪵', description: 'Short staff practicing thrusting and parrying.' }
     ],
     rankingSystem: {
-      type: 'dan',
+      type: 'belt / Hakama (traditional pleated trousers)',
       ranks: [
-        { name: '6th Kyu (White Belt)', color: '#FFFFFF' },
-        { name: '5th Kyu', color: '#FFD700' },
-        { name: '4th Kyu', color: '#FF8C00' },
-        { name: '3rd Kyu', color: '#2ECC71' },
-        { name: '2nd Kyu', color: '#1E90FF' },
-        { name: '1st Kyu (Brown Belt)', color: '#8B4513' },
-        { name: 'Shodan (1st Dan Black Belt)', color: '#1A1A2E' },
-        { name: 'Yondan+ (Senior Dan)', color: '#4A0E4E' }
+        { name: 'White Belt (Kyu ranks)', color: '#FFFFFF' },
+        { name: 'Black Belt & Black Hakama (1st Dan+)', color: '#1A1A2E' }
       ]
     },
-    weapons: [
-      { name: 'Jo (Short Staff)', icon: '🥢', description: 'A 128cm wooden staff used in flowing, circular striking and thrusting patterns called jo-kata.' },
-      { name: 'Bokken (Wooden Sword)', icon: '⚔️', description: 'A wooden training sword modeled after the katana, used to teach cutting angles and distance management.' },
-      { name: 'Tanto (Wooden Knife)', icon: '🔪', description: 'A wooden training knife used to practice defense against close-range blade attacks.' }
-    ],
-    famousPractitioners: ['Morihei Ueshiba', 'Koichi Tohei', 'Steven Seagal', 'Christian Tissier'],
-    techniqueCount: 0
+    bestFor: ['Law enforcement and security personnel', 'Older adults seeking graceful non-violent movement', 'Philosophical martial artists'],
+    criticisms: ['Over-reliance on compliant, choreographed training partners (Uke)', 'Inability to handle non-committed feinting jabs or double-leg takedowns'],
+    relatedArts: {
+      influencedBy: ['Daito-ryu Aiki-jujutsu', 'Kenjutsu', 'Spear fighting'],
+      evolvedInto: ['Yoshinkan Aikido', 'Shodokan / Tomiki Aikido']
+    },
+    famousPractitioners: ['Morihei Ueshiba', 'Kisshomaru Ueshiba', 'Gozo Shioda', 'Steven Seagal'],
+    description: 'A peaceful Japanese martial art using circular redirection and wrist locks to neutralize attackers unharmed.',
+    history: 'O-Sensei created Aikido after having a profound spiritual awakening where he realized the true purpose of Budo is love and protection of all life.'
   },
 
   capoeira: {
     id: 'capoeira',
     name: 'Capoeira',
-    origin: 'Brazil',
-    icon: '🎵',
-    color: '#FDCB6E',
-    type: 'striking',
-    description: 'Capoeira is a uniquely Brazilian martial art that seamlessly blends fighting, acrobatics, music, and dance into a vibrant cultural expression. Developed by enslaved Africans in Brazil, it disguises devastating kicks and sweeps within fluid, dance-like movements performed inside a circle called the roda. Recognized by UNESCO as an Intangible Cultural Heritage of Humanity, Capoeira is as much a celebration of resilience and community as it is a fighting system.',
-    history: 'Capoeira was created by enslaved Africans in Brazil during the 16th century as a means of self-defense disguised as dance and play to avoid detection by slave owners. After the abolition of slavery in 1888, Capoeira was criminalized and driven underground until Mestre Bimba founded the first official academy in Salvador, Bahia, in 1932, creating the faster "Regional" style. Mestre Pastinha preserved the traditional "Angola" style, emphasizing the art\'s African roots and ritualistic elements. In 2014, UNESCO inscribed the Roda de Capoeira on its Representative List of the Intangible Cultural Heritage of Humanity.',
-    characteristics: [
-      'Fluid, dance-like movements blending combat and acrobatics',
-      'The Roda—a circle of players who sing, clap, and take turns sparring',
-      'Live musical accompaniment with berimbau, pandeiro, and atabaque',
-      'Ginga—the fundamental swaying movement that is the base of all techniques',
-      'Emphasis on evasion, deception, and improvisation',
-      'Two main styles: Capoeira Angola (traditional) and Regional (modern)'
+    icon: '🤸',
+    color: '#F4A261',
+    type: 'hybrid',
+    origin: 'Brazil 🌍 — Created in the 16th century by enslaved Africans in colonial Brazil (principally from Angola and Congo). Disguised as an exuberant acrobatic dance to hide lethal martial combat training from brutal colonial slave drivers.',
+    purpose: 'Liberation self-defense, deceptive street combat, acrobatic athletic expression, and Afro-Brazilian cultural community.',
+    corePrinciples: [
+      'Malicia: Street cunning, deception, and unpredictability',
+      'Constant swaying rhythmic movement (The Ginga)',
+      'Escaping attacks through low evasive ground ducks rather than blocking with arms',
+      'Music (Berimbau bow) dictates the speed and violence of the game'
     ],
-    keyPrinciples: [
-      'Malicia—cunning, trickery, and unpredictability in movement',
-      'Mandinga—the mystical, playful energy of the game',
-      'Community and connection through the roda',
-      'Music guides the rhythm, intensity, and spirit of the game',
-      'Express yourself—every capoeirista develops a unique style'
+    techniquesOverview: {
+      punches: 'Hand strikes are rare; hands are used primarily as structural base on the ground for inverted kicks.',
+      kicks: 'Devastating spinning heel kicks (Meia Lua de Compasso), whipping roundhouses (Martelo), and inverted handstand stomps.',
+      throws: 'Vicious sweeping leg scissors (Tesoura) and head-butt takedowns executed from low postures.',
+      grappling: 'Evasive ground tripping and sweeping.',
+      locks: [],
+      weapons: 'Historically practiced razor-sharp machete (Maculele) and straight razors held between the toes.'
+    },
+    trainingMethods: [
+      'Roda (The Circle): Two Capoeiristas play/fight inside a singing circle of percussionists.',
+      'Ginga Conditioning: Endless repetitive rhythmic stepping to forge iron quads and core.',
+      'Acrobatic Drilling: Handstands (Bananeira), cartwheels (Au), and headspins.'
+    ],
+    competition: 'Competed inside the traditional Roda. Judged on acrobatic fluidity, deceptive cunning (tricking the opponent into falling), and clean execution of sweeping takedowns.',
+    effectiveness: {
+      selfDefense: 'Moderate-High (Unpredictable kicking angles and extreme leg power generate lethal force).',
+      mma: 'Moderate (Famously used by Conor McGregor and Marcus "Buchecha" for unorthodox kicking setups).',
+      street: 'High (Meia Lua de Compasso is widely regarded as one of the hardest hitting kicks in martial arts).',
+      fitness: 'Elite (Unmatched full-body calisthenic workout; builds superhuman core and shoulder stamina).'
+    },
+    physicalBenefits: ['Freakish core and upper-body calisthenic strength', 'Extreme dynamic hip flexibility', 'Supreme rhythmic spatial agility'],
+    mentalBenefits: ['Deep joyous community connection', 'High creative adaptability', 'Street deception awareness'],
+    weapons: [
+      { name: 'Facao (Machete)', icon: '🔪', description: 'Traditional Maculele stick/blade dancing.' },
+      { name: 'Navalha (Straight Razor)', icon: '🪒', description: 'Historically concealed in hands or feet during street fights.' }
     ],
     rankingSystem: {
-      type: 'belt',
+      type: 'corda (colored rope belt)',
       ranks: [
-        { name: 'Crua (Raw/Beginner)', color: '#FFFFFF' },
-        { name: 'Cordao Amarelo (Yellow)', color: '#FFD700' },
-        { name: 'Cordao Laranja (Orange)', color: '#FF8C00' },
-        { name: 'Cordao Azul (Blue)', color: '#1E90FF' },
-        { name: 'Cordao Verde (Green)', color: '#2ECC71' },
-        { name: 'Cordao Roxa (Purple)', color: '#9B59B6' },
-        { name: 'Cordao Marrom (Brown)', color: '#8B4513' },
-        { name: 'Mestre (Master)', color: '#FFFFFF' }
+        { name: 'Green Corda (Beginner)', color: '#2ECC71' },
+        { name: 'Yellow / Blue Corda (Advanced)', color: '#1E90FF' },
+        { name: 'White Corda (Mestre Grandmaster)', color: '#FFFFFF' }
       ]
     },
-    weapons: [],
-    famousPractitioners: ['Mestre Bimba', 'Mestre Pastinha', 'Mestre Joao Grande', 'Lateef Crowder'],
-    techniqueCount: 0
+    bestFor: ['Acrobats and dancers', 'Fighters seeking unpredictable kicking mechanics', 'Anyone wanting vibrant community fitness'],
+    criticisms: ['Wide open stance leaves chin exposed to straight western boxing punches', 'High energy expenditure during prolonged combat'],
+    relatedArts: {
+      influencedBy: ['African Engolo / Nolo kicking games'],
+      evolvedInto: ['Capoeira Angola (Traditional slow/low)', 'Capoeira Regional (Fast acrobatic combat)']
+    },
+    famousPractitioners: ['Mestre Bimba', 'Mestre Pastinha', 'Besouro Manganga', 'Anderson Silva', 'Buchecha'],
+    description: 'An Afro-Brazilian martial art combining breathtaking dance acrobatics, music, and deceptive spinning kicks.',
+    history: 'Outlawed in Brazil until 1930; legendary fighters like Besouro used it to battle colonial police.'
   },
 
   shuaijiao: {
     id: 'shuaijiao',
     name: 'Shuai Jiao',
-    origin: 'China',
-    icon: '🤸',
-    color: '#A29BFE',
+    icon: '🤼',
+    color: '#E76F51',
     type: 'grappling',
-    description: 'Shuai Jiao is the oldest known Chinese martial art and one of the world\'s oldest wrestling systems, with roots stretching back over 4,000 years. Focused on throws, takedowns, and trips performed while standing, it emphasizes the use of a short jacket for gripping. Shuai Jiao\'s techniques heavily influenced Judo and modern Sanda, making it a foundational grappling art of East Asian martial traditions.',
-    history: 'Shuai Jiao\'s origins can be traced to the ancient sport of Jiao Di during the Zhou Dynasty (1046-256 BC), where competitors wore horned helmets and attempted to gore each other. Over millennia, it evolved from military training into a refined wrestling art practiced in the imperial court and by the Manchu military. During the Qing Dynasty, a specialized unit called the Shanpuying was dedicated to Shuai Jiao training for the emperor\'s guard. In the 20th century, Grandmaster Chang Dongsheng, known as the "Flying Butterfly," popularized the art by defeating all challengers in national competitions and later brought Shuai Jiao to Taiwan.',
-    characteristics: [
-      'Standing throws, trips, and takedowns—no ground fighting',
-      'Jacket (Da Lian) grip fighting for leverage and control',
-      'Fast-paced matches requiring explosive speed and timing',
-      'Integration of striking set-ups into throwing techniques',
-      'Low stances and rooted footwork for stability',
-      'Over 4,000 years of continuous documented history'
+    origin: 'China 🌍 — Boasting over 4,000 years of documented history, evolving from ancient horned helmet wrestling (Jiao Di) during the Yellow Emperor\'s reign. Refined by Manchu imperial bodyguard elite (Shan Pu Ying) during the Qing Dynasty.',
+    purpose: 'Lethal battlefield jacket-wrestling, imperial bodyguard protection, and fast takedown sports competition.',
+    corePrinciples: [
+      'Throw and Remain Standing: Never committing your own body weight to the floor',
+      'Explosive short-range kinetic snapping torque',
+      'Jacket grip manipulation (utilizing heavy canvas short-sleeve uniforms)',
+      'Brutal sweeps executed in coordination with upper body steering'
     ],
-    keyPrinciples: [
-      'Control the grip, control the fight',
-      'Use the opponent\'s movement and weight against them',
-      'Timing and speed are more important than raw strength',
-      'Low center of gravity provides stability and throwing power',
-      'Every step is an opportunity for a throw'
+    techniquesOverview: {
+      punches: 'Hand strikes are illegal in sports wrestling, but open palm slaps were historically used to set up grips.',
+      kicks: 'Vicious inner/outer leg sweeps, reaping hooks, and knee blocks.',
+      throws: 'The absolute ancient ancestor of East Asian wrestling: explosive hip sweeps, leg picks, and over-the-back dumps.',
+      grappling: 'Standing jacket grip control (ground fighting is strictly prohibited; once downed, the round resets).',
+      locks: 'Standing grip breaks and arm manipulations.',
+      weapons: []
+    },
+    trainingMethods: [
+      'Stone Padlock (Shi Suo): Flipping and catching heavy granite padlocks to build monstrous grip and hip torque.',
+      'Belt Snapping: Snapping heavy leather belts against poles to forge explosive pulling power.',
+      'Live Randori: Fast, continuous standing takedown sparring.'
     ],
+    competition: 'Wrestlers wear dense short-sleeved canvas jackets (Da Gua). Matches are won by throwing the opponent clean to the mat while remaining standing on your own feet.',
+    effectiveness: {
+      selfDefense: 'Elite (Throwing an assailant onto pavement while staying on your feet is the safest street defense).',
+      mma: 'Very High (Provides elite jacket/clinch takedowns and supreme sprawl balance).',
+      street: 'Elite (Proven over millennia of Chinese street and military encounters).',
+      fitness: 'Elite (Forges iron rotational core strength, indestructible knees, and crushing grip power).'
+    },
+    physicalBenefits: ['Monstrous forearm grip strength', 'Titan explosive hip rotational power', 'Indestructible leg base rooting'],
+    mentalBenefits: ['Tenacious combative grit', 'Unwavering structural poise', 'Deep historical connection'],
+    weapons: [],
     rankingSystem: {
-      type: 'level',
+      type: 'belt / Jie',
       ranks: [
-        { name: 'Beginner (Chu Ji)', color: '#FFFFFF' },
-        { name: 'Intermediate (Zhong Ji)', color: '#A29BFE' },
-        { name: 'Advanced (Gao Ji)', color: '#6C5CE7' },
-        { name: 'Expert', color: '#4834D4' },
-        { name: 'Master (Shi Fu)', color: '#1A1A2E' },
-        { name: 'Grandmaster (Da Shi)', color: '#DAA520' }
+        { name: 'White Belt', color: '#FFFFFF' },
+        { name: 'Green / Blue Belt', color: '#1E90FF' },
+        { name: 'Black Belt (Master)', color: '#1A1A2E' }
       ]
     },
-    weapons: [],
-    famousPractitioners: ['Chang Dongsheng', 'Li Baoyu', 'Wang Wenyong', 'Zhang Baosheng'],
-    techniqueCount: 0
+    bestFor: ['Judoka and BJJ players wanting better standing takedowns', 'Law enforcement', 'Self-defense seekers'],
+    criticisms: ['Zero ground fighting submissions', 'Hard steep learning curve for jacket grip mechanics'],
+    relatedArts: {
+      influencedBy: ['Mongolian Bokh Wrestling'],
+      evolvedInto: ['Sanda takedowns', 'Japanese Jujutsu / Judo']
+    },
+    famousPractitioners: ['Grandmaster Chang Dsu Yao', 'Master Wang Wenyong', 'Grandmaster Gerard Park'],
+    description: 'Ancient Chinese jacket wrestling famous for explosive takedowns where the thrower never falls to the ground.',
+    history: 'Manchu emperors hosted massive Shuai Jiao tournaments to test the combat readiness of their elite imperial guards.'
   },
 
   karate: {
     id: 'karate',
-    name: 'Karate',
-    origin: 'Okinawa/Japan',
+    name: 'Karate (Shotokan)',
     icon: '🥋',
-    color: '#E17055',
+    color: '#D90429',
     type: 'striking',
-    description: 'Karate, meaning "empty hand," is a striking martial art that originated in the Ryukyu Kingdom (modern Okinawa) and was later popularized throughout mainland Japan. It emphasizes powerful punches, kicks, knee strikes, and elbow strikes delivered with precise body mechanics and kime (focused power). With millions of practitioners across dozens of styles worldwide, Karate made its Olympic debut at the 2020 Tokyo Games.',
-    history: 'Karate developed in Okinawa through the blending of indigenous Okinawan fighting methods (called Te or Tode) with Chinese martial arts introduced through centuries of trade with Fujian Province. The three main Okinawan cities—Shuri, Naha, and Tomari—each developed distinct fighting traditions that became the foundation of modern styles. Gichin Funakoshi introduced Karate to mainland Japan in 1922, founding Shotokan and adapting the art for Japanese culture. Today, major styles include Shotokan, Shito-ryu, Goju-ryu, and Wado-ryu, each with distinct technical philosophies.',
-    characteristics: [
-      'Powerful linear strikes with kime (focused power at point of impact)',
-      'Deep stances providing stability and power generation',
-      'Kata—pre-arranged forms containing combat applications (bunkai)',
-      'Kumite—sparring ranging from point-based to full-contact',
-      'Kiai—spirit shout used to focus energy and intimidate',
-      'Multiple distinct styles with varying emphasis on speed, power, or flow'
+    origin: 'Okinawa / Japan 🌍 — Evolved in the Ryukyu Kingdom (Okinawa) by blending indigenous island brawling (Te) with Chinese Fujian White Crane Kung Fu. Brought to mainland Japan in 1922 by Gichin Funakoshi and shaped by Samurai Bushido discipline.',
+    purpose: 'One strike knockout combat (Ikken Hisatsu), civil self-defense, Olympic sport, and character perfection.',
+    corePrinciples: [
+      'Ikken Hisatsu: To annihilate the opponent with a single decisive blow',
+      'Kime: Explosive total-body muscular locking at the exact moment of impact',
+      'Linear distance blitzing and rigid structural rooting (Zenkutsu Dachi)',
+      'Karate Ni Sente Nashi: There is no first attack in Karate (defense first mindset)'
     ],
-    keyPrinciples: [
-      'Karate begins and ends with respect (courtesy)',
-      'There is no first attack in Karate (Karate ni sente nashi)',
-      'Spirit first, technique second—indomitable will is paramount',
-      'Know yourself before knowing others',
-      'Perfection of character through lifelong training (Dojo Kun)'
+    techniquesOverview: {
+      punches: 'Devastating linear reverse punches (Gyaku Tsuki), stepping lunges (Oi Tsuki), and knife-hand strikes (Shuto).',
+      kicks: 'Snap front kicks (Mae Geri), piercing side kicks (Yoko Geri), and roundhouses (Mawashi Geri).',
+      throws: 'Nine traditional Okinawan takedowns (Funakoshi\'s Nage-waza) taught in traditional bunkai.',
+      grappling: 'Standing limb trapping and clinch sweeps.',
+      locks: 'Standing wrist and elbow breaks inside form applications.',
+      weapons: 'Traditional Okinawan Kobudo weaponry (Bo, Sai, Tonfa, Nunchaku).'
+    },
+    trainingMethods: [
+      'Kihon: Rigorous repetitive drilling of foundational punches, blocks, and stances across the dojo floor.',
+      'Kata: Choreographed solo combat forms encoding ancient self-defense principles.',
+      'Kumite: Point sparring (blitzing speed) or full-contact continuous sparring.',
+      'Makiwara: Striking padded wooden posts daily to forge iron knuckles.'
+    ],
+    competition: 'Governed by WKF (Olympic point sparring judged on lightning speed and Kime control) and full-contact knockdown organizations.',
+    effectiveness: {
+      selfDefense: 'High (Develops lethal linear punching velocity, distance management, and iron discipline).',
+      mma: 'High (Lyoto Machida and Stephen "Wonderboy" Thompson proved Karate blitz distance is lethal in UFC).',
+      street: 'High (Devastating bare-knuckle striking power).',
+      fitness: 'High (Builds explosive fast-twitch muscle fiber, rigid core posture, and mental endurance).'
+    },
+    physicalBenefits: ['Lightning fast-twitch muscular velocity', 'Iron knuckle and shin conditioning', 'Rigid core stability'],
+    mentalBenefits: ['Unshakeable Samurai Bushido etiquette', 'Absolute focus and respect', 'Extreme emotional restraint'],
+    weapons: [
+      { name: 'Bo Staff', icon: '🪵', description: 'Long wooden pole.' },
+      { name: 'Sai', icon: '🔱', description: 'Metal three-pronged truncheon used to trap Samurai swords.' }
     ],
     rankingSystem: {
-      type: 'belt',
+      type: 'belt / Kyu & Dan',
       ranks: [
         { name: 'White Belt (10th Kyu)', color: '#FFFFFF' },
-        { name: 'Yellow Belt (8th Kyu)', color: '#FFD700' },
-        { name: 'Orange Belt (7th Kyu)', color: '#FF8C00' },
-        { name: 'Green Belt (6th Kyu)', color: '#2ECC71' },
-        { name: 'Blue Belt (4th Kyu)', color: '#1E90FF' },
-        { name: 'Brown Belt (3rd-1st Kyu)', color: '#8B4513' },
-        { name: 'Black Belt (Shodan)', color: '#1A1A2E' },
-        { name: 'Red Belt (9th-10th Dan)', color: '#C0392B' }
+        { name: 'Yellow / Green / Blue / Brown Belt', color: '#8B4513' },
+        { name: 'Black Belt (1st - 10th Dan)', color: '#1A1A2E' }
       ]
     },
-    weapons: [
-      { name: 'Bo (Staff)', icon: '🥢', description: 'A six-foot wooden staff that is the most iconic Okinawan kobudo weapon, used in sweeping and thrusting attacks.' },
-      { name: 'Sai', icon: '🔱', description: 'A three-pronged metal trident used for trapping blades and delivering powerful thrusts.' },
-      { name: 'Nunchaku', icon: '⛓️', description: 'Two short sticks connected by a cord or chain, requiring speed and coordination for striking and blocking.' },
-      { name: 'Tonfa', icon: '🔧', description: 'An L-shaped wooden handle used for blocking, striking, and hooking—the ancestor of the modern police baton.' }
-    ],
-    famousPractitioners: ['Gichin Funakoshi', 'Mas Oyama', 'Lyoto Machida', 'Mikio Yahara'],
-    techniqueCount: 0
+    bestFor: ['Children seeking structural discipline', 'Striking athletes wanting explosive linear distance closure', 'Traditionalists'],
+    criticisms: ['Olympic point sparring fosters bad habits like dropping hands after striking or pulling punches', 'Rigid stances can be vulnerable to low leg kicks'],
+    relatedArts: {
+      influencedBy: ['Fujian White Crane Kung Fu', 'Okinawan Te'],
+      evolvedInto: ['Kyokushin', 'Taekwondo', 'Tang Soo Do', 'American Kickboxing']
+    },
+    famousPractitioners: ['Gichin Funakoshi', 'Mas Oyama', 'Lyoto Machida', 'Stephen Thompson', 'Georges St-Pierre'],
+    description: 'The iconic linear Japanese striking art famous for deep rooted stances, explosive blitzing punches, and Kata.',
+    history: 'Originally developed in secret by Okinawan islanders after weapon bans were imposed by Japanese invading Samurai.'
   },
 
   taekwondo: {
     id: 'taekwondo',
     name: 'Taekwondo',
-    origin: 'Korea',
-    icon: '🦶',
-    color: '#0984E3',
+    icon: '🦵',
+    color: '#00A896',
     type: 'striking',
-    description: 'Taekwondo, meaning "the way of the foot and fist," is Korea\'s most famous martial art and an Olympic sport since 2000. Renowned for its spectacular high kicks, spinning techniques, and dynamic footwork, Taekwondo places primary emphasis on kicking as the longest and most powerful weapon of the body. With over 80 million practitioners in 210 countries, it is one of the most widely practiced martial arts on Earth.',
-    history: 'Taekwondo was developed in the 1940s and 1950s by several Korean martial artists who had studied Japanese Karate during the occupation period, combined with influences from traditional Korean kicking arts like Taekkyeon. General Choi Hong Hi is often credited as the founder, establishing the name "Taekwondo" in 1955 and founding the International Taekwon-Do Federation (ITF) in 1966. The World Taekwondo (WT, formerly WTF) was established in 1973 under the Kukkiwon in Seoul, becoming the governing body for Olympic-style competition. Taekwondo became a full Olympic medal sport at the 2000 Sydney Games.',
-    characteristics: [
-      'Emphasis on high, fast, and spinning kicks',
-      'Dynamic footwork and explosive gap-closing techniques',
-      'Electronic scoring systems (Protector and Scoring System) in WT competitions',
-      'Poomsae (forms) preserving traditional technique patterns',
-      'Board breaking (kyukpa) demonstrating power and precision',
-      'Head-height kicks scored higher in competition to encourage spectacular technique'
+    origin: 'Korea 🌍 — Established in 1955 by General Choi Hong Hi by fusing traditional Korean Taekkyon kicking games with Japanese Shotokan Karate. Heavily shaped by Korean post-war national identity and Hwarang warrior philosophy.',
+    purpose: 'Supreme Olympic kicking competition, military long-range striking, extreme leg agility, and moral etiquette.',
+    corePrinciples: [
+      'Ye-Ui (Courtesy), Yom-Chi (Integrity), In-Nae (Perseverance), Guk-Gi (Self-Control), Baek-Jul Bool-Gool (Indomitable Spirit)',
+      'Superiority of the human leg: The leg is longer and 3x more powerful than the arm',
+      'Rapid continuous chaining of spinning and jumping kicks',
+      'Sine Wave motion (ITF) for generating downward kinetic velocity'
     ],
-    keyPrinciples: [
-      'Courtesy (Ye-ui)—respect for all',
-      'Integrity (Yom-chi)—honesty and moral character',
-      'Perseverance (In-nae)—patience in achieving goals',
-      'Self-Control (Guk-gi)—control over body and mind',
-      'Indomitable Spirit (Baekjul-boolgool)—never give up'
+    techniquesOverview: {
+      punches: 'Straight linear reverse punches (hand strikes are de-emphasized in WT Olympic sparring).',
+      kicks: 'The absolute undisputed pinnacle of martial arts kicking: lightning fast Tornado kicks, spinning back kicks (Dwit Chagi), axe kicks, and double/triple aerial kicking combinations.',
+      throws: 'Basic sweeps taught in traditional self-defense curricula.',
+      grappling: 'Standing clinch separations.',
+      locks: 'Standing joint locks taught in Hosinsool (self-defense).',
+      weapons: []
+    },
+    trainingMethods: [
+      'Poomsae / Tul: Preset solo pattern choreography.',
+      'Kicking Paddle Drilling: High-speed continuous target snapping drills to build lightning chamber recovery.',
+      'Olympic Sparring: Full contact electronic chest guard point sparring.'
     ],
+    competition: 'A premier Olympic sport (WT rules). Fighters wear electronic scoring chest protectors and headgear. Matches are won by landing high-speed kicks to torso (2 pts), spinning kicks (4 pts), or head kicks (3-5 pts).',
+    effectiveness: {
+      selfDefense: 'Moderate (Devastating kicking power, but Olympic rules omit head punches and low leg kicks).',
+      mma: 'Moderate-High (Spinning back kicks to the liver and head kicks are proven instant knockouts in UFC).',
+      street: 'Moderate (Devastating if distance is maintained; risky on icy or tight streets).',
+      fitness: 'Elite (Develops world-class dynamic leg flexibility, explosive plyometric jumping, and lean speed).'
+    },
+    physicalBenefits: ['World-class dynamic leg flexibility', 'Superhuman plyometric hip velocity', 'High cardiovascular agility'],
+    mentalBenefits: ['Indomitable perseverance', 'High respect and courtesy', 'Athletic confidence'],
+    weapons: [],
     rankingSystem: {
-      type: 'belt',
+      type: 'belt / Geup & Dan',
       ranks: [
-        { name: 'White Belt (10th Gup)', color: '#FFFFFF' },
-        { name: 'Yellow Belt (8th Gup)', color: '#FFD700' },
-        { name: 'Green Belt (6th Gup)', color: '#2ECC71' },
-        { name: 'Blue Belt (4th Gup)', color: '#1E90FF' },
-        { name: 'Red Belt (2nd Gup)', color: '#E74C3C' },
-        { name: 'Black Belt (1st Dan)', color: '#1A1A2E' },
-        { name: 'Master (4th Dan+)', color: '#2C3E50' },
-        { name: 'Grandmaster (9th Dan)', color: '#DAA520' }
+        { name: 'White Belt (10th Geup)', color: '#FFFFFF' },
+        { name: 'Yellow / Green / Blue / Red Belt', color: '#E74C3C' },
+        { name: 'Black Belt (1st - 9th Dan Grandmaster)', color: '#1A1A2E' }
       ]
     },
-    weapons: [],
-    famousPractitioners: ['Choi Hong Hi', 'Hwang Kee', 'Steven Lopez', 'Jade Jones'],
-    techniqueCount: 0
+    bestFor: ['Youth athletes and children', 'Anyone seeking extreme leg flexibility and jumping power', 'Olympic dreamers'],
+    criticisms: ['Olympic foot-fencing style with hands kept low down at waist', 'Vulnerability to Muay Thai low leg kicks and boxing pocket punches'],
+    relatedArts: {
+      influencedBy: ['Taekkyon', 'Shotokan Karate', 'Subak'],
+      evolvedInto: ['Modern WT Olympic Taekwondo', 'ITF Taekwondo', 'American Kickboxing']
+    },
+    famousPractitioners: ['General Choi Hong Hi', 'Jhoon Rhee', 'Benson Henderson', 'Anthony Pettis', 'Servet Tazegul'],
+    description: 'The Olympic Korean martial art world-famous for breathtaking high kicks, spinning aerial attacks, and speed.',
+    history: 'Synthesized to unify Korea\'s nine original martial arts Kwans (schools) following the end of the Japanese occupation.'
   },
 
   wingchun: {
     id: 'wingchun',
     name: 'Wing Chun',
-    origin: 'China',
-    icon: '🦢',
-    color: '#E84393',
+    icon: '🪵',
+    color: '#E76F51',
     type: 'striking',
-    description: 'Wing Chun is a concept-based Chinese martial art specializing in close-range combat, rapid-fire chain punching, and simultaneous defense and attack. Designed for efficiency and directness, it emphasizes centerline theory and economy of motion to overwhelm opponents with relentless forward pressure. Made globally famous by Ip Man and his student Bruce Lee, Wing Chun is one of the most widely practiced Southern Chinese kung fu styles.',
-    history: 'According to legend, Wing Chun was created by the Buddhist nun Ng Mui, a survivor of the destruction of the Shaolin Temple, who taught the art to a young woman named Yim Wing Chun to defend herself against a local warlord. The art was passed through a small lineage until Grandmaster Ip Man brought it to Hong Kong in 1949, where he trained hundreds of students including the legendary Bruce Lee. Bruce Lee\'s fame in the 1970s brought worldwide attention to Wing Chun, though Lee eventually developed his own art, Jeet Kune Do. Today, Wing Chun is practiced globally with various lineages tracing back to Ip Man.',
-    characteristics: [
-      'Centerline theory—protect and attack along the vertical center axis',
-      'Chain punching (Lin Wan Kuen)—rapid sequential straight punches',
-      'Chi Sao (sticky hands)—sensitivity drill for close-range reflexes',
-      'Simultaneous block and strike (Lat Sao)',
-      'Compact, efficient techniques designed for tight spaces',
-      'Wooden dummy (Muk Yan Jong) training for conditioning and technique'
+    origin: 'China 🌍 — Developed in Southern China during the Qing Dynasty (legendarily by Buddhist nun Ng Mui and maiden Yim Wing-Chun). Designed to allow smaller, physically weaker fighters to defeat larger Kung Fu masters in narrow alleyways.',
+    purpose: 'Lethal close-quarters hand-to-hand combat, rapid centerline interception, and extreme tactile reflex trapping.',
+    corePrinciples: [
+      'Centerline Theory: The shortest distance between two points is a straight line down the center',
+      'Simultaneous Attack and Defense: Blocking and punching with the exact same motion',
+      'Economy of Motion: Zero wind-up, zero chambering, absolute structural efficiency',
+      'Constant forward spring pressure (constant sticking)'
     ],
-    keyPrinciples: [
-      'Simplicity—the most direct technique is the best technique',
-      'Economy of motion—no wasted movement or energy',
-      'Simultaneous defense and attack',
-      'Forward pressure—always advance toward the opponent',
-      'Sensitivity and reflex over brute strength'
+    techniquesOverview: {
+      punches: 'Lightning fast vertical chain punches (Lin Sil Die Da) issued directly from the chest.',
+      kicks: 'Low non-telegraphed oblique stamping kicks directed purely at opponent\'s knees and shins.',
+      throws: 'Close-quarters trapping sweeps and off-balancing structural uprooting.',
+      grappling: 'Standing Chi Sau (Sticky Hands) tactile limb trapping.',
+      locks: 'Standing elbow pinning and wrist immobilizations.',
+      weapons: 'Renowned for Butterfly Swords (Bart Cham Dao) and Long Pole (Luk Dim Boon Kwun).'
+    },
+    trainingMethods: [
+      'Chi Sau (Sticky Hands): Two practitioners maintain constant forearm contact to develop blind tactile reflexes.',
+      'Muk Yan Jong: Endless daily striking and trapping drills on the iconic Wooden Dummy.',
+      'Siu Nim Tao: The foundational "Little Idea" stationary form building immovable elbow rooting.'
+    ],
+    competition: 'Traditional Wing Chun de-emphasizes sport competition, focusing entirely on survival combat. (Modern Ving Tsun sparring tournaments exist).',
+    effectiveness: {
+      selfDefense: 'High (In tight elevators, alleyways, or bar settings, vertical chain punches overwhelm brawlers).',
+      mma: 'Low-Moderate (Tony Ferguson and Anderson Silva utilized Wing Chun trapping/elbows, but pure Wing Chun stance struggles against wrestling double legs).',
+      street: 'High (Eye jabs, throat strikes, and low knee stomps are devastatingly practical).',
+      fitness: 'Moderate (Develops elite forearm speed, posture ergonomics, and neurological tactile reflexes).'
+    },
+    physicalBenefits: ['Lightning neurological hand velocity', 'Ergonomic spinal posture', 'High tactile reflex sensitivity'],
+    mentalBenefits: ['Deep mindfulness and mental stillness', 'Hyper-focused spatial calm', 'Elimination of panic'],
+    weapons: [
+      { name: 'Bart Cham Dao (Butterfly Swords)', icon: '🔪', description: 'Twin short chopping blades practicing simultaneous slicing and trapping.' },
+      { name: 'Luk Dim Boon Kwun (6.5 Point Pole)', icon: '🪵', description: 'Heavy long wooden pole building monstrous wrist and fore-arm thrusting.' }
     ],
     rankingSystem: {
-      type: 'level',
+      type: 'level / sash',
       ranks: [
-        { name: 'Siu Nim Tao (Little Idea Form)', color: '#FFFFFF' },
-        { name: 'Chum Kiu (Seeking the Bridge)', color: '#E84393' },
-        { name: 'Biu Jee (Thrusting Fingers)', color: '#D63031' },
-        { name: 'Muk Yan Jong (Wooden Dummy)', color: '#8B4513' },
-        { name: 'Luk Dim Boon Gwun (Long Pole)', color: '#636E72' },
-        { name: 'Baat Jaam Do (Butterfly Swords)', color: '#2D3436' },
-        { name: 'Sifu (Master Level)', color: '#1A1A2E' }
+        { name: 'Beginner (Siu Nim Tao)', color: '#FFFFFF' },
+        { name: 'Intermediate (Chum Kiu / Biu Jee)', color: '#1E90FF' },
+        { name: 'Master Sifu', color: '#1A1A2E' }
       ]
     },
-    weapons: [
-      { name: 'Baat Jaam Do (Butterfly Swords)', icon: '⚔️', description: 'A pair of short, single-edged blades used in close quarters with chopping and slashing techniques unique to Wing Chun.' },
-      { name: 'Luk Dim Boon Gwun (Dragon Pole)', icon: '🥢', description: 'A tapered long pole (approximately 8-13 feet) used with thrusting and sweeping movements to develop full-body power.' }
-    ],
-    famousPractitioners: ['Ip Man', 'Bruce Lee', 'Wong Shun Leung', 'William Cheung'],
-    techniqueCount: 0
+    bestFor: ['Smaller individuals and women seeking practical close-quarters defense', 'People lacking flexibility for high kicks', 'Bruce Lee fans'],
+    criticisms: ['Over-reliance on compliant Chi Sau drilling', 'Narrow stance is easily taken down by amateur wrestlers'],
+    relatedArts: {
+      influencedBy: ['Fujian White Crane Kung Fu', 'Southern Shaolin'],
+      evolvedInto: ['Jeet Kune Do (Bruce Lee\'s base art)']
+    },
+    famousPractitioners: ['Ip Man', 'Bruce Lee', 'Wong Shun Leung', 'Donnie Yen', 'Tony Ferguson'],
+    description: 'A close-range Southern Chinese kung fu style famous for rapid vertical chain punching and wooden dummy training.',
+    history: 'Famously taught by Grandmaster Ip Man in Hong Kong, who introduced a young Bruce Lee to martial arts.'
   },
 
   kravmaga: {
     id: 'kravmaga',
     name: 'Krav Maga',
-    origin: 'Israel',
-    icon: '⚡',
-    color: '#636E72',
+    icon: '🛡️',
+    color: '#264653',
     type: 'hybrid',
-    description: 'Krav Maga is a military self-defense and fighting system developed for the Israel Defense Forces (IDF) that emphasizes real-world threat neutralization with maximum aggression and efficiency. Unlike traditional martial arts, Krav Maga has no sporting rules, kata, or artistic elements—every technique is designed to end a violent encounter as quickly as possible. It integrates techniques from boxing, wrestling, judo, aikido, and street fighting into a brutally practical system.',
-    history: 'Krav Maga was developed by Imi Lichtenfeld (Imi Sde-Or), a Hungarian-Israeli martial artist who grew up in Bratislava, Slovakia, where he used his boxing and wrestling skills to defend the Jewish community against fascist groups in the 1930s. After emigrating to Israel in 1948, Lichtenfeld was recruited to train the newly formed IDF in hand-to-hand combat. He refined his system over decades, eventually adapting it for civilian self-defense after retiring from military service in 1964. Today, Krav Maga is taught to military, law enforcement, and civilians worldwide through organizations like Krav Maga Global and the International Krav Maga Federation.',
-    characteristics: [
-      'No rules, no sporting application—pure self-defense focus',
-      'Simultaneous defense and counterattack',
-      'Targeting vulnerable areas: eyes, throat, groin, knees',
-      'Stress inoculation training under realistic conditions',
-      'Weapon defense: guns, knives, sticks, and multiple attackers',
-      'Aggressive, overwhelming counterattack philosophy ("retzev"—continuous combat motion)'
+    origin: 'Israel / Slovakia 🌍 — Synthesized in the 1930s by Imi Lichtenfeld to protect Jewish neighborhoods in Bratislava from fascist brawlers. Adopted and codified in 1948 as the official hand-to-hand combat system of the IDF (Israel Defense Forces).',
+    purpose: 'Pure survival street self-defense, military battlefield hand-to-hand combat, rapid threat neutralization, and anti-terrorism.',
+    corePrinciples: [
+      'Neutralize the threat as fast and violently as humanly possible',
+      'No Rules, No Etiquette: Eye gouges, groin strikes, throat chops, and biting are mandatory primary weapons',
+      'Simultaneous defensive parrying and offensive counter-striking',
+      'Situational awareness: Scanning for multiple attackers, escape exits, and improvised weapons'
     ],
-    keyPrinciples: [
-      'Neutralize the threat as quickly as possible',
-      'Use natural body movements—nothing fancy or complex',
-      'Awareness and avoidance are the first line of defense',
-      'Any object can be a weapon; any part of the body can strike',
-      'Train under stress to perform under stress'
+    techniquesOverview: {
+      punches: 'Aggressive boxing dirty combos, palm strikes to nose, and hammer-fists to back of neck.',
+      kicks: 'Savage groin kicks, low knee stomps, and forward thrusting push kicks.',
+      throws: 'Aggressive standing head-locks and body dumps.',
+      grappling: 'Explosive ground escapes designed to stand back up instantly (never staying on the ground).',
+      locks: 'Fast standing wrist manipulations to strip firearms and knives.',
+      weapons: 'World-renowned elite training in disarming handguns, assault rifles, knives, and blunt clubs.'
+    },
+    trainingMethods: [
+      'Stress Drills: Sparring under strobe lights, heavy metal music, exhaustion, and surprise attacks from behind.',
+      'Aggression Drills: Endless rapid striking on crash mats while trainers yell instructions.',
+      'Scenario Training: Realistic self-defense simulation inside buses, bars, parking garages, and dark rooms.'
+    ],
+    competition: 'Strictly zero sports competitions or tournaments. Krav Maga philosophy dictates that sport rules create fatal hesitations in real lethal scenarios.',
+    effectiveness: {
+      selfDefense: 'Elite (The undisputed global gold standard for real-world civilian and military survival defense).',
+      mma: 'Low (Illegal dirty strikes and lack of sports conditioning make pure Krav unsuitable for sporting cages).',
+      street: 'Elite (Specifically engineered to survive armed muggings and multiple brawlers).',
+      fitness: 'High (High-intensity anaerobic conditioning simulating combat adrenaline surges).'
+    },
+    physicalBenefits: ['High anaerobic combat endurance', 'Explosive primal striking power', 'Supreme neurological startle-reflex conditioning'],
+    mentalBenefits: ['Zero combat freeze response', 'Extreme situational awareness', 'Alpha survival confidence'],
+    weapons: [
+      { name: 'Firearm & Knife Disarms', icon: '🔫', description: 'Comprehensive tactical stripping of modern weaponry.' }
     ],
     rankingSystem: {
-      type: 'level',
+      type: 'patch / level',
       ranks: [
-        { name: 'Practitioner 1 (P1)', color: '#FFFFFF' },
-        { name: 'Practitioner 2 (P2)', color: '#BDC3C7' },
-        { name: 'Practitioner 3 (P3)', color: '#95A5A6' },
-        { name: 'Graduate 1 (G1)', color: '#636E72' },
-        { name: 'Graduate 2 (G2)', color: '#2D3436' },
-        { name: 'Expert 1 (E1)', color: '#1A1A2E' },
-        { name: 'Expert 5 (E5) / Master', color: '#DAA520' }
+        { name: 'Practitioner (P1 - P5)', color: '#FFFFFF' },
+        { name: 'Graduate (G1 - G5)', color: '#1E90FF' },
+        { name: 'Expert (E1 - E5)', color: '#E74C3C' },
+        { name: 'Master', color: '#1A1A2E' }
       ]
     },
-    weapons: [],
-    famousPractitioners: ['Imi Lichtenfeld', 'Eyal Yanilov', 'Darren Levine', 'Nir Maman'],
-    techniqueCount: 0
+    bestFor: ['Civilians seeking realistic street survival', 'Military, police, and security forces', 'Women\'s self-defense'],
+    criticisms: ['Many commercial Krav dojos lack live sparring against resisting grapplers/boxers, creating false confidence', 'Zero sport testing'],
+    relatedArts: {
+      influencedBy: ['Boxing', 'Wrestling', 'Judo', 'Street brawling'],
+      evolvedInto: ['Modern Military Combatives']
+    },
+    famousPractitioners: ['Imi Lichtenfeld', 'Eyal Yanilov', 'Bas Rutten (incorporates Krav principles)'],
+    description: 'The brutal military self-defense system of the IDF designed to survive armed street attacks through extreme aggression.',
+    history: 'Created out of absolute real-world necessity to combat street fascism and battlefield guerrilla warfare.'
   },
 
   hapkido: {
     id: 'hapkido',
     name: 'Hapkido',
-    origin: 'Korea',
-    icon: '🔄',
-    color: '#00CEC9',
+    icon: '🦅',
+    color: '#9B5DE5',
     type: 'hybrid',
-    description: 'Hapkido, meaning "the way of coordinated power," is a comprehensive Korean martial art that integrates striking, joint locks, throws, and dynamic kicking into a unified self-defense system. Unlike Taekwondo\'s sport-oriented approach, Hapkido emphasizes practical self-defense techniques that redirect an attacker\'s force using circular motion. Its curriculum is one of the most extensive of any martial art, covering armed and unarmed scenarios at all ranges.',
-    history: 'Hapkido was founded by Choi Yong-Sool, who claimed to have studied Daito-ryu Aiki-jujutsu under Sokaku Takeda in Japan during the colonial period, though this claim has been debated by historians. Upon returning to Korea after World War II, Choi began teaching his art in Daegu in 1948. His student Ji Han-Jae is credited with organizing and systematizing the techniques, adding high kicks and weapons training, and coining the name "Hapkido." Ji Han-Jae also served as the personal martial arts instructor to South Korean President Park Chung-hee and choreographed fight scenes for the film "Game of Death" with Bruce Lee.',
-    characteristics: [
-      'Comprehensive self-defense covering all ranges of combat',
-      'Joint locks and wrist manipulation techniques (600+ variations)',
-      'Circular motion to redirect and control attacking force',
-      'Incorporation of high kicks from Korean kicking traditions',
-      'Both hard (linear) and soft (circular) techniques',
-      'Extensive weapons curriculum including cane, belt, and fan'
+    origin: 'Korea 🌍 — Founded in the late 1940s by Choi Yong-Sool after returning from Japan where he studied Daito-ryu Aiki-jujutsu under Sokaku Takeda. Blended Japanese joint-locking with indigenous Korean high-speed kicking (Taekkyon/Subak).',
+    purpose: 'Comprehensive civilian and VIP bodyguard self-defense, joint lock submission, and dynamic kicking combat.',
+    corePrinciples: [
+      'Hwa (Harmony): Blending with the opponent\'s force rather than clashing against it',
+      'Won (Circle): Redirecting incoming linear kinetic strikes along circular trajectories',
+      'Yu (Water): Total fluid adaptability, penetrating every opening like rushing water',
+      'Control the joints, and you control the entire human structure'
     ],
-    keyPrinciples: [
-      'Hwa (Harmony)—blend with the opponent\'s force',
-      'Won (Circular Motion)—redirect energy in circular paths',
-      'Yu (Water)—flow like water, adapting to the situation',
-      'Control rather than destroy—subdue without excessive harm',
-      'Ki (internal energy) development through breathing and meditation'
-    ],
-    rankingSystem: {
-      type: 'belt',
-      ranks: [
-        { name: 'White Belt (10th Gup)', color: '#FFFFFF' },
-        { name: 'Yellow Belt (8th Gup)', color: '#FFD700' },
-        { name: 'Green Belt (6th Gup)', color: '#2ECC71' },
-        { name: 'Blue Belt (4th Gup)', color: '#1E90FF' },
-        { name: 'Red Belt (2nd Gup)', color: '#E74C3C' },
-        { name: 'Black Belt (1st Dan)', color: '#1A1A2E' },
-        { name: 'Master (4th Dan+)', color: '#2C3E50' },
-        { name: 'Grandmaster (9th Dan)', color: '#DAA520' }
-      ]
+    techniquesOverview: {
+      punches: 'Close-quarters nerve strikes, knife-hands, and explosive palm thrusts.',
+      kicks: 'Extensive repertoire: low shin sweeps combined with spinning heel kicks and jumping aerial attacks.',
+      throws: 'Circular wrist-twist projections, sacrifice throws, and hip sweeps.',
+      grappling: 'Standing joint immobilizations and ground pinning.',
+      locks: 'The core hallmark of Hapkido: hundreds of excruciating standing wrist, elbow, and shoulder manipulations.',
+      weapons: 'Mastery of short cane (Danbogi), rope, fan, and sword.'
     },
+    trainingMethods: [
+      'Breakfall Conditioning: High-impact rolling and slapping breakfalls on hard mats.',
+      'Joint Lock Partner Flow: Tori applies fast circular manipulations against Uke\'s lunging grabs.',
+      'Dynamic Kicking Drills: Continuous spinning target striking.'
+    ],
+    competition: 'Features exhibition self-defense choreography judging, weapon forms, and full-contact sparring tournaments.',
+    effectiveness: {
+      selfDefense: 'High (An exceptionally complete martial art combining kicks, punches, throws, and standing locks).',
+      mma: 'Moderate (Joint manipulations require adaptation against modern MMA gloves/clinch rules).',
+      street: 'Very High (Wrist locks and low sweeping kicks are lethal against untrained aggressors).',
+      fitness: 'High (Builds full-body agility, dynamic leg flexibility, and high joint tendon strength).'
+    },
+    physicalBenefits: ['Extreme joint tendon torque capacity', 'High dynamic leg flexibility', 'Elite spatial reflex coordination'],
+    mentalBenefits: ['Calm de-escalation composure', 'High tactical adaptability', 'Traditional etiquette'],
     weapons: [
-      { name: 'Dan Bong (Short Stick)', icon: '🥢', description: 'A short wooden stick (about 8 inches) used for joint locks, pressure point strikes, and leverage techniques.' },
-      { name: 'Jang Bong (Long Staff)', icon: '🥢', description: 'A long wooden staff used for sweeping, blocking, and striking at extended range.' },
-      { name: 'Cane (Ji Pang Ee)', icon: '🦯', description: 'A walking cane used as a concealed self-defense weapon for hooking, trapping, and striking.' }
-    ],
-    famousPractitioners: ['Choi Yong-Sool', 'Ji Han-Jae', 'Myung Jae-Nam', 'Bong Soo Han'],
-    techniqueCount: 0
-  },
-
-  silat: {
-    id: 'silat',
-    name: 'Pencak Silat',
-    origin: 'Southeast Asia',
-    icon: '🐅',
-    color: '#F39C12',
-    type: 'hybrid',
-    description: 'Pencak Silat is the umbrella term for the indigenous martial arts of the Malay Archipelago, practiced across Indonesia, Malaysia, Brunei, Singapore, the Philippines, and Thailand. Combining striking, grappling, bladed weapons, and spiritual practices, Silat is deeply woven into the cultural identity of Southeast Asia. Its combat techniques are renowned for their vicious low-line attacks, rapid takedowns, and devastating blade work, making it one of the most lethal traditional martial arts.',
-    history: 'The origins of Pencak Silat are rooted in the tribal warfare and self-defense practices of the Malay peoples dating back over a thousand years, with influences from Indian, Chinese, and indigenous fighting systems. Historical records from the Majapahit Empire (1293-1527) and the Srivijaya Kingdom describe warrior classes trained in systematic combat arts. The term "Pencak Silat" was officially adopted in 1948 to unify the hundreds of regional styles under one name by the Indonesian Pencak Silat Association (IPSI). Pencak Silat made its debut as an official sport at the 2018 Asian Games in Jakarta, where Indonesia dominated the medal count.',
-    characteristics: [
-      'Low stances and ground-level attacks targeting legs and joints',
-      'Rapid takedowns, sweeps, and throws from close range',
-      'Extensive blade and machete (golok/parang) techniques',
-      'Animal-inspired movements (tiger, snake, eagle, monkey)',
-      'Jurus (pre-arranged combat sequences) as training foundation',
-      'Deep spiritual and cultural dimensions including inner power (tenaga dalam)'
-    ],
-    keyPrinciples: [
-      'Efficiency and lethality—end the fight immediately',
-      'Low center of gravity for stability and explosive movement',
-      'Deception through angles, feints, and level changes',
-      'Respect for the weapon—a blade changes everything',
-      'Spiritual discipline accompanies physical training'
+      { name: 'Danbogi (Short Stick)', icon: '🪵', description: 'Short truncheon used to apply excruciating leverage bone locks.' },
+      { name: 'Cane', icon: '🏑', description: 'Hooked walking cane used to hook necks and ankles.' }
     ],
     rankingSystem: {
-      type: 'sash',
+      type: 'belt / Geup & Dan',
       ranks: [
-        { name: 'White (Pemula/Beginner)', color: '#FFFFFF' },
-        { name: 'Yellow (Dasar)', color: '#FFD700' },
-        { name: 'Green (Menengah)', color: '#2ECC71' },
-        { name: 'Blue (Lanjutan)', color: '#1E90FF' },
-        { name: 'Red (Terampil)', color: '#E74C3C' },
-        { name: 'Brown (Mahir)', color: '#8B4513' },
-        { name: 'Black (Pendekar/Master)', color: '#1A1A2E' }
+        { name: 'White Belt (Novice)', color: '#FFFFFF' },
+        { name: 'Red Belt (Advanced)', color: '#E74C3C' },
+        { name: 'Black Belt (Master)', color: '#1A1A2E' }
       ]
     },
-    weapons: [
-      { name: 'Keris (Dagger)', icon: '🗡️', description: 'An asymmetrical, often wavy-bladed dagger considered a spiritual object and symbol of status throughout the Malay world.' },
-      { name: 'Golok (Machete)', icon: '⚔️', description: 'A heavy chopping blade used for both agricultural work and close-quarters combat with devastating slashing power.' },
-      { name: 'Parang (Cleaver)', icon: '⚔️', description: 'A large single-edged blade used throughout Southeast Asia as a tool and weapon, similar to a machete.' },
-      { name: 'Toya (Staff)', icon: '🥢', description: 'A long wooden staff used for sweeping, blocking, and striking at range, often a practitioner\'s first weapon.' }
-    ],
-    famousPractitioners: ['Eddie Nalapraya', 'Cecep Arif Rahman', 'Iko Uwais', 'Tony Jaa'],
-    techniqueCount: 0
-  },
-
-  kendo: {
-    id: 'kendo',
-    name: 'Kendo',
-    origin: 'Japan',
-    icon: '⚔️',
-    color: '#2D3436',
-    type: 'weapons',
-    description: 'Kendo, meaning "the way of the sword," is a modern Japanese martial art of fencing that descended from traditional swordsmanship (kenjutsu) practiced by the samurai class. Using bamboo swords (shinai) and protective armor (bogu), kendoka engage in explosive, high-energy bouts scored by clean strikes to designated target areas. Kendo is as much a path of character development as it is a combat discipline, with the All Japan Kendo Federation stating its purpose is "to discipline the human character through the application of the principles of the katana."',
-    history: 'Kendo evolved from the sword-fighting techniques of the samurai that were refined over centuries of Japanese feudal warfare. In the 18th century, Naganuma Shirouemon developed the first protective equipment (bogu) and bamboo training sword (shinai), allowing full-contact practice without fatal injury. After the Meiji Restoration in 1868, samurai culture declined, but kendo was preserved as a form of physical education in schools and police training. Following a brief ban during the Allied Occupation after World War II, the All Japan Kendo Federation was established in 1952, reviving the art as a modern budo (martial way).',
-    characteristics: [
-      'Full-contact sparring with shinai (bamboo sword) and bogu (armor)',
-      'Four target areas: men (head), kote (wrist), do (torso), tsuki (throat)',
-      'Kiai (spirit shout) required for a valid strike',
-      'Kata practice with bokuto (wooden sword) preserving classical techniques',
-      'Emphasis on zanshin—sustained alertness after striking',
-      'Strict etiquette and ceremonial protocols in the dojo'
-    ],
-    keyPrinciples: [
-      'Ki-Ken-Tai-Ichi—unity of spirit, sword, and body in every strike',
-      'Seme—pressuring the opponent\'s center to create openings',
-      'Zanshin—continued awareness and readiness after each action',
-      'The purpose of Kendo is to perfect human character',
-      'Reiho (etiquette)—respect permeates every aspect of practice'
-    ],
-    rankingSystem: {
-      type: 'dan',
-      ranks: [
-        { name: '6th Kyu (Rokkyu)', color: '#FFFFFF' },
-        { name: '4th Kyu (Yonkyu)', color: '#BDC3C7' },
-        { name: '2nd Kyu (Nikyu)', color: '#636E72' },
-        { name: '1st Kyu (Ikkyu)', color: '#2D3436' },
-        { name: 'Shodan (1st Dan)', color: '#1A1A2E' },
-        { name: 'Sandan (3rd Dan)', color: '#1A1A2E' },
-        { name: 'Godan (5th Dan)', color: '#4A0E4E' },
-        { name: 'Hachidan (8th Dan)', color: '#DAA520' }
-      ]
+    bestFor: ['Security guards and bodyguards', 'Martial artists seeking a hybrid striking + locking art', 'Self-defense enthusiasts'],
+    criticisms: ['Curriculum is often too vast (boasting over 3,000 techniques), leading to jack-of-all-trades syndrome', 'Varies wildly in dojo quality'],
+    relatedArts: {
+      influencedBy: ['Daito-ryu Aiki-jujutsu', 'Taekkyon', 'Judo'],
+      evolvedInto: ['Modern Korean Special Forces Combatives (Teukgong Moosool)']
     },
-    weapons: [
-      { name: 'Shinai (Bamboo Sword)', icon: '⚔️', description: 'A four-slat bamboo practice sword used for full-contact sparring, representing the katana.' },
-      { name: 'Bokuto/Bokken (Wooden Sword)', icon: '⚔️', description: 'A solid wooden training sword used for kata practice and solo technique refinement.' },
-      { name: 'Katana (Japanese Sword)', icon: '🗡️', description: 'The curved, single-edged steel sword of the samurai, studied in kata form and iaido (drawing cuts).' }
-    ],
-    famousPractitioners: ['Miyamoto Musashi', 'Mochida Moriji', 'Chiba Masashi', 'Eiga Naoki'],
-    techniqueCount: 0
-  },
-
-  boxing: {
-    id: 'boxing',
-    name: 'Boxing',
-    origin: 'Global',
-    icon: '🥊',
-    color: '#D63031',
-    type: 'striking',
-    description: 'Boxing, often called "the sweet science," is the world\'s oldest and most refined striking art, focusing exclusively on punching technique, footwork, and head movement. With origins stretching back to ancient civilizations, modern boxing has produced some of the greatest athletes in human history and remains the most watched combat sport globally. Its principles of timing, distance management, and defensive evasion form the striking foundation of virtually every modern fighter.',
-    history: 'Boxing dates back to at least 3000 BC in ancient Sumer and was included in the ancient Olympic Games in 688 BC, where fighters wrapped their hands in leather thongs called himantes. The modern era of boxing began in 18th-century England with Jack Broughton\'s rules of 1743, later superseded by the Marquess of Queensberry Rules in 1867, which introduced gloves, three-minute rounds, and the ten-count. Boxing was included in the modern Olympic Games in 1904 and has since produced legendary champions across weight divisions. The sport has served as a pathway out of poverty for countless athletes and holds a unique place in global sporting culture.',
-    characteristics: [
-      'Four fundamental punches: jab, cross, hook, and uppercut',
-      'Sophisticated footwork and ring generalship',
-      'Head movement, slipping, and rolling for defense',
-      'Weight class system from minimumweight to heavyweight',
-      'Combination punching and counter-punching strategies',
-      'Precise distance management and timing'
-    ],
-    keyPrinciples: [
-      'Hit and don\'t get hit—offense and defense are intertwined',
-      'The jab is the most important punch in boxing',
-      'Footwork wins fights—control position and angle',
-      'Timing beats speed, and precision beats power',
-      'Mental toughness and heart define a true champion'
-    ],
-    rankingSystem: {
-      type: 'level',
-      ranks: [
-        { name: 'Novice', color: '#FFFFFF' },
-        { name: 'Amateur (Open Class)', color: '#3498DB' },
-        { name: 'National Amateur', color: '#2ECC71' },
-        { name: 'Elite Amateur / Olympic', color: '#FFD700' },
-        { name: 'Professional (Debut)', color: '#E74C3C' },
-        { name: 'Contender', color: '#8B0000' },
-        { name: 'World Champion', color: '#DAA520' }
-      ]
-    },
-    weapons: [],
-    famousPractitioners: ['Muhammad Ali', 'Sugar Ray Robinson', 'Floyd Mayweather Jr.', 'Manny Pacquiao'],
-    techniqueCount: 0
+    famousPractitioners: ['Choi Yong-Sool', 'Ji Han-Jae', 'Jackie Chan (Holds black belt in Hapkido)', 'Angela Mao'],
+    description: 'A complete Korean hybrid combat art combining circular Aikido-style wrist locks with dynamic Taekwondo kicking.',
+    history: 'Legendary Hapkido masters trained elite Korean presidential bodyguards and US Special Forces during the Cold War.'
   }
 };
