@@ -460,7 +460,7 @@ h1, h2, h3, h4, h5 {
   stroke: var(--accent-primary);
   stroke-width: 6;
   stroke-linecap: round;
-  transition: stroke-dashoffset 1s linear;
+  transition: stroke-dashoffset 0.1s linear;
 }
 .timer-text {
   position: absolute;
@@ -482,6 +482,9 @@ h1, h2, h3, h4, h5 {
   border: none;
   cursor: pointer;
   transition: all 0.2s var(--spring);
+}
+.control-btn * {
+  pointer-events: none !important;
 }
 .glass-btn {
   background: var(--bg-panel);
@@ -521,19 +524,18 @@ h1, h2, h3, h4, h5 {
     width: 100%;
     height: auto;
     flex-direction: row;
-    padding: 0.5rem;
+    padding: max(1.5rem, env(safe-area-inset-top, 24px)) 1rem 0.6rem 1.5rem;
     align-items: center;
     justify-content: space-between;
     border-right: none;
     border-bottom: 1px solid var(--border-glass);
     z-index: 10;
-    /* Remove backdrop-filter here so it doesn't trap fixed children */
     backdrop-filter: none;
     -webkit-backdrop-filter: none;
     background: transparent;
   }
   
-  .nav-brand { margin: 0; padding: 0 0.5rem; }
+  .nav-brand { margin: 0; padding: 0.2rem 0; margin-left: 0.5rem; }
   .logo-text { font-size: 1.25rem; }
   
   .nav-links {
@@ -613,13 +615,12 @@ h1, h2, h3, h4, h5 {
   transform: scale(0.95);
   transition: transform 0.3s var(--ease);
   overflow: hidden;
-  /* Override glass effect to be less liquid */
-  background: var(--bg-main);
-  border: 1px solid var(--border-glass);
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+  /* Solid opaque dark surface for high readability */
+  background: var(--bg-darker);
+  color: var(--text-main);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.95);
   border-radius: var(--radius-lg);
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
 }
 .modal-overlay.show .modal-content {
   transform: scale(1);
@@ -632,7 +633,7 @@ h1, h2, h3, h4, h5 {
   border-bottom: 1px solid var(--border-glass);
 }
 .modal-body {
-  padding: 1rem;
+  padding: 1.75rem;
   overflow-y: auto;
 }
 .workout-list-item {
@@ -680,3 +681,643 @@ h1, h2, h3, h4, h5 {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+/* ============================================================
+   MARTIAL ARTS LIBRARY — Design System
+   ============================================================ */
+
+/* Search Bar */
+.library-search {
+  position: relative;
+  margin-bottom: 1.5rem;
+}
+.library-search input {
+  width: 100%;
+  padding: 0.875rem 1.25rem 0.875rem 3rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-full);
+  color: var(--text-main);
+  font-size: 0.9rem;
+  font-family: 'Inter', sans-serif;
+  outline: none;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+.library-search input:focus {
+  border-color: var(--accent-secondary);
+  box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.15);
+}
+.library-search input::placeholder {
+  color: var(--text-faint);
+}
+.library-search .search-icon {
+  position: absolute;
+  left: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-faint);
+  font-size: 1.1rem;
+  pointer-events: none;
+}
+
+/* Library Tab Navigation */
+.library-tabs {
+  display: flex;
+  background: var(--bg-input);
+  padding: 0.3rem;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-glass);
+  margin-bottom: 1.5rem;
+}
+.library-tab-btn {
+  flex: 1;
+  padding: 0.6rem 0.5rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  transition: all 0.2s;
+  cursor: pointer;
+  background: transparent;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+}
+.library-tab-btn.active {
+  background: var(--grad-primary);
+  color: #ffffff !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+/* Martial Art Cards Grid */
+.arts-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .arts-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Individual Art Card */
+.art-card {
+  position: relative;
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--grad-surface);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.art-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  border-radius: 4px 0 0 4px;
+  transition: width 0.3s;
+}
+.art-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+.art-card:hover::before {
+  width: 6px;
+}
+.art-card-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.art-card-icon {
+  font-size: 2.2rem;
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-glass);
+  flex-shrink: 0;
+}
+.art-card-info {
+  flex: 1;
+  min-width: 0;
+}
+.art-card-name {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.15rem;
+}
+.art-card-origin {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-weight: 600;
+}
+.art-card-desc {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.art-card-footer {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.art-type-badge {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 0.2rem 0.6rem;
+  border-radius: var(--radius-full);
+  border: 1px solid;
+}
+
+/* Art Detail View */
+.art-detail-view {
+  animation: slideUp 0.3s var(--ease);
+}
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.art-detail-header {
+  padding: 1.5rem;
+  border-radius: var(--radius-lg);
+  margin-bottom: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+.art-detail-header::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 0%, rgba(0, 0, 0, 0.6) 100%);
+  pointer-events: none;
+}
+.art-detail-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: rgba(0, 0, 0, 0.4);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-full);
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.art-detail-back:hover {
+  color: var(--text-main);
+  background: rgba(0, 0, 0, 0.6);
+}
+.art-detail-title-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+.art-detail-icon {
+  font-size: 3rem;
+  width: 72px;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-lg);
+  background: rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.15);
+}
+.art-detail-name {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+}
+.art-detail-origin {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+  opacity: 0.7;
+  color: #fff;
+}
+
+/* Section Cards in Art Detail */
+.art-section {
+  background: var(--grad-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.art-section-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+/* Ranking System */
+.rank-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.rank-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem;
+  font-weight: 700;
+  border: 1px solid;
+  transition: transform 0.2s;
+}
+.rank-badge:hover {
+  transform: scale(1.05);
+}
+.rank-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Weapons Cards */
+.weapon-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: 0.75rem;
+}
+.weapon-card {
+  padding: 0.75rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  text-align: center;
+  transition: all 0.2s;
+}
+.weapon-card:hover {
+  border-color: var(--accent-secondary);
+  background: rgba(245, 158, 11, 0.05);
+}
+.weapon-card-icon {
+  font-size: 1.8rem;
+  margin-bottom: 0.3rem;
+}
+.weapon-card-name {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.15rem;
+}
+.weapon-card-desc {
+  font-size: 0.65rem;
+  color: var(--text-muted);
+  line-height: 1.4;
+}
+
+/* Characteristics & Principles List */
+.art-traits-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.art-trait {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+.art-trait::before {
+  content: '▸';
+  color: var(--accent-secondary);
+  font-weight: 700;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+/* Technique Filter Chips */
+.technique-filters {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.technique-filters::-webkit-scrollbar {
+  display: none;
+}
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  background: transparent;
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+  transition: all 0.2s;
+}
+.filter-chip:hover {
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+}
+.filter-chip.active {
+  border-color: var(--accent-secondary);
+  color: var(--accent-secondary);
+  background: rgba(245, 158, 11, 0.1);
+}
+
+/* Discipline Dropdown Filter */
+.discipline-filter {
+  padding: 0.5rem 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  color: var(--text-main);
+  font-size: 0.8rem;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  font-family: 'Inter', sans-serif;
+  margin-bottom: 1rem;
+  min-width: 160px;
+}
+.discipline-filter:focus {
+  border-color: var(--accent-secondary);
+}
+.discipline-filter option {
+  background: var(--bg-darker);
+  color: var(--text-main);
+}
+
+/* Technique Cards Grid */
+.technique-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+@media (max-width: 768px) {
+  .technique-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.technique-card {
+  padding: 1.1rem;
+  border-radius: var(--radius-lg);
+  background: var(--grad-surface);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: all 0.25s var(--ease);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.technique-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(245, 158, 11, 0.4);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+}
+.technique-card-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.technique-card-icon {
+  font-size: 1.6rem;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border-glass);
+  flex-shrink: 0;
+}
+.technique-card-name {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+  line-height: 1.3;
+}
+.technique-card-desc {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  line-height: 1.5;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.technique-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: auto;
+}
+.meta-badge {
+  font-size: 0.6rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  color: var(--text-muted);
+}
+.difficulty-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+/* Knowledge / Tips Tab */
+.knowledge-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+.knowledge-card {
+  padding: 1.25rem;
+  border-radius: var(--radius-lg);
+  background: var(--grad-surface);
+  border: 1px solid var(--border-glass);
+}
+.knowledge-card-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.knowledge-tip {
+  padding: 0.75rem;
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-sm);
+  margin-bottom: 0.5rem;
+}
+.knowledge-tip:last-child {
+  margin-bottom: 0;
+}
+.knowledge-tip-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--accent-secondary);
+  margin-bottom: 0.25rem;
+}
+.knowledge-tip-content {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Dashboard Rank Display */
+.dash-rank-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+}
+.dash-rank-icon {
+  font-size: 1.8rem;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+.dash-rank-info {
+  flex: 1;
+  min-width: 0;
+}
+.dash-rank-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+.dash-rank-sub {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+}
+.dash-rank-bar {
+  height: 6px;
+  border-radius: 3px;
+  background: var(--bg-input);
+  overflow: hidden;
+  margin-top: 0.3rem;
+}
+.dash-rank-fill {
+  height: 100%;
+  border-radius: 3px;
+  background: var(--grad-primary);
+  transition: width 0.5s var(--ease);
+}
+
+/* Art Technique List in Detail View */
+.art-tech-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.75rem;
+}
+.art-tech-item {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  border: 1px solid var(--border-glass);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.78rem;
+}
+.art-tech-item:hover {
+  border-color: var(--accent-secondary);
+  background: rgba(245, 158, 11, 0.05);
+}
+.art-tech-icon {
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.art-tech-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* No Results State */
+.library-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--text-faint);
+}
+.library-empty-icon {
+  font-size: 3rem;
+  margin-bottom: 0.75rem;
+}
+.library-empty-text {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Utility classes that were missing */
+.text-left { text-align: left; }
+.whitespace-nowrap { white-space: nowrap; }
+.cursor-pointer { cursor: pointer; }
+.scrollbar-hide { scrollbar-width: none; -ms-overflow-style: none; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.line-clamp-3 { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.transition-colors { transition: color 0.2s, background-color 0.2s, border-color 0.2s; }

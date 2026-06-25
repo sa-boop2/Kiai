@@ -13,7 +13,8 @@
   <link rel="manifest" href="manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100' width='512' height='512'><rect width='100' height='100' rx='20' fill='%230a0a0f'/><g transform='translate(14, 14) scale(3)' fill='none' stroke='%23ffffff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><path d='M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z'/><path d='M12 12a5 5 0 0 1 0-10 5 5 0 0 0 0 10z'/><circle cx='12' cy='7' r='1' fill='%23ffffff'/><circle cx='12' cy='17' r='1' fill='%23ffffff'/></g></svg>">
+  <link rel="apple-touch-icon" href="icon.png">
+  <link rel="icon" href="icon.png">
   
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -78,14 +79,13 @@
           <div class="bento-card hero-card glass-card">
             <div class="hero-bg-overlay"></div>
             <div class="hero-content">
-              <span class="badge" id="heroPhaseBadge">Phase 1</span>
-              <h3 id="heroTitle" class="gradient-text">Today's Workout</h3>
-              <p id="heroSubtitle">Build your mobility base</p>
+              <span class="badge" id="heroPhaseBadge">Core Routine</span>
+              <h3 id="heroTitle" class="gradient-text">Daily Kiai Training</h3>
+              <p id="heroSubtitle">Deep Holds, Balance & Lower Back (25m)</p>
               <div class="flex gap-2 mt-4 flex-wrap">
-                <button class="action-btn primary-gradient" onclick="App.navigate('workout')">
+                <button class="action-btn primary-gradient" onclick="App.startProgressFlow()">
                   <span>Start Training</span> <span class="arrow">→</span>
                 </button>
-                <button class="action-btn outlined" onclick="App.startProgressFlow()">Daily Kiai Training</button>
               </div>
             </div>
             <div class="hero-graphic" style="opacity: 0.15; font-size: 8rem;">
@@ -93,16 +93,30 @@
             </div>
           </div>
 
-          <!-- Progress Ring Card -->
+          <!-- Rank & Progress Card -->
           <div class="bento-card stats-card glass-card">
-            <h4>Program Progress</h4>
-            <div class="circular-progress-container">
-              <svg viewBox="0 0 100 100" class="circular-progress">
-                <circle cx="50" cy="50" r="40" class="bg-circle"></circle>
-                <circle cx="50" cy="50" r="40" class="progress-circle" id="dashProgressRing"></circle>
-              </svg>
-              <div class="progress-text">
-                <span id="dashProgressPct">0%</span>
+            <h4 style="margin-bottom: 0.75rem;">Your Kiai Rank</h4>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+              <div class="circular-progress-container" style="flex-shrink: 0;">
+                <svg viewBox="0 0 100 100" class="circular-progress">
+                  <circle cx="50" cy="50" r="40" class="bg-circle"></circle>
+                  <circle cx="50" cy="50" r="40" class="progress-circle" id="dashProgressRing"></circle>
+                </svg>
+                <div class="progress-text">
+                  <span id="dashProgressPct">0%</span>
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 0;">
+                <div class="dash-rank-card">
+                  <div class="dash-rank-icon" id="dashRankIcon">🌱</div>
+                  <div class="dash-rank-info">
+                    <div class="dash-rank-title" id="dashRankTitle">White Belt Initiate</div>
+                    <div class="dash-rank-sub" id="dashRankSub">Level 1 • 0 / 3 sessions</div>
+                    <div class="dash-rank-bar">
+                      <div class="dash-rank-fill" id="dashRankFill" style="width: 5%;"></div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -150,19 +164,6 @@
 
       <!-- WORKOUT PLAYER VIEW -->
       <section id="view-workout" class="view">
-        <!-- Gym Schedule Overrides -->
-        <div class="gym-context glass-card mb-4 p-4">
-          <h3 class="mb-3 text-lg font-bold">Today's Gym Schedule:</h3>
-          <div class="segmented-control" id="gymToggleControl">
-            <button class="seg-btn active" data-gym="rest" onclick="App.setGym('rest')">Rest</button>
-            <button class="seg-btn" data-gym="upper-a" onclick="App.setGym('upper-a')">Up A</button>
-            <button class="seg-btn" data-gym="lower-a" onclick="App.setGym('lower-a')">Low A</button>
-            <button class="seg-btn" data-gym="upper-b" onclick="App.setGym('upper-b')">Up B</button>
-            <button class="seg-btn" data-gym="lower-b" onclick="App.setGym('lower-b')">Low B</button>
-          </div>
-        </div>
-
-        <!-- Pre-workout Intro -->
         <div id="workout-intro" class="workout-state-panel active">
           <div class="glass-card p-6 text-center">
             <h2 id="introWorkoutTitle" class="gradient-text huge-title mb-2">Day 1 Focus</h2>
@@ -176,7 +177,6 @@
                 Browse All
               </button>
             </div>
-            <button class="action-btn outlined w-full" onclick="App.startProgressFlow()">Daily Kiai Training (18m)</button>
           </div>
         </div>
 
@@ -213,6 +213,7 @@
                 <span id="timerClock" class="text-3xl font-bold">0:60</span>
               </div>
             </div>
+            <div id="performanceTrackerContainer" class="mt-4"></div>
           </div>
 
           <div class="player-controls flex justify-center gap-4 mb-8">
@@ -241,7 +242,8 @@
             <div class="bento-card glass-card p-4"><span id="cEx" class="text-2xl font-bold block">20</span><small class="text-secondary">Exercises</small></div>
             <div class="bento-card glass-card p-4"><span id="cStreak" class="text-2xl font-bold block">5</span><small class="text-secondary">Streak</small></div>
           </div>
-          <div id="newAchievementsList" class="mb-8"></div>
+          <div id="newAchievementsList" class="mb-4"></div>
+          <div id="performanceSummaryContainer" class="mb-8 text-left"></div>
           
           <div class="glass-panel p-6 mb-8 mt-8 rounded-xl border border-white/10 bg-white/5">
             <h3 class="text-xl font-bold mb-4">How was the difficulty?</h3>
@@ -260,33 +262,86 @@
       <!-- PROGRESS & ACHIEVEMENTS VIEW -->
       <section id="view-progress" class="view">
         <header class="view-header">
-          <h2 class="gradient-text">Progress & Benchmarks</h2>
+          <div>
+            <h2 class="gradient-text huge-title">Martial Arts Mastery</h2>
+            <p class="subtitle">Track your internal stamina, balance, and Kiai titles</p>
+          </div>
         </header>
 
-        <div class="bento-grid">
-          <!-- Measurement Form -->
-          <div class="bento-card glass-card">
-            <h3 class="mb-4">Record Measurements</h3>
-            <div class="input-form flex flex-col gap-3" id="benchmarkForm">
-              <!-- Rendered via JS -->
+        <!-- Mastery Level Card -->
+        <div class="glass-card p-6 mb-6 rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 via-black/40 to-red-500/10 relative overflow-hidden text-left">
+          <div class="flex justify-between items-center mb-4">
+            <div class="flex items-center gap-3">
+              <span class="text-4xl p-3 bg-black/60 rounded-2xl border border-amber-500/40 shadow-lg" id="progBeltIcon">🌱</span>
+              <div>
+                <span class="text-xs uppercase font-bold tracking-widest text-amber-400 block">Current Kiai Rank</span>
+                <h3 class="text-2xl font-extrabold text-white mt-0.5" id="progBeltTitle">White Belt Initiate</h3>
+              </div>
             </div>
-            <button class="action-btn primary-gradient mt-4 w-full" onclick="App.saveBenchmarks()">Save Data</button>
+            <div>
+              <span class="badge primary-gradient text-xs px-3 py-1 m-0">Level <span id="progLevelNum">1</span></span>
+            </div>
+          </div>
+          
+          <div class="space-y-2 mt-4">
+            <div class="flex justify-between text-xs font-semibold text-secondary mb-1">
+              <span>XP Progress</span>
+              <span id="progXpText">1 / 3 Workouts</span>
+            </div>
+            <div class="progress-bar-container h-3 rounded-full bg-white/10 p-0.5 border border-white/5">
+              <div class="progress-fill h-full rounded-full primary-gradient transition-all duration-500" id="progXpFill" style="width: 33%"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-grid">
+          <!-- Training Analytics Card -->
+          <div class="bento-card glass-card p-6 rounded-2xl text-left">
+            <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2">📊 Kiai Stamina Statistics</h3>
+            <div class="grid grid-cols-2 gap-4" style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+              <div class="p-4 bg-white/5 border border-white/10 rounded-xl">
+                <span class="text-2xl mb-1 block">🔥</span>
+                <span class="text-xl font-bold text-amber-400 block mt-1" id="statPureStances">0</span>
+                <span class="text-xs text-secondary font-medium">Unbroken Stances</span>
+              </div>
+              <div class="p-4 bg-white/5 border border-white/10 rounded-xl">
+                <span class="text-2xl mb-1 block">🦿</span>
+                <span class="text-xl font-bold text-cyan-400 block mt-1" id="statPureBalance">0</span>
+                <span class="text-xs text-secondary font-medium">Perfect Balance Kicks</span>
+              </div>
+              <div class="p-4 bg-white/5 border border-white/10 rounded-xl">
+                <span class="text-2xl mb-1 block">⏱️</span>
+                <span class="text-xl font-bold text-emerald-400 block mt-1" id="statTotalMins">0m</span>
+                <span class="text-xs text-secondary font-medium">Time on Mat</span>
+              </div>
+              <div class="p-4 bg-white/5 border border-white/10 rounded-xl">
+                <span class="text-2xl mb-1 block">⚡</span>
+                <span class="text-xl font-bold text-purple-400 block mt-1" id="statStreakDays">0</span>
+                <span class="text-xs text-secondary font-medium">Day Streak</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Measurement Form -->
+          <div class="bento-card glass-card p-6 rounded-2xl text-left">
+            <h3 class="mb-4 text-lg font-bold">📏 Flexibility Benchmarks</h3>
+            <div class="input-form flex flex-col gap-3" id="benchmarkForm"></div>
+            <button class="action-btn primary-gradient mt-4 w-full rounded-xl py-3 font-bold" onclick="App.saveBenchmarks()">Log Benchmarks</button>
           </div>
 
           <!-- Benchmark Stats -->
-          <div class="bento-card glass-card">
-            <h3 class="mb-4">Your Benchmarks</h3>
-            <div class="benchmarks-grid flex flex-col gap-3" id="benchmarkStats">
-              <!-- Rendered via JS -->
-            </div>
+          <div class="bento-card glass-card p-6 rounded-2xl text-left span-full">
+            <h3 class="mb-4 text-lg font-bold">📈 Your Flexibility Records</h3>
+            <div class="benchmarks-grid flex flex-col gap-3" id="benchmarkStats"></div>
           </div>
 
           <!-- Achievements -->
-          <div class="bento-card glass-card span-full mt-4">
-            <h3 class="mb-4">Achievements</h3>
-            <div class="achievements-grid grid gap-3" style="grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));" id="achievementsList">
-              <!-- Rendered via JS -->
+          <div class="bento-card glass-card span-full mt-4 p-6 rounded-2xl text-left">
+            <div class="flex justify-between items-center mb-6">
+              <h3 class="text-xl font-bold">🥋 Kiai Mastery Achievements</h3>
+              <span class="text-xs text-secondary"><span id="unlockedCount">0</span> Unlocked</span>
             </div>
+            <div class="achievements-grid grid gap-3.5" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));" id="achievementsList"></div>
           </div>
         </div>
       </section>
@@ -294,30 +349,70 @@
       <!-- LIBRARY VIEW -->
       <section id="view-library" class="view">
         <header class="view-header">
-          <h2 class="gradient-text">Technique & Tip Library</h2>
-          <div class="segmented-control mt-4" id="libraryToggle">
-            <button class="seg-btn active" onclick="App.setLibraryTab('techniques')">Techniques</button>
-            <button class="seg-btn" onclick="App.setLibraryTab('tips')">Tips & Recovery</button>
-          </div>
+          <h2 class="gradient-text" style="font-family: 'Outfit', sans-serif; font-size: 1.6rem;">🥋 Martial Arts Library</h2>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 0.25rem;">Encyclopedia of styles, techniques, weapons & wisdom</p>
         </header>
-        
-        <div id="lib-techniques" class="lib-tab active mt-6">
-          <!-- Filters -->
-          <div class="flex gap-2 overflow-x-auto pb-2 mb-4 scrollbar-hide" id="discFilters">
-            <button class="badge outlined cursor-pointer whitespace-nowrap active" onclick="App.filterLibrary('wushu')">Wushu</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('muaythai')">Muay Thai</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('taichi')">Tai Chi</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('sanda')">Sanda</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('shaolin')">Shaolin</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('shuaijiao')">Shuai Jiao</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('judo')">Judo</button>
-            <button class="badge outlined cursor-pointer whitespace-nowrap" onclick="App.filterLibrary('aikido')">Aikido</button>
-          </div>
-          <div class="technique-cards grid gap-4" style="grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));" id="techCards"></div>
+
+        <!-- Search -->
+        <div class="library-search">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="librarySearchInput" placeholder="Search arts, techniques, weapons..." oninput="App.searchLibrary(this.value)">
         </div>
-        
-        <div id="lib-tips" class="lib-tab mt-6" style="display:none;">
-          <div class="tips-accordion flex flex-col gap-4" id="tipsAccordion"></div>
+
+        <!-- 3-Tab Navigation -->
+        <div class="library-tabs" id="libraryTabs">
+          <button class="library-tab-btn active" onclick="App.setLibraryTab('arts')">🥋 Arts</button>
+          <button class="library-tab-btn" onclick="App.setLibraryTab('techniques')">⚔️ Techniques</button>
+          <button class="library-tab-btn" onclick="App.setLibraryTab('knowledge')">💡 Knowledge</button>
+        </div>
+
+        <!-- ARTS TAB -->
+        <div id="lib-arts" class="lib-tab">
+          <div class="arts-grid" id="artsGrid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- ART DETAIL VIEW (hidden by default, shown when clicking an art card) -->
+        <div id="lib-art-detail" class="lib-tab" style="display: none;">
+          <div id="artDetailContent">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- TECHNIQUES TAB -->
+        <div id="lib-techniques" class="lib-tab" style="display: none;">
+          <!-- Subcategory Filter Chips -->
+          <div class="technique-filters" id="subcategoryFilters">
+            <button class="filter-chip active" onclick="App.filterTechniquesBySubcat('all')">All</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('strike')">👊 Strikes</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('kick')">🦶 Kicks</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('stance')">🧍 Stances</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('throw')">🤸 Throws</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('ground')">🤼 Ground</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('weapon')">⚔️ Weapons</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('form')">🌀 Forms</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('block')">🛡️ Blocks</button>
+            <button class="filter-chip" onclick="App.filterTechniquesBySubcat('footwork')">👣 Footwork</button>
+          </div>
+          <!-- Discipline Dropdown -->
+          <div style="display: flex; gap: 0.75rem; align-items: center; margin-bottom: 1rem;">
+            <select class="discipline-filter" id="techDisciplineFilter" onchange="App.filterTechniquesBySubcat(App._currentSubcat || 'all')">
+              <option value="all">All Martial Arts</option>
+              <!-- Options populated by JS -->
+            </select>
+            <span style="font-size: 0.75rem; color: var(--text-muted);" id="techCountDisplay">0 techniques</span>
+          </div>
+          <div class="technique-grid" id="techniqueGrid">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+
+        <!-- KNOWLEDGE TAB -->
+        <div id="lib-knowledge" class="lib-tab" style="display: none;">
+          <div class="knowledge-grid" id="knowledgeGrid">
+            <!-- Rendered by JS -->
+          </div>
         </div>
       </section>
 
@@ -388,8 +483,12 @@
     </div>
   </div>
 
+  <!-- Silent background audio to keep timers running in iOS sleep mode -->
+  <audio id="bgSleepKeeper" loop playsinline src="data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEARKwAAIhYAQACABAAAABkYXRhAgAAAAEA"></audio>
+
   <script src="data/tips.js"></script>
   <script src="data/benchmarks.js"></script>
+  <script src="data/martial_arts.js"></script>
   <script src="data/exercises.js"></script>
   <script src="data/workouts.js"></script>
   <script src="data/achievements.js"></script>
