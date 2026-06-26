@@ -496,22 +496,7 @@ const App = {
   },
 
   playTransitionTone() {
-    if (!this.audioCtx) return;
-    try {
-      if (this.audioCtx.state === 'suspended') this.audioCtx.resume();
-      const osc = this.audioCtx.createOscillator();
-      const gain = this.audioCtx.createGain();
-      osc.connect(gain);
-      gain.connect(this.audioCtx.destination);
-      osc.type = 'triangle';
-      osc.frequency.setValueAtTime(330, this.audioCtx.currentTime); // E4
-      osc.frequency.exponentialRampToValueAtTime(440, this.audioCtx.currentTime + 0.15); // A4
-      gain.gain.setValueAtTime(0, this.audioCtx.currentTime);
-      gain.gain.linearRampToValueAtTime(0.3, this.audioCtx.currentTime + 0.05);
-      gain.gain.exponentialRampToValueAtTime(0.001, this.audioCtx.currentTime + 0.5);
-      osc.start();
-      osc.stop(this.audioCtx.currentTime + 0.5);
-    } catch(e) {}
+    // Shitty rest sound removed per user request
   },
 
   playTick() {
@@ -823,6 +808,70 @@ const App = {
     this.renderCurrentExercise(true); // Auto-start the first exercise
   },
 
+  getBiomechanicalCoaching(ex) {
+    if (!ex) return { bestForm: "", deepStretch: "" };
+    
+    const specificCoaching = {
+      'jumping_jacks': {
+        bestForm: "Land softly on the mid-foot and immediately absorb impact through ankle and knee flexion. Keep shoulder blades depressed as arms swing overhead.",
+        deepStretch: "At the peak of the jump, reach your fingertips actively toward the ceiling to stretch the lats and intercostal breathing muscles."
+      },
+      'high_knees': {
+        bestForm: "Drive from the ball of your standing foot while pulling the opposite knee above your waistline. Maintain a slight forward lean from the ankles, not the waist.",
+        deepStretch: "Actively pull your toes up toward your shins (dorsiflexion) while in mid-air to prime your calf tendons for explosive recoil."
+      },
+      'horse_stance': {
+        bestForm: "Grip the floor actively with your big toes. Externalize knee tracking so your patella aligns directly over your second toe. Keep your torso vertical.",
+        deepStretch: "Tuck your tailbone under (posterior pelvic tilt) and push your knees outward against imaginary resistance. This engages the glute medius and deeply stretches the groin adductors."
+      },
+      'bow_stance': {
+        bestForm: "Square both hip bones 100% forward. Drive the outer heel of your rear foot straight into the ground while keeping your rear leg completely locked.",
+        deepStretch: "Squeeze the glute of your rear leg as hard as possible. By reciprocal inhibition, this forces the tight front hip flexor (psoas) to release and lengthen."
+      },
+      'pigeon_pose': {
+        bestForm: "Square your hips before lowering your chest. If your front hip bone lifts off the mat, place a rolled towel under your front glute to protect the knee joint.",
+        deepStretch: "Inhale into your lower back for 4 seconds. As you exhale for 6 seconds, actively crawl your fingertips forward while pulling your rear hip bone backward."
+      },
+      'couch_stretch': {
+        bestForm: "Keep your ribcage stacked directly over your pelvis. Do not arch your lower back to get your torso upright; hinge purely from the hip joint.",
+        deepStretch: "Contract your rear glute at 80% effort for 5 seconds against the wall, then exhale sharply and sink your pelvis 1 inch closer to your front heel."
+      },
+      'seated_forward_fold': {
+        bestForm: "Anteriorly tilt your pelvis (stick your tailbone out behind you) before hinging forward. Keep your quads engaged to pull your kneecaps straight.",
+        deepStretch: "Grab the outer edges of your feet or calves. Inhale to lengthen your spine forward, hold 2 seconds, then exhale and pull your chest down onto your thighs."
+      },
+      'frog_stretch': {
+        bestForm: "Ensure your ankles are directly behind or wider than your knees (90-degree shin angle). Keep your core slightly braced so your lower back doesn't sag.",
+        deepStretch: "Rock your hips gently backward toward your heels on a long 8-second exhale until you hit the deep fascial barrier of the gracilis muscle."
+      },
+      'butterfly_stretch': {
+        bestForm: "Sit on the edge of a small cushion if your lower back rounds. Grasp your ankles (not your toes) and press elbows into your inner thighs.",
+        deepStretch: "Contract your inner thighs upward against your elbows for 4 seconds. Release, exhale deeply, and let reciprocal glute contraction pull your knees flat to the mat."
+      }
+    };
+
+    if (specificCoaching[ex.id]) return specificCoaching[ex.id];
+
+    let bestForm = ex.tips || "Maintain spinal alignment, active core bracing, and controlled movement tempo.";
+    let deepStretch = "Focus on 4-second nasal inhalations and extended 6-second mouth exhalations. Every long exhale signals your autonomic nervous system to release muscular guarding.";
+
+    if (ex.category === 'warmup') {
+      bestForm = ex.tips || "Keep active tension through your core. Move with crisp tempo to elevate synovial fluid temperature in your joints.";
+      deepStretch = "Coordinate sharp exhalations with kinetic impact. Keep shoulders down away from your ears to maintain fluid blood circulation.";
+    } else if (ex.category === 'dynamic') {
+      bestForm = ex.tips || "Control momentum. Swing or rotate smoothly through the full range without jerking at end ranges.";
+      deepStretch = "Gradually expand your range by 5% on every successive repetition. Reach actively through fingertips and heels to create eccentric fascial lengthening.";
+    } else if (ex.category === 'deep-stretch' || ex.category === 'cooldown') {
+      bestForm = ex.tips || "NEVER bounce or force a stretch. Settle into mild tension (6/10 discomfort) and hold completely still.";
+      deepStretch = "Contract the opposing muscle group (reciprocal inhibition) for 5 seconds, then exhale deeply and sink 1 to 2 inches deeper into the fascial barrier.";
+    } else if (ex.category === 'technique' || ex.trackType === 'stance') {
+      bestForm = ex.tips || "Root your feet firmly into the ground. Connect lower body root directly to upper body posture through an active core lock.";
+      deepStretch = "Create isometric tension: grip the mat with your toes while actively driving knees and elbows toward their biomechanical anchor points.";
+    }
+
+    return { bestForm, deepStretch };
+  },
+
   renderCurrentExercise(autoStart = false) {
     if (this.workout.currentIndex >= this.workout.queue.length) {
       this.finishWorkout();
@@ -832,7 +881,6 @@ const App = {
     const item = this.workout.queue[this.workout.currentIndex];
     const baseDur = item.duration || item.fullEx.duration;
     const dur = item.isRest ? baseDur : Math.max(1, Math.round(baseDur * (this.state.durationMultiplier || 1.0)));
-    if (item.isRest) this.playTransitionTone();
     
     document.getElementById('playerSectionTitle').textContent = item.sectionTitle;
     document.getElementById('exIcon').textContent = item.fullEx.icon || '🥋';
@@ -855,10 +903,30 @@ const App = {
     }
     
     const tipContainer = document.getElementById('exTip');
-    if (item.fullEx.tips) {
-      tipContainer.innerHTML = `💡 <i>${item.fullEx.tips}</i>`;
+    const coach = this.getBiomechanicalCoaching(item.fullEx);
+    if (!item.isRest) {
+      tipContainer.innerHTML = `
+        <div class="glass-card p-4 rounded-xl bg-black/50 border border-amber-500/30 text-left my-3 shadow-xl">
+          <div class="text-amber-400 font-bold text-xs uppercase tracking-wider mb-1 flex items-center gap-1.5">
+            <span>🎯 How to Execute Best:</span>
+          </div>
+          <p class="text-xs text-slate-200 mb-3 leading-relaxed font-normal">
+            ${coach.bestForm}
+          </p>
+          <div class="text-cyan-400 font-bold text-xs uppercase tracking-wider mb-1 pt-2 border-t border-white/10 flex items-center gap-1.5">
+            <span>🧘 Deepest Stretch & Peak Tension Secret:</span>
+          </div>
+          <p class="text-xs text-cyan-100/90 leading-relaxed font-normal m-0 italic">
+            ${coach.deepStretch}
+          </p>
+        </div>
+      `;
     } else {
-      tipContainer.innerHTML = '';
+      tipContainer.innerHTML = `
+        <div class="p-3 bg-white/5 rounded-xl border border-white/10 text-xs text-secondary italic">
+          Breathe deep. Lower your heart rate and prepare for the upcoming set.
+        </div>
+      `;
     }
     
     document.getElementById('exDurBadge').textContent = `${dur}s`;
@@ -979,10 +1047,7 @@ const App = {
         }
 
         if (this.workout.timeRemainingMs <= 0) {
-          const nextItem = this.workout.queue[this.workout.currentIndex + 1];
-          if (!nextItem || !nextItem.isRest) {
-            this.playChime();
-          }
+          this.playChime();
           this.skipExercise();
           return;
         }
@@ -2005,7 +2070,6 @@ const App = {
 
     if (this._soloMode === 'timer') {
       let rem = this._soloTargetVal;
-      this.playTransitionTone();
       if (this._soloActiveTimer) clearInterval(this._soloActiveTimer);
       this._soloActiveTimer = setInterval(() => {
         rem--;
