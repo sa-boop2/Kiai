@@ -494,7 +494,11 @@ export function LibraryScreen() {
 
 /** Loosely compares two muscle display labels so "Hamstring" and "Hamstrings" (etc.) count as the same. */
 function sameMuscleLabel(a: string, b: string): boolean {
-  const normalize = (s: string) => s.toLowerCase().split(/[&,]/)[0].trim().replace(/s$/, '')
+  const irregulars: Record<string, string> = { calf: 'calve', foot: 'feet' }
+  const normalize = (s: string) => {
+    const word = s.toLowerCase().split(/[&,]/)[0].trim().replace(/s$/, '')
+    return irregulars[word] ?? word
+  }
   const na = normalize(a)
   const nb = normalize(b)
   return na === nb || na.startsWith(nb) || nb.startsWith(na)

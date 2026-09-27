@@ -350,11 +350,11 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
               </g>
 
               {/* Right 1: Biceps */}
-              <line x1="315" y1="195" x2="265" y2="195" className={`anatomy-dashed ${isSel('biceps') ? 'active' : ''}`} />
+              <line x1="315" y1="180" x2="257" y2="165" className={`anatomy-dashed ${isSel('biceps') ? 'active' : ''}`} />
               <g className="anatomy-pin-target" onClick={() => clickPart('biceps')}>
-                <circle cx="265" cy="195" r="22" fill="transparent" />
-                {isSel('biceps') && <circle cx="265" cy="195" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="265" cy="195" r="7" className={`anatomy-pin-dot ${isSel('biceps') ? 'selected' : ''}`} />
+                <circle cx="257" cy="165" r="22" fill="transparent" />
+                {isSel('biceps') && <circle cx="257" cy="165" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="257" cy="165" r="7" className={`anatomy-pin-dot ${isSel('biceps') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('biceps')}>
                 <rect x="305" y="175" width="67" height="38" rx="10" className="anatomy-label-plate" />

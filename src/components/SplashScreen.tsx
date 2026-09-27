@@ -23,7 +23,7 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
       className={`splash-overlay ${leaving ? 'splash-leaving' : ''}`}
       onClick={() => {
         setLeaving(true)
-        window.setTimeout(onComplete, 250)
+        window.setTimeout(onComplete, 320)
       }}
       aria-hidden="true"
     >

@@ -29,6 +29,8 @@ export function HomeScreen() {
   const target = useMemo(() => resolveQuickStart(getState()), [sessions, katas])
 
   const displayKatas = katas
+  // Guards against a stray "still reordering" state if the list ever drops to one kata.
+  const isReordering = reordering && displayKatas.length > 1
 
   const moveKata = (from: number, to: number) => {
     if (to < 0 || to >= katas.length || from === to) return
@@ -204,20 +206,20 @@ export function HomeScreen() {
                 <div
                   className="card kata-row pressable"
                   role="button"
-                  tabIndex={reordering ? -1 : 0}
-                  aria-disabled={reordering}
+                  tabIndex={isReordering ? -1 : 0}
+                  aria-disabled={isReordering}
                   onClick={() => {
-                    if (!reordering) nav.push({ name: 'kata', id: kata.uuid })
+                    if (!isReordering) nav.push({ name: 'kata', id: kata.uuid })
                   }}
                   onKeyDown={(e) => {
-                    if (reordering) return
+                    if (isReordering) return
                     if (e.key === 'Enter' || e.key === ' ') {
                       e.preventDefault()
                       nav.push({ name: 'kata', id: kata.uuid })
                     }
                   }}
                 >
-                  {reordering ? (
+                  {isReordering ? (
                     <div className="reorder-controls no-sheet-drag">
                       <button
                         type="button"

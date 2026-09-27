@@ -32,7 +32,7 @@ export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
 
   const close = () => {
     setClosing(true)
-    window.setTimeout(() => nav.closePlan(), 340)
+    window.setTimeout(() => nav.closePlan(), 360)
   }
 
   const requestQuit = async () => {
