@@ -15,12 +15,18 @@ body,
 }
 
 html {
+  position: fixed;
+  inset: 0;
+  width: 100%;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   background: var(--background);
 }
 
 body {
+  position: fixed;
+  inset: 0;
+  width: 100%;
   margin: 0;
   font-family: var(--font-text);
   font-size: 17px;
@@ -33,6 +39,12 @@ body {
   overscroll-behavior: none;
   overflow: hidden;
   touch-action: manipulation;
+}
+
+#root {
+  position: fixed;
+  inset: 0;
+  width: 100%;
 }
 
 h1, h2, h3, h4, p, ol, ul {
@@ -814,7 +826,7 @@ img {
 
 @media (min-width: 600px) {
   :root {
-    --gutter: 28px;
+    --gutter: 20px;
   }
 }
 

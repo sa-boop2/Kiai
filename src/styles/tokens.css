@@ -62,7 +62,7 @@
   --font-serif: ui-serif, 'New York', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
 
   /* Layout */
-  --gutter: 20px;
+  --gutter: 14px;
   --radius-card: 26px;
   --radius-medium: 18px;
   --radius-small: 12px;
@@ -71,7 +71,7 @@
   --safe-bottom: env(safe-area-inset-bottom, 0px);
   --safe-left: env(safe-area-inset-left, 0px);
   --safe-right: env(safe-area-inset-right, 0px);
-  --content-max: 760px;
+  --content-max: 820px;
 }
 
 /* Standalone iOS PWA bookmark safe-area safeguards */

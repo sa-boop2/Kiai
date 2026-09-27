@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { type CSSProperties, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
@@ -6,7 +6,6 @@ import { BodyDiagram, type BodyPart } from '../../components/BodyDiagram'
 import {
   BulletList,
   EmptyState,
-  FilterPill,
   NumberedSteps,
   PrimaryButton,
   Segmented,
@@ -83,27 +82,8 @@ function matchesBodyPart(exercise: Exercise, part: BodyPart): boolean {
   if (p === 'quads') return cat === 'quads' || name.includes('quad') || name.includes('thigh')
   if (p === 'calves') return cat === 'calves' || cat === 'shins' || name.includes('calf') || name.includes('calves') || name.includes('shin')
   if (p === 'feet') return cat === 'feet' || name.includes('foot') || name.includes('feet') || name.includes('ankle') || name.includes('toe')
-  if (p === 'cardio') return cat === 'cardio' || cat.includes('cardio') || name.includes('cardio') || name.includes('hiit') || name.includes('jump') || name.includes('burpee') || name.includes('skip') || name.includes('shadow')
   return cat === p || (exercise.targets ? exercise.targets.some((t) => t.toLowerCase().includes(p)) : false)
 }
-
-const CATEGORY_CHIPS: { id: string | null; label: string }[] = [
-  { id: null, label: 'All' },
-  { id: 'neck', label: 'Neck' },
-  { id: 'shoulders', label: 'Shoulders' },
-  { id: 'chest', label: 'Chest' },
-  { id: 'arms', label: 'Arms' },
-  { id: 'core', label: 'Core' },
-  { id: 'lowerBack', label: 'Lower Back' },
-  { id: 'lats', label: 'Back & Lats' },
-  { id: 'glutes', label: 'Glutes' },
-  { id: 'hipFlexors', label: 'Hip Flexors' },
-  { id: 'adductors', label: 'Adductors' },
-  { id: 'hamstrings', label: 'Hamstrings' },
-  { id: 'quads', label: 'Quads' },
-  { id: 'calves', label: 'Calves' },
-  { id: 'feet', label: 'Feet & Ankles' },
-]
 
 export function LibraryScreen() {
   const { t } = useI18n()
@@ -113,7 +93,6 @@ export function LibraryScreen() {
   const [activeTab, setActiveTab] = useState<'exercises' | 'martialArts'>('exercises')
   const [query, setQuery] = useState('')
   const [selectedMuscle, setSelectedMuscle] = useState<BodyPart | null>(null)
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
   const [subFilter, setSubFilter] = useState<SubFilterType>('all')
   const [pickerExercise, setPickerExercise] = useState<Exercise | null>(null)
 
@@ -129,9 +108,6 @@ export function LibraryScreen() {
         if (!matchesQuery) return false
       }
       if (selectedMuscle && !matchesBodyPart(ex, selectedMuscle)) {
-        return false
-      }
-      if (selectedCategory && ex.category !== selectedCategory) {
         return false
       }
       return true
@@ -179,7 +155,7 @@ export function LibraryScreen() {
     })
 
     return { filteredExercises: sorted, allCount: count }
-  }, [allExercises, query, selectedMuscle, selectedCategory, subFilter])
+  }, [allExercises, query, selectedMuscle, subFilter])
 
   // Filter martial arts
   const filteredArts = useMemo(() => {
@@ -238,22 +214,6 @@ export function LibraryScreen() {
               )}
             </label>
           </div>
-
-          {/* Category Chips for Exercises */}
-          {activeTab === 'exercises' && (
-            <div className="library-categories">
-              {CATEGORY_CHIPS.map((chip) => (
-                <FilterPill
-                  key={chip.label}
-                  title={chip.label}
-                  selected={selectedCategory === chip.id}
-                  onClick={() => {
-                    setSelectedCategory(selectedCategory === chip.id ? null : chip.id)
-                  }}
-                />
-              ))}
-            </div>
-          )}
         </div>
       }
     >
@@ -265,18 +225,13 @@ export function LibraryScreen() {
               selectedPart={selectedMuscle}
               onSelectPart={(part) => {
                 setSelectedMuscle(part)
-                if (part) setSelectedCategory(null)
               }}
             />
 
             {/* Results Header */}
             <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
               <h2 style={{ fontSize: '18px' }}>
-                {selectedMuscle
-                  ? `${formatMuscleTitle(selectedMuscle)} Stretches`
-                  : selectedCategory
-                  ? `${categoryMeta(selectedCategory as BodyRegion).title} Stretches`
-                  : 'All Exercises'}
+                {selectedMuscle ? `${formatMuscleTitle(selectedMuscle)} Stretches` : 'All Exercises'}
               </h2>
               <span className="library-count-badge">
                 {filteredExercises.length} {filteredExercises.length === 1 ? 'exercise' : 'exercises'}
@@ -339,7 +294,6 @@ export function LibraryScreen() {
                     className="btn btn-secondary"
                     onClick={() => {
                       setSelectedMuscle(null)
-                      setSelectedCategory(null)
                       setSubFilter('all')
                       setQuery('')
                     }}
@@ -352,6 +306,8 @@ export function LibraryScreen() {
               <div className="library-exercise-list">
                 {filteredExercises.map((exercise) => {
                   const meta = categoryMeta(exercise.category as BodyRegion)
+                  const targetLabel = selectedMuscle ? formatMuscleTitle(selectedMuscle) : null
+                  const showTargetBadge = targetLabel && targetLabel !== meta.title
                   return (
                     <div
                       key={exercise.slug}
@@ -366,9 +322,9 @@ export function LibraryScreen() {
                         <span className="library-exercise-name">{exercise.name}</span>
                         <span className="library-exercise-summary">{exercise.summary}</span>
                         <div className="library-exercise-meta">
-                          {selectedMuscle && (
+                          {showTargetBadge && (
                             <span className="library-target-badge">
-                              <Icon name="target" size={10} strokeWidth={2.4} /> {formatMuscleTitle(selectedMuscle)}
+                              <Icon name="target" size={10} strokeWidth={2.4} /> {targetLabel}
                             </span>
                           )}
                           <TagChip text={meta.title} tint={meta.tint} />
@@ -553,7 +509,6 @@ function formatMuscleTitle(part: BodyPart): string {
     quads: 'Quadriceps',
     calves: 'Calf & Shin',
     feet: 'Foot & Ankle',
-    cardio: 'Cardio & Conditioning',
   }
   return map[part] || part
 }
@@ -687,6 +642,8 @@ export function ExerciseSheet({ slug }: { slug: string }) {
   const exercise = allExercises.find((e) => e.slug === slug)
   if (!exercise) return null
 
+  const meta = categoryMeta(exercise.category as BodyRegion)
+
   return (
     <>
       <SheetHeader
@@ -698,50 +655,60 @@ export function ExerciseSheet({ slug }: { slug: string }) {
         }
       />
       <div className="sheet-scroll form">
-        <div className="detail-hero">
-          <SymbolTile icon={exercise.symbol} size={88} tint={categoryMeta(exercise.category as BodyRegion).tint} />
+        <div className="detail-hero" style={{ '--tint': meta.tint } as CSSProperties}>
+          <div className="detail-hero-glow" aria-hidden="true" />
+          <SymbolTile icon={exercise.symbol} size={88} tint={meta.tint} />
           <h2>{exercise.name}</h2>
           <p>{exercise.summary}</p>
+
+          <div className="detail-tags">
+            <TagChip text={meta.title} icon={meta.symbol} tint={meta.tint} filled />
+            {exercise.equipment.map((e) => {
+              const eqMeta = equipmentMeta(e)
+              return <TagChip key={e} text={eqMeta.title} icon={eqMeta.symbol} />
+            })}
+          </div>
+
+          <div className="hero-stats card">
+            <div className="hero-stat">
+              <strong>{exercise.duration}s</strong>
+              <span>Duration</span>
+            </div>
+            <div className="hero-stat">
+              <strong>{exercise.bilateral ? 'Both' : 'One'}</strong>
+              <span>Sides</span>
+            </div>
+            <div className="hero-stat">
+              <strong>{exercise.duration >= 45 ? 'Hold' : 'Dynamic'}</strong>
+              <span>Style</span>
+            </div>
+          </div>
         </div>
 
-        <div className="detail-tags">
-          <TagChip
-            text={categoryMeta(exercise.category as BodyRegion).title}
-            icon={categoryMeta(exercise.category as BodyRegion).symbol}
-            tint={categoryMeta(exercise.category as BodyRegion).tint}
-            filled
-          />
-          {exercise.equipment.map((e) => {
-            const meta = equipmentMeta(e)
-            return <TagChip key={e} text={meta.title} icon={meta.symbol} />
-          })}
-        </div>
-
-        {/* Add to Kata Button */}
-        <div style={{ marginTop: '4px', marginBottom: '8px' }}>
-          <PrimaryButton
-            icon="plus"
-            tint={categoryMeta(exercise.category as BodyRegion).tint}
-            onClick={() => {
-              haptic('selection')
-              setShowKataPicker(true)
-            }}
-          >
-            Add to Kata
-          </PrimaryButton>
-        </div>
-
-        <div className="detail-card">
+        <div className="card detail-card">
           <h4>How to perform</h4>
           <NumberedSteps steps={exercise.instructions} />
         </div>
 
         {exercise.tips.length > 0 && (
-          <div className="detail-card">
+          <div className="card detail-card">
             <h4>Key Tips</h4>
             <BulletList items={exercise.tips} />
           </div>
         )}
+      </div>
+
+      <div className="sheet-footer">
+        <PrimaryButton
+          icon="plus"
+          tint={meta.tint}
+          onClick={() => {
+            haptic('selection')
+            setShowKataPicker(true)
+          }}
+        >
+          Add to Kata
+        </PrimaryButton>
       </div>
 
       {/* Add to Kata Picker Modal */}
