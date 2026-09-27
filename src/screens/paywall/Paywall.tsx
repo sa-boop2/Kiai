@@ -3,7 +3,6 @@ import { Screen } from '../../components/Screen'
 import { Icon } from '../../components/Icon'
 import { haptic } from '../../lib/haptics'
 import { nav } from '../../lib/nav'
-import { getState } from '../../lib/store'
 
 
 export function PaywallScreen() {
@@ -58,5 +57,6 @@ export function PaywallScreen() {
     </Screen>
   )
 }
+
 
 
