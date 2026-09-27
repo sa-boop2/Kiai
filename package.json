@@ -10,6 +10,7 @@
     "preview": "vite preview",
     "typecheck": "tsc --noEmit",
     "sync-content": "node scripts/sync-content.mjs",
+    "ship": "node scripts/ship.mjs",
     "deploy": "npx netlify-cli deploy --prod",
     "deploy:preview": "npx netlify-cli deploy"
   },
