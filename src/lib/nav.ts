@@ -20,6 +20,7 @@ export type Route =
   | { name: 'privacy' }
   | { name: 'terms' }
   | { name: 'faq' }
+  | { name: 'achievements' }
 
 export type EditorMode =
   | { kind: 'create' }

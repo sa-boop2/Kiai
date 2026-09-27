@@ -2,7 +2,7 @@ import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
-import { Card, EmptyState, PrimaryButton, StatTile, SymbolTile, TagChip } from '../../components/ui'
+import { Card, EmptyState, PrimaryButton, ProgressBar, StatTile, SymbolTile, TagChip } from '../../components/ui'
 import { artById } from '../../data/content'
 import { phaseMeta } from '../../data/meta'
 import type { FlexibilityBenchmark } from '../../data/types'
@@ -21,20 +21,33 @@ export function AnalyticsScreen() {
   const profile = useProfile()
   const flexibilityRecords = useFlexibilityRecords()
   const { t } = useI18n()
-  const snapshot = useMemo(() => makeSnapshot(sessions, profile.createdAt, true), [sessions, profile.createdAt])
+  const snapshot = useMemo(() => makeSnapshot(sessions, profile.createdAt, false), [sessions, profile.createdAt])
+  const appState = getState()
+  const achievements = useMemo(() => computeAchievements(appState), [appState])
+  const unlockedCount = useMemo(() => achievements.filter((a) => a.unlocked).length, [achievements])
 
   return (
     <Screen title={t('Analytics')} largeTitle contentClassName="list-stack">
       <ConsistencyCard value={snapshot.consistency} />
 
       <div className="grid-2">
-        <StatTile title={t('Longest streak')} value={String(snapshot.longestStreak)} caption={snapshot.longestStreak === 1 ? 'day' : 'days'} icon="trophy.fill" tint="var(--gold)" />
         <StatTile
-          title={t('Favorite exercise')}
-          value={snapshot.favorite?.name ?? '—'}
-          caption={snapshot.favorite ? `${minutes(snapshot.favorite.seconds)} total` : 'Train to find out'}
-          icon="heart.fill"
-          tint="var(--sakura)"
+          title={t('Longest streak')}
+          value={String(snapshot.longestStreak)}
+          caption={snapshot.longestStreak === 1 ? 'day' : 'days'}
+          icon="flame.fill"
+          tint="var(--ember)"
+        />
+        <StatTile
+          title={t('Achievements')}
+          value={`${unlockedCount} / ${achievements.length}`}
+          caption={unlockedCount === achievements.length ? 'All unlocked!' : `${unlockedCount} unlocked · View`}
+          icon="trophy.fill"
+          tint="var(--gold)"
+          onClick={() => {
+            haptic('selection')
+            nav.push({ name: 'achievements' })
+          }}
         />
       </div>
 
@@ -68,8 +81,6 @@ export function AnalyticsScreen() {
       </button>
 
       <MonthCalendar sessionsByDay={snapshot.sessionsByDay} />
-
-      <AchievementsSection />
 
       <div className="totals-footer">
         <span><Icon name="checkmark.seal" size={14} />{snapshot.sessionCount} sessions</span>
@@ -541,70 +552,103 @@ export function LogFlexibilitySheet({ benchmark }: { benchmark: FlexibilityBench
   )
 }
 
-function AchievementsSection() {
+export function AchievementsScreen() {
   const appState = getState()
   const achievements = useMemo(() => computeAchievements(appState), [appState])
   const unlockedCount = achievements.filter((a) => a.unlocked).length
 
   return (
-    <Card style={{ padding: '18px 16px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Icon name="trophy.fill" size={20} style={{ color: 'var(--gold)' }} />
-          <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 700 }}>Achievements</h3>
+    <Screen title="Achievements" back contentClassName="list-stack">
+      <Card style={{ padding: '22px 18px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '8px' }}>
+        <div
+          style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '999px',
+            background: 'color-mix(in srgb, var(--gold) 15%, var(--surface))',
+            color: 'var(--gold)',
+            display: 'grid',
+            placeItems: 'center',
+            marginBottom: '4px',
+            border: '1px solid color-mix(in srgb, var(--gold) 35%, transparent)',
+          }}
+        >
+          <Icon name="trophy.fill" size={30} />
         </div>
-        <span style={{ background: 'color-mix(in srgb, var(--gold) 20%, transparent)', color: 'var(--gold)', fontWeight: 700, fontSize: '12px', padding: '3px 8px', borderRadius: '999px' }}>
-          {unlockedCount} / {achievements.length} Unlocked
+        <h2 style={{ margin: 0, fontSize: '22px', fontWeight: 700 }}>Martial Milestones</h2>
+        <p className="secondary small" style={{ margin: 0, maxWidth: '290px' }}>
+          Honor your training consistency, flexibility breakthroughs, and dedication to the dojo.
+        </p>
+        <span
+          style={{
+            background: 'color-mix(in srgb, var(--gold) 20%, transparent)',
+            color: 'var(--gold)',
+            fontWeight: 700,
+            fontSize: '13px',
+            padding: '4px 12px',
+            borderRadius: '999px',
+            marginTop: '4px',
+          }}
+        >
+          {unlockedCount} of {achievements.length} Unlocked
         </span>
-      </div>
+        <div style={{ width: '100%', maxWidth: '240px', marginTop: '6px' }}>
+          <ProgressBar value={unlockedCount / achievements.length} tint="var(--gold)" height={7} />
+        </div>
+      </Card>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(140px, 1fr))', gap: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
         {achievements.map((item) => (
-          <div
+          <Card
             key={item.id}
             style={{
-              padding: '12px 10px',
-              borderRadius: '14px',
-              background: item.unlocked ? 'color-mix(in srgb, var(--surface-raised) 70%, transparent)' : 'color-mix(in srgb, var(--surface-raised) 30%, transparent)',
-              border: item.unlocked ? `1px solid color-mix(in srgb, ${item.tint} 40%, transparent)` : '1px dashed var(--stroke)',
-              opacity: item.unlocked ? 1 : 0.65,
+              padding: '14px 16px',
               display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
-              textAlign: 'center',
-              gap: '6px',
+              gap: '14px',
+              opacity: item.unlocked ? 1 : 0.65,
+              border: item.unlocked ? `1px solid color-mix(in srgb, ${item.tint} 40%, transparent)` : '1px dashed var(--stroke)',
             }}
           >
             <div
               style={{
-                width: '38px',
-                height: '38px',
+                width: '46px',
+                height: '46px',
                 borderRadius: '999px',
-                background: item.unlocked ? item.tint : 'var(--stroke)',
+                background: item.unlocked ? item.tint : 'var(--surface-raised)',
                 color: item.unlocked ? '#fff' : 'var(--text-tertiary)',
                 display: 'grid',
                 placeItems: 'center',
+                flexShrink: 0,
               }}
             >
-              <Icon name={item.icon} size={20} />
+              <Icon name={item.icon} size={22} />
             </div>
-            <strong style={{ fontSize: '13px', lineHeight: 1.2 }}>{item.title}</strong>
-            <p className="secondary small" style={{ fontSize: '11px', margin: 0, lineHeight: 1.25 }}>
-              {item.description}
-            </p>
-            {!item.unlocked && item.max > 1 && (
-              <span className="muted small" style={{ fontSize: '10px', marginTop: 'auto' }}>
-                {item.current} / {item.max}
-              </span>
-            )}
-            {item.unlocked && (
-              <span style={{ fontSize: '10px', color: 'var(--jade)', fontWeight: 700, marginTop: 'auto' }}>
-                ✓ Completed
-              </span>
-            )}
-          </div>
+            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                <strong style={{ fontSize: '15px' }}>{item.title}</strong>
+                {item.unlocked ? (
+                  <span style={{ fontSize: '11px', color: 'var(--jade)', fontWeight: 700 }}>
+                    ✓ Completed
+                  </span>
+                ) : item.max > 1 ? (
+                  <span className="muted small" style={{ fontSize: '11px' }}>
+                    {item.current} / {item.max}
+                  </span>
+                ) : null}
+              </div>
+              <p className="secondary small" style={{ margin: 0, fontSize: '13px', lineHeight: 1.3 }}>
+                {item.description}
+              </p>
+              {!item.unlocked && item.max > 1 && (
+                <div style={{ width: '100%', marginTop: '6px' }}>
+                  <ProgressBar value={item.current / item.max} tint={item.tint} height={4} />
+                </div>
+              )}
+            </div>
+          </Card>
         ))}
       </div>
-    </Card>
+    </Screen>
   )
 }

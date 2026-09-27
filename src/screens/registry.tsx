@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { SheetHeader } from '../components/SheetHost'
 import type { Route, SheetRoute, Tab } from '../lib/nav'
-import { AnalyticsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet } from './analytics/Analytics'
+import { AnalyticsScreen, AchievementsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet } from './analytics/Analytics'
 import { HomeScreen, QuickStatsSheet } from './home/Home'
 import { EditorSheet, PickerSheet } from './katas/Editor'
 import { KataDetailScreen } from './katas/Katas'
@@ -49,6 +49,8 @@ export function renderRoute(route: Route): ReactNode {
       return <TermsScreen />
     case 'faq':
       return <FaqScreen />
+    case 'achievements':
+      return <AchievementsScreen />
     default:
       return <div>Not found</div>
   }

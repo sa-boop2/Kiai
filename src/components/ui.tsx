@@ -230,7 +230,38 @@ export function SymbolTile({ icon, tint, size = 48 }: { icon: string; tint?: str
   )
 }
 
-export function StatTile({ title, value, caption, icon, tint }: { title: string; value: string; caption?: string; icon: string; tint?: string }) {
+export function StatTile({
+  title,
+  value,
+  caption,
+  icon,
+  tint,
+  onClick,
+}: {
+  title: string
+  value: string
+  caption?: string
+  icon: string
+  tint?: string
+  onClick?: () => void
+}) {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className="card stat-tile pressable"
+        style={{ ...tintStyle(tint), cursor: 'pointer', textAlign: 'left', border: 'none' }}
+        onClick={onClick}
+      >
+        <span className="stat-icon">
+          <Icon name={icon} size={15} />
+        </span>
+        <span className={`stat-value ${value.length > 7 && !/^[\d:+%.,\s]+$/.test(value) ? 'text-value' : ''}`}>{value}</span>
+        <span className="stat-title">{title}</span>
+        {caption && <span className="stat-caption">{caption}</span>}
+      </button>
+    )
+  }
   return (
     <div className="card stat-tile" style={tintStyle(tint)}>
       <span className="stat-icon">
