@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+    <meta name="description" content="Kiai — daily stretching, mobility and balance routines built for martial artists." />
+    <meta name="theme-color" content="#F6F4F1" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="application-name" content="Kiai" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-title" content="Kiai" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" type="image/svg+xml" href="/icons/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-32.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <title>Kiai</title>
+    <script>
+      // Apply the saved appearance before first paint to avoid a light/dark flash.
+      (function () {
+        try {
+          var saved = JSON.parse(localStorage.getItem('kiai.state.v1') || 'null')
+          var mode = (saved && saved.settings && saved.settings.appearance) || 'system'
+          var dark = mode === 'dark' || (mode === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches)
+          document.documentElement.dataset.theme = dark ? 'dark' : 'light'
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', dark ? '#0A0A0B' : '#F6F4F1')
+        } catch (e) {}
+      })()
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript>Kiai needs JavaScript to run.</noscript>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

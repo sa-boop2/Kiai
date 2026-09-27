@@ -1,0 +1,148 @@
+/*
+ * Kiai design tokens — "ink & ember". Mirrors ../Kiai/DesignSystem/Theme.swift exactly.
+ * Warm rice-paper neutrals in light mode, deep sumi ink in dark mode, a single vermilion accent.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Brand */
+  --ember: #e4572e;
+  --ember-soft: #fbe3da;
+  --crimson: #c21e3a;
+  --jade: #23936c;
+  --gold: #b8901c;
+  --deep-blue: #1e3a8a;
+  --indigo: #4f5bd5;
+  --sakura: #d6517d;
+  --slate: #5b6472;
+  --ember-deep: #c23a1b;
+
+  /* 1.15: the user's chosen accent colour (Settings → Appearance). Defaults to ember and is
+   * overridden at runtime — see `applyAccentColor` in lib/theme.ts. Mirrors `Theme.accent` in
+   * Theme.swift, which is likewise ember by default and reassignable per KiaiTint. */
+  --accent: var(--ember);
+
+  /* Surfaces */
+  --background: #f6f4f1;
+  --surface: #ffffff;
+  --surface-raised: #efece7;
+  --stroke: rgba(0, 0, 0, 0.06);
+  --separator: rgba(60, 60, 67, 0.16);
+
+  /* Text */
+  --text: #000000;
+  --text-secondary: rgba(60, 60, 67, 0.62);
+  --text-tertiary: rgba(0, 0, 0, 0.32);
+  --destructive: #ff3b30;
+
+  /* Ranks (belt-inspired) */
+  --rank-0: #b9b4ac;
+  --rank-1: #d4a017;
+  --rank-2: #e07b2a;
+  --rank-3: var(--jade);
+  --rank-4: var(--indigo);
+  --rank-5: #7a4e2d;
+  --rank-6: #1c1c1e;
+  --rank-7: var(--gold);
+
+  /* Liquid Glass */
+  --glass-bg: rgba(255, 255, 255, 0.56);
+  --glass-bg-strong: rgba(255, 255, 255, 0.78);
+  --glass-rim: rgba(255, 255, 255, 0.65);
+  --glass-edge: rgba(0, 0, 0, 0.07);
+  --glass-shadow: rgba(40, 30, 20, 0.16);
+  --glass-sheen: rgba(255, 255, 255, 0.55);
+  --glass-blur: 22px;
+  --scrim: rgba(12, 10, 8, 0.28);
+
+  /* Type */
+  --font-text: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI Variable Text', 'Segoe UI', system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-rounded: ui-rounded, 'SF Pro Rounded', -apple-system, BlinkMacSystemFont, 'Segoe UI Variable Display', 'Segoe UI', system-ui, Roboto, sans-serif;
+  --font-serif: ui-serif, 'New York', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+
+  /* Layout */
+  --gutter: 20px;
+  --radius-card: 26px;
+  --radius-medium: 18px;
+  --radius-small: 12px;
+  --tabbar-height: 64px;
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-left: env(safe-area-inset-left, 0px);
+  --safe-right: env(safe-area-inset-right, 0px);
+  --content-max: 760px;
+}
+
+/* Standalone iOS PWA bookmark safe-area safeguards */
+:root[data-standalone='true'] {
+  --safe-top: max(env(safe-area-inset-top, 0px), 44px);
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 24px);
+}
+
+:root {
+
+  /* Motion — true spring curves (critically damped / bouncy), generated from SwiftUI parameters. */
+  --dur-push: 523ms;
+  --ease-push: linear(0, 0.027, 0.092, 0.177, 0.269, 0.362, 0.449, 0.53, 0.602, 0.665, 0.72, 0.767, 0.807, 0.841, 0.869, 0.893, 0.913, 0.929, 0.942, 0.953, 0.962, 0.969, 0.975, 0.98, 0.984, 0.987, 0.99, 0.992, 0.993, 0.995, 0.996, 0.997, 0.997, 0.998, 0.998, 0.999, 1);
+  --dur-smooth: 607ms;
+  --ease-smooth: linear(0, 0.027, 0.092, 0.176, 0.268, 0.359, 0.447, 0.527, 0.599, 0.662, 0.717, 0.765, 0.805, 0.839, 0.867, 0.891, 0.911, 0.927, 0.941, 0.952, 0.961, 0.968, 0.975, 0.979, 0.983, 0.987, 0.989, 0.991, 0.993, 0.994, 0.996, 0.996, 0.997, 0.998, 0.998, 0.999, 1);
+  --dur-snappy: 418ms;
+  --ease-snappy: linear(0, 0.026, 0.09, 0.175, 0.271, 0.37, 0.465, 0.553, 0.633, 0.703, 0.763, 0.814, 0.857, 0.892, 0.92, 0.942, 0.96, 0.973, 0.983, 0.991, 0.996, 1, 1.002, 1.004, 1.005, 1.005, 1.005, 1.005, 1.004, 1.004, 1.003, 1.003, 1.002, 1.002, 1.002, 1.001, 1);
+  --dur-bouncy: 733ms;
+  --ease-bouncy: linear(0, 0.035, 0.124, 0.242, 0.373, 0.504, 0.625, 0.733, 0.824, 0.897, 0.954, 0.996, 1.024, 1.042, 1.051, 1.054, 1.053, 1.048, 1.042, 1.035, 1.027, 1.021, 1.015, 1.01, 1.006, 1.003, 1, 0.999, 0.998, 0.997, 0.997, 0.997, 0.997, 0.998, 0.998, 0.998, 1);
+  --dur-sheet: 566ms;
+  --ease-sheet: linear(0, 0.024, 0.084, 0.165, 0.256, 0.35, 0.441, 0.527, 0.605, 0.674, 0.735, 0.786, 0.83, 0.867, 0.897, 0.922, 0.942, 0.958, 0.97, 0.979, 0.987, 0.992, 0.996, 0.999, 1.001, 1.002, 1.002, 1.003, 1.003, 1.003, 1.003, 1.003, 1.002, 1.002, 1.002, 1.001, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Browsers without linear() easing get close cubic-bezier approximations. */
+@supports not (transition-timing-function: linear(0, 1)) {
+  :root {
+    --ease-push: cubic-bezier(0.2, 0.9, 0.25, 1);
+    --ease-smooth: cubic-bezier(0.2, 0.9, 0.25, 1);
+    --ease-snappy: cubic-bezier(0.25, 1.1, 0.4, 1);
+    --ease-bouncy: cubic-bezier(0.34, 1.4, 0.5, 1);
+    --ease-sheet: cubic-bezier(0.2, 0.95, 0.3, 1.02);
+  }
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --ember: #ff6a42;
+  --ember-soft: #3a1d14;
+  --crimson: #e8425c;
+  --jade: #3ccb97;
+  --gold: #e8c35a;
+  --deep-blue: #4c6fe0;
+  --indigo: #8a94ff;
+  --sakura: #ff7ea8;
+  --slate: #a3acba;
+  --ember-deep: #d9481f;
+
+  --background: #0a0a0b;
+  --surface: #161618;
+  --surface-raised: #232326;
+  --stroke: rgba(255, 255, 255, 0.07);
+  --separator: rgba(84, 84, 88, 0.5);
+
+  --text: #ffffff;
+  --text-secondary: rgba(235, 235, 245, 0.6);
+  --text-tertiary: rgba(255, 255, 255, 0.34);
+  --destructive: #ff453a;
+
+  --rank-0: #d9d5cf;
+  --rank-1: #f2c94c;
+  --rank-2: #ff9a4d;
+  --rank-5: #b07a52;
+  --rank-6: #8e8e93;
+
+  --glass-bg: rgba(38, 38, 42, 0.5);
+  --glass-bg-strong: rgba(34, 34, 38, 0.78);
+  --glass-rim: rgba(255, 255, 255, 0.16);
+  --glass-edge: rgba(0, 0, 0, 0.4);
+  --glass-shadow: rgba(0, 0, 0, 0.5);
+  --glass-sheen: rgba(255, 255, 255, 0.1);
+  --scrim: rgba(0, 0, 0, 0.5);
+}

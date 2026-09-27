@@ -1,0 +1,28 @@
+{
+  "name": "kiai-web",
+  "private": true,
+  "version": "1.5.0",
+  "description": "Kiai — stretching & mobility for martial artists. Web/PWA version of the native iOS app.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "sync-content": "node scripts/sync-content.mjs",
+    "deploy": "npx netlify-cli deploy --prod",
+    "deploy:preview": "npx netlify-cli deploy"
+  },
+  "dependencies": {
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "netlify-cli": "^27.8.0",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.0"
+  }
+}
