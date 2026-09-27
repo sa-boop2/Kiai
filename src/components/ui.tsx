@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useId, useRef } from 'react'
+﻿import { type CSSProperties, type ReactNode, useId, useRef } from 'react'
 import { difficultyMeta, tintColor } from '../data/meta'
 import type { Rank } from '../data/levels'
 import { haptic } from '../lib/haptics'
@@ -557,9 +557,7 @@ export function SettingsRow({
 }: { icon: string; tint: string; title: string; trailing?: ReactNode; onClick?: () => void; destructive?: boolean; chevron?: boolean }) {
   const content = (
     <>
-      <span className="settings-icon" style={{ background: tint }}>
-        <Icon name={icon} size={16} strokeWidth={2.2} />
-      </span>
+      <span className="settings-icon" style={{ color: tint, background: "transparent" }}><Icon name={icon} size={22} strokeWidth={1.8} /></span>
       <span className={`settings-title ${destructive ? 'destructive' : ''}`}>{title}</span>
       <span className="settings-trailing">
         {trailing}
@@ -583,3 +581,5 @@ export function SettingsRow({
   }
   return <div className="settings-row">{content}</div>
 }
+
+

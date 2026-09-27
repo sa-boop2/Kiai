@@ -1,26 +1,26 @@
-import { type CSSProperties, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+﻿import { type CSSProperties, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { confirmAction } from '../../components/ActionSheet'
 import { Icon } from '../../components/Icon'
 import { Eyebrow, GlassIconButton, PrimaryButton, ProgressBar, RankEmblem, StatTile, SymbolTile } from '../../components/ui'
 import { artById } from '../../data/content'
 import { nextRank } from '../../data/levels'
-import { phaseMeta } from '../../data/meta'
+
 import type { Phase, Session } from '../../data/types'
 import { recordSession } from '../../lib/actions'
 import { audio } from '../../lib/audio'
-import { clock, minutes, short } from '../../lib/format'
+import { clock, minutes, short, toKanjiTimer } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
 import { nav } from '../../lib/nav'
 import { planWorkSteps, planTotalSeconds, stepEyebrow, stepTint, type WorkoutPlan } from '../../lib/plan'
 import { WorkoutPlayer } from '../../lib/player'
 import { makeSnapshot } from '../../lib/progression'
-import { useProfile, useSessions } from '../../lib/store'
+import { useProfile, useSessions, useSettings } from '../../lib/store'
 
 type WakeLockSentinelLike = { release: () => Promise<void> }
 
 /** Full-screen workout player. */
-export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
+export function PlayerOverlay({ plan, minimized = false }: { plan: WorkoutPlan; minimized?: boolean }) {
   const player = useMemo(() => new WorkoutPlayer(plan), [plan])
   useSyncExternalStore(player.subscribe, player.getVersion)
   const { t } = useI18n()
@@ -45,15 +45,20 @@ export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
     const choice = await confirmAction({
       title: t('End workout?'),
       message: "Time you've trained so far can still count toward your streak and rank.",
-      actions: [{ label: t('End & save progress') }, { label: t('Discard workout'), role: 'destructive' }],
+      actions: [{ label: t('Pause Workout') }, { label: t('End & save progress') }, { label: t('Discard workout'), role: 'destructive' }],
       cancelLabel: t('Keep training'),
     })
     if (choice === null) {
       if (wasRunning) player.togglePause()
       return
     }
+    if (choice === 0) {
+      // Pause Workout
+      nav.minimizePlan()
+      return
+    }
     recorded.current = true
-    const save = choice === 0
+    const save = choice === 1
     player.endEarly()
     const saved = save ? recordSession(sessionFrom(player, false)) : null
     if (saved) {
@@ -115,6 +120,23 @@ export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
   const ready = player.status === 'ready'
   const tint = step ? stepTint(step) : 'var(--ember)'
 
+  if (minimized) {
+    return (
+      <div className="mini-player pressable" role="button" tabIndex={0} onClick={() => nav.maximizePlan()} style={{ position: 'fixed', bottom: 'calc(var(--safe-bottom) + 80px)', left: '16px', right: '16px', zIndex: 100, background: 'color-mix(in srgb, var(--surface-raised) 70%, transparent)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderRadius: '16px', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: '12px', boxShadow: '0 8px 32px rgba(0,0,0,0.5)', border: '1px solid color-mix(in srgb, var(--stroke) 50%, transparent)' }}>
+         <div style={{ width: '40px', height: '40px', borderRadius: '10px', background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+           <Icon name={step?.symbol ?? 'figure.stand'} size={20} style={{ color: tint }} />
+         </div>
+         <div style={{ flex: 1, minWidth: 0 }}>
+           <div style={{ fontSize: '12px', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px', fontWeight: 600 }}>Paused</div>
+           <div style={{ fontWeight: 600, fontSize: '15px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{plan.title}</div>
+         </div>
+         <button type="button" className="glass" aria-label="Resume" style={{ width: 40, height: 40, borderRadius: 20, display: 'flex', alignItems: 'center', justifyContent: 'center' }} onClick={(e) => { e.stopPropagation(); nav.maximizePlan(); }}>
+           <Icon name="play.fill" size={16} />
+         </button>
+      </div>
+    )
+  }
+
   return (
     <div className={`player-layer ${closing ? 'closing' : ''}`} style={{ '--tint': tint } as CSSProperties} role="dialog" aria-modal="true" aria-label={plan.title}>
       <div className="player-bg" />
@@ -144,39 +166,45 @@ export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
               />
             </div>
 
-            <div className="player-header" key={step.id}>
+                        <div className="player-header" key={step.id}>
               <span className="phase-pill">
                 <Icon name={step.phase ? (step.phase === 'warmup' ? 'flame.fill' : step.phase === 'cooldown' ? 'leaf.fill' : 'bolt.fill') : step.kind === 'rest' ? 'pause.fill' : 'figure.stand'} size={12} />
                 {stepEyebrow(step)}
               </span>
               <h1>{step.title}</h1>
               <p className={step.kind === 'work' && step.bilateral && player.hasSwitchedSides ? 'switched' : ''}>
-                {step.kind === 'work' && step.bilateral
+                {step.kind === 'work' && step.pnf && player.getPnfPhase()
+                  ? (player.getPnfPhase() === 'passive' ? '1. Passive Stretch (Find limits)' : player.getPnfPhase() === 'contract' ? '2. CONTRACT MUSCLES (Hold firm!)' : '3. DEEP STRETCH (Relax further)')
+                  : step.kind === 'work' && step.bilateral
                   ? player.hasSwitchedSides
-                    ? '⇄ Switch — second side'
-                    : '⇄ First side'
+                    ? '🔄 Switch - second side'
+                    : '👉 First side'
                   : step.kind === 'work'
                     ? `Exercise ${player.workStepNumber} of ${planWorkSteps(plan).length}`
                     : step.detail}
               </p>
+              {step.note && (
+                <div style={{ marginTop: '8px', fontSize: '14px', color: 'var(--text-secondary)', background: 'color-mix(in srgb, var(--surface) 50%, transparent)', padding: '6px 10px', borderRadius: '6px', display: 'inline-block' }}>
+                  <Icon name="pencil" size={12} style={{ marginRight: '6px' }} />
+                  {step.note}
+                </div>
+              )}
             </div>
 
             <TimerRing player={player} />
 
-            <div className="player-next">
-              {player.status === 'awaitingContinue' ? (
-                <p className="player-next-note">Set complete. Take your time — tap Continue when ready.</p>
-              ) : player.upcomingWorkStep ? (
-                <div className="glass up-next">
+            <div className="player-next" style={{ minHeight: '64px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              {player.upcomingWorkStep ? (
+                <div className="glass up-next" style={{ width: '100%', boxSizing: 'border-box' }}>
                   <SymbolTile icon={player.upcomingWorkStep.symbol} tint={stepTint(player.upcomingWorkStep)} size={40} />
-                  <span>
+                  <span style={{ flex: 1, textAlign: 'left', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
                     <small>{t('Up next')}</small>
-                    <strong>{player.upcomingWorkStep.title}</strong>
+                    <strong style={{ display: 'block', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{player.upcomingWorkStep.title}</strong>
                   </span>
                   <span className="tabular">{clock(player.upcomingWorkStep.duration)}</span>
                 </div>
               ) : (
-                <p className="player-next-note">
+                <p className="player-next-note" style={{ margin: 0 }}>
                   <Icon name="flag.checkered" size={16} /> Final stretch — finish strong
                 </p>
               )}
@@ -187,7 +215,7 @@ export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
               <button
                 type="button"
                 className={`play-button pressable ${player.status === 'awaitingContinue' ? 'continue' : ''}`}
-                aria-label={player.status === 'running' ? 'Pause' : player.status === 'awaitingContinue' ? 'Continue' : 'Play'}
+                aria-label={player.status === 'running' || player.status === 'switchingSides' ? 'Pause' : player.status === 'awaitingContinue' ? 'Continue' : 'Play'}
                 onClick={() => {
                   haptic('medium')
                   audio.unlock()
@@ -197,7 +225,7 @@ export function PlayerOverlay({ plan }: { plan: WorkoutPlan }) {
                 {player.status === 'awaitingContinue' ? (
                   <span>Continue</span>
                 ) : (
-                  <Icon name={player.status === 'running' ? 'pause.fill' : 'play.fill'} size={34} />
+                  <Icon name={player.status === 'running' || player.status === 'switchingSides' ? 'pause.fill' : 'play.fill'} size={34} />
                 )}
               </button>
               <GlassIconButton icon="forward.end.fill" label="Skip" size={64} iconSize={22} onClick={() => player.skip()} />
@@ -281,19 +309,18 @@ function ReadyView({ plan, onStart, onCancel }: { plan: WorkoutPlan; onStart: ()
           <ReadyStat value={String(summaries.length)} label="Phases" />
         </div>
 
-        <div className="ready-phases">
-          {summaries.map((entry) => {
-            const meta = phaseMeta(entry.phase)
-            return (
-              <div key={entry.phase} className="ready-phase-row">
-                <Icon name={meta.symbol} size={15} style={{ color: meta.tint }} />
-                <span>{meta.title}</span>
-                <span className="tabular muted">
-                  {entry.count} · {short(entry.seconds)}
-                </span>
-              </div>
-            )
-          })}
+        <div className="ready-phases" style={{ gap: '2px', background: 'color-mix(in srgb, var(--surface) 40%, transparent)', borderRadius: 'var(--radius-large)', padding: '4px', marginTop: '24px' }}>
+          {planWorkSteps(plan).map((step) => (
+            <div key={step.id} className="ready-phase-row" style={{ background: 'transparent', padding: '10px 12px', gap: '12px', borderRadius: '4px' }}>
+              <Icon name={step.symbol} size={15} style={{ color: stepTint(step) }} />
+              <span style={{ flex: 1, fontSize: '14px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+                {step.title}
+              </span>
+              <span className="tabular muted" style={{ fontSize: '13px' }}>
+                {short(step.duration)}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
       <div className="ready-footer">
@@ -333,6 +360,7 @@ function sessionFrom(player: WorkoutPlayer, completed: boolean): Omit<Session, '
  * frame — so it animates at the display's native refresh rate (120 Hz on ProMotion iPhones).
  */
 function TimerRing({ player }: { player: WorkoutPlayer }) {
+  const settings = useSettings()
   const arcRef = useRef<SVGCircleElement>(null)
   const timeRef = useRef<HTMLSpanElement>(null)
   const R = 128
@@ -345,7 +373,7 @@ function TimerRing({ player }: { player: WorkoutPlayer }) {
       const now = performance.now()
       const progress = player.stepProgress(now)
       if (arcRef.current) arcRef.current.style.strokeDashoffset = String(C * progress)
-      const text = clock(Math.ceil(player.remaining(now) - 0.0001))
+      const r = Math.ceil(player.remaining(now) - 0.0001); const text = settings.arabicTimer ? clock(r) : toKanjiTimer(r)
       if (text !== lastText && timeRef.current) {
         timeRef.current.textContent = text
         lastText = text
@@ -356,13 +384,13 @@ function TimerRing({ player }: { player: WorkoutPlayer }) {
     return () => cancelAnimationFrame(frame)
   }, [player, C])
 
-  const label = player.status === 'paused' ? 'Paused' : player.status === 'awaitingContinue' ? 'Set done' : ''
+  const label = player.status === 'switchingSides' ? 'Switch sides' : player.status === 'paused' ? 'Paused' : player.status === 'awaitingContinue' ? 'Set done' : ''
 
   return (
     <button
       type="button"
       className={`timer-ring ${player.status}`}
-      aria-label={`Time remaining. Tap to ${player.status === 'running' ? 'pause' : 'resume'}`}
+      aria-label={`Time remaining. Tap to ${player.status === 'running' || player.status === 'switchingSides' ? 'pause' : 'resume'}`}
       onClick={() => {
         haptic('light')
         audio.unlock()
@@ -390,7 +418,7 @@ function TimerRing({ player }: { player: WorkoutPlayer }) {
       </svg>
       <span className="ring-center">
         <span ref={timeRef} className="ring-time tabular">
-          {clock(player.remaining())}
+          {settings.arabicTimer ? clock(player.remaining()) : toKanjiTimer(player.remaining())}
         </span>
         <span className="ring-status">{label}</span>
       </span>
@@ -472,3 +500,7 @@ function CompleteView({ player, session, onDone }: { player: WorkoutPlayer; sess
     </div>
   )
 }
+
+
+
+

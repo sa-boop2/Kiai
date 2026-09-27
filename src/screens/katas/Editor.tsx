@@ -21,10 +21,11 @@ interface DraftItem {
   id: number
   slug: string
   duration: number
+  note?: string
 }
 
 let draftCounter = 0
-const draft = (slug: string, duration: number): DraftItem => ({ id: ++draftCounter, slug, duration })
+const draft = (slug: string, duration: number, note?: string): DraftItem => ({ id: ++draftCounter, slug, duration, note })
 
 /** Create / edit / customise a Kata. Works on a local draft, so Cancel never changes data. */
 export function EditorSheet({ mode }: { mode: EditorMode }) {
@@ -37,7 +38,7 @@ export function EditorSheet({ mode }: { mode: EditorMode }) {
       mode.kind === 'edit' || mode.kind === 'duplicate' ? findKata(mode.id) : undefined
     const template = mode.kind === 'template' ? mode.template : undefined
     const items = source?.items ?? template?.items ?? NEW_KATA_ITEMS
-    const byPhase = (phase: Phase) => items.filter((i) => i.phase === phase).map((i) => draft(i.slug, i.duration))
+    const byPhase = (phase: Phase) => items.filter((i) => i.phase === phase).map((i) => draft(i.slug, i.duration, i.note))
     return {
       name:
         mode.kind === 'edit' ? (source?.name ?? '')
@@ -72,7 +73,7 @@ export function EditorSheet({ mode }: { mode: EditorMode }) {
           ? 'Add at least one cool-down exercise.'
           : null
 
-  const allItems = (['warmup', 'main', 'cooldown'] as Phase[]).flatMap((phase) => items[phase].map((i) => ({ slug: i.slug, duration: i.duration, phase })))
+  const allItems = (['warmup', 'main', 'cooldown'] as Phase[]).flatMap((phase) => items[phase].map((i) => ({ slug: i.slug, duration: i.duration, phase, note: i.note })))
   const total = estimatedSeconds({ items: allItems, restSeconds: rest }, settings.restSeconds)
 
   const update = (phase: Phase, fn: (list: DraftItem[]) => DraftItem[]) => setItems((current) => ({ ...current, [phase]: fn(current[phase]) }))
@@ -285,53 +286,71 @@ function PhaseEditor({
           const exercise = allExercises.find(e => e.slug === item.slug)
           if (!exercise) return null
           return (
-            <div key={item.id} className={`editor-row ${dragging === item.id ? 'dragging' : ''}`} style={{ viewTransitionName: `row-${item.id}` }}>
-              <button
-                type="button"
-                className="drag-handle no-sheet-drag"
-                aria-label={`Reorder ${exercise.name}`}
-                onPointerDown={(e) => startDrag(e, index)}
-                onKeyDown={(e) => {
-                  if (e.key === 'ArrowUp') move(index, index - 1)
-                  if (e.key === 'ArrowDown') move(index, index + 1)
-                }}
-              >
-                <svg viewBox="0 0 24 24" className="icon" width="18" height="18" aria-hidden="true">
-                  <path d="M5 8h14M5 12h14M5 16h14" />
-                </svg>
-              </button>
-              <button type="button" className="editor-row-info" onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}>
-                <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category).tint} size={40} />
-                <span>
-                  <strong>{exercise.name}</strong>
-                  <span className="tabular">{clock(item.duration)}</span>
-                </span>
-              </button>
-              <div className="duration-edit">
-                <input
-                  type="number"
-                  aria-label={`${exercise.name} duration in seconds`}
-                  value={item.duration || ''}
-                  min={1}
-                  max={3600}
-                  onChange={(e) => {
-                    const value = Number(e.target.value)
-                    onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
+            <div key={item.id} className={`editor-row ${dragging === item.id ? 'dragging' : ''}`} style={{ viewTransitionName: `row-${item.id}`, flexDirection: 'column', alignItems: 'stretch', padding: '12px 10px 12px 4px', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="drag-handle no-sheet-drag"
+                  aria-label={`Reorder ${exercise.name}`}
+                  onPointerDown={(e) => startDrag(e, index)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'ArrowUp') move(index, index - 1)
+                    if (e.key === 'ArrowDown') move(index, index + 1)
                   }}
-                />
-                <span className="duration-unit">sec</span>
+                >
+                  <svg viewBox="0 0 24 24" className="icon" width="18" height="18" aria-hidden="true">
+                    <path d="M5 8h14M5 12h14M5 16h14" />
+                  </svg>
+                </button>
+                <button type="button" className="editor-row-info" onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}>
+                  <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category as BodyRegion).tint} size={48} />
+                  <span>
+                    <strong style={{ fontSize: '16px' }}>{exercise.name}</strong>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
+                      <span style={{ width: '8px', height: '8px', borderRadius: '4px', background: 'currentColor', opacity: 0.5 }}></span>
+                      {categoryMeta(exercise.category as BodyRegion).title} · {exercise.targets.join(', ')}
+                    </span>
+                  </span>
+                </button>
+                <div className="duration-edit">
+                  <input
+                    type="number"
+                    aria-label={`${exercise.name} duration in seconds`}
+                    value={item.duration || ''}
+                    min={1}
+                    max={3600}
+                    onChange={(e) => {
+                      const value = Number(e.target.value)
+                      onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
+                    }}
+                  />
+                  <span className="duration-unit">sec</span>
+                </div>
+                <button
+                  type="button"
+                  className="remove-btn"
+                  aria-label={`Remove ${exercise.name}`}
+                  onClick={() => {
+                    haptic('light')
+                    onChange((list) => list.filter((i) => i.id !== item.id))
+                  }}
+                >
+                  <Icon name="xmark.circle.fill" size={20} />
+                </button>
               </div>
-              <button
-                type="button"
-                className="remove-btn"
-                aria-label={`Remove ${exercise.name}`}
-                onClick={() => {
-                  haptic('light')
-                  onChange((list) => list.filter((i) => i.id !== item.id))
-                }}
-              >
-                <Icon name="xmark.circle.fill" size={20} />
-              </button>
+
+              <div style={{ display: 'flex', paddingLeft: '48px', paddingRight: '40px' }}>
+                <input 
+                  type="text" 
+                  placeholder="Add a custom note (optional)"
+                  value={item.note || ''}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    onChange((list) => list.map((i) => (i.id === item.id ? { ...i, note: value } : i)))
+                  }}
+                  style={{ flex: 1, background: 'color-mix(in srgb, var(--text) 5%, transparent)', border: 'none', borderRadius: '8px', padding: '8px 12px', fontSize: '14px', color: 'var(--text)' }}
+                />
+              </div>
             </div>
           )
         })}

@@ -1,4 +1,4 @@
-import { type CSSProperties, useMemo, useState } from 'react'
+﻿import { type CSSProperties, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
@@ -14,7 +14,7 @@ import {
 } from '../../components/ui'
 import { MARTIAL_ARTS } from '../../data/content'
 import { categoryMeta, equipmentMeta, tintColor } from '../../data/meta'
-import type { BodyRegion, Exercise } from '../../data/types'
+import type { BodyRegion, Exercise, Difficulty } from '../../data/types'
 import { MartialArtEmblem } from '../../components/MartialArtEmblems'
 import { addExerciseToKata } from '../../lib/actions'
 import { toast } from '../../components/Toast'
@@ -22,19 +22,27 @@ import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
 import { getExerciseRelevance, matchesBodyPart } from '../../lib/muscleMatch'
 import { nav } from '../../lib/nav'
-import { useAllExercises, useUserKatas } from '../../lib/store'
+import { useAllExercises, useUserKatas, useSettings, useFavoriteExercises } from '../../lib/store'
+import { usePremadeKatas } from '../../lib/launch'
+import { FilterPill, DifficultyBadge } from '../../components/ui'
+import { estimatedSeconds } from '../../data/content'
+import { minutes } from '../../lib/format'
 
-export type SubFilterType = 'all' | 'holds' | 'dynamic' | 'quick'
+export type SubFilterType = 'all' | 'favorites' | 'holds' | 'dynamic' | 'quick'
 
 export function LibraryScreen() {
   const { t } = useI18n()
   const allExercises = useAllExercises()
+  const favorites = useFavoriteExercises()
 
   const userKatas = useUserKatas()
-  const [activeTab, setActiveTab] = useState<'exercises' | 'martialArts'>('exercises')
+  const premadeKatas = usePremadeKatas()
+  const settings = useSettings()
+  const [activeTab, setActiveTab] = useState<'exercises' | 'premadeKatas' | 'martialArts'>('exercises')
   const [query, setQuery] = useState('')
   const [selectedMuscle, setSelectedMuscle] = useState<BodyPart | null>(null)
   const [subFilter, setSubFilter] = useState<SubFilterType>('all')
+  const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>('all')
   const [pickerExercise, setPickerExercise] = useState<Exercise | null>(null)
 
   // Filter and intelligently order exercises
@@ -96,7 +104,7 @@ export function LibraryScreen() {
     })
 
     return { filteredExercises: sorted, allCount: count }
-  }, [allExercises, query, selectedMuscle, subFilter])
+  }, [allExercises, query, selectedMuscle, subFilter, favorites])
 
   // Filter martial arts
   const filteredArts = useMemo(() => {
@@ -111,6 +119,16 @@ export function LibraryScreen() {
     )
   }, [query])
 
+  // Filter premade katas
+  const filteredPremade = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return premadeKatas.filter((kata) => {
+      if (q && !kata.name.toLowerCase().includes(q) && !kata.subtitle.toLowerCase().includes(q)) return false
+      if (difficultyFilter !== 'all' && kata.difficulty !== difficultyFilter) return false
+      return true
+    })
+  }, [premadeKatas, query, difficultyFilter])
+
   return (
     <Screen
       title={t('Library')}
@@ -122,10 +140,11 @@ export function LibraryScreen() {
             value={activeTab}
             options={[
               { value: 'exercises', title: t('Exercises') },
+              { value: 'premadeKatas', title: t('Premade Katas') },
               { value: 'martialArts', title: t('Martial Arts') },
             ]}
             onChange={(val) => {
-              setActiveTab(val)
+              setActiveTab(val as 'exercises' | 'premadeKatas' | 'martialArts')
               setQuery('')
             }}
             ariaLabel="Library section"
@@ -155,6 +174,19 @@ export function LibraryScreen() {
               )}
             </label>
           </div>
+          
+          {activeTab === 'premadeKatas' && (
+            <div className="library-categories" style={{ padding: 0, margin: 0, marginTop: '8px' }}>
+              {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((diff) => (
+                <FilterPill
+                  key={diff}
+                  title={diff === 'all' ? 'All Levels' : diff.charAt(0).toUpperCase() + diff.slice(1)}
+                  selected={difficultyFilter === diff}
+                  onClick={() => setDifficultyFilter(diff)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       }
     >
@@ -165,7 +197,7 @@ export function LibraryScreen() {
             <BodyDiagram
               selectedPart={selectedMuscle}
               onSelectPart={(part) => {
-                setSelectedMuscle(part)
+                if (part) nav.push({ name: 'muscle', part })
               }}
             />
 
@@ -189,8 +221,16 @@ export function LibraryScreen() {
                   setSubFilter('all')
                 }}
               >
-                All ({allCount})
-              </button>
+                All ({allCount})              </button>
+              <button
+                type="button"
+                className={`library-subfilter-btn ${subFilter === 'favorites' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('light')
+                  setSubFilter('favorites')
+                }}
+              >
+                ⭐ Favorites</button>
               <button
                 type="button"
                 className={`library-subfilter-btn ${subFilter === 'holds' ? 'active' : ''}`}
@@ -300,6 +340,65 @@ export function LibraryScreen() {
                     </div>
                   )
                 })}
+              </div>
+            )}
+          </>
+        ) : activeTab === 'premadeKatas' ? (
+          <>
+            <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
+              <h2 style={{ fontSize: '18px' }}>Dojo Curated Routines</h2>
+              <span className="library-count-badge">
+                {filteredPremade.length} {filteredPremade.length === 1 ? 'routine' : 'routines'}
+              </span>
+            </div>
+
+            {filteredPremade.length === 0 ? (
+              <EmptyState
+                icon={<Icon name="books.vertical.fill" size={48} />}
+                title={t('No Katas found')}
+                description={t('Try adjusting your search query or difficulty filter.')}
+                action={
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => {
+                      setDifficultyFilter('all')
+                      setQuery('')
+                    }}
+                  >
+                    Reset Filters
+                  </button>
+                }
+              />
+            ) : (
+              <div className="library-katas-list" style={{ marginTop: '12px' }}>
+                {filteredPremade.map((kata) => (
+                  <div key={kata.uuid} className="library-kata-card" style={{ marginBottom: '16px' }}>
+                    <button
+                      type="button"
+                      className="library-kata-top"
+                      style={{ display: 'flex', gap: '16px', alignItems: 'center', width: '100%', textAlign: 'left', background: 'var(--surface)', padding: '16px', borderRadius: '16px', border: 'none' }}
+                      onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
+                    >
+                      <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={64} />
+                      <div className="library-kata-details" style={{ flex: 1 }}>
+                        <span className="library-kata-title" style={{ display: 'block', fontSize: '18px', fontWeight: 700, marginBottom: '4px' }}>{kata.name}</span>
+                        <span className="library-kata-sub" style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)' }}>{kata.subtitle}</span>
+                        <div className="meta-row" style={{ display: 'flex', gap: '12px', marginTop: '8px', fontSize: '13px', color: 'var(--text-tertiary)' }}>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Icon name="clock" size={12} strokeWidth={2.4} />
+                            {minutes(estimatedSeconds(kata, settings.restSeconds))}
+                          </span>
+                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                            <Icon name="list.bullet" size={12} strokeWidth={2.4} />
+                            {kata.items.length} exercises
+                          </span>
+                          <DifficultyBadge difficulty={kata.difficulty} pill />
+                        </div>
+                      </div>
+                    </button>
+                  </div>
+                ))}
               </div>
             )}
           </>
@@ -501,6 +600,7 @@ export function ArtDetailSheet({ artId }: { artId: string }) {
 
 export function ExerciseSheet({ slug }: { slug: string }) {
   const allExercises = useAllExercises()
+  const favorites = useFavoriteExercises()
   const userKatas = useUserKatas()
   const [showKataPicker, setShowKataPicker] = useState(false)
   const exercise = allExercises.find((e) => e.slug === slug)
@@ -510,8 +610,13 @@ export function ExerciseSheet({ slug }: { slug: string }) {
 
   return (
     <>
-      <SheetHeader
-        title={exercise.name}
+              <SheetHeader
+          title={exercise.name}
+          leading={
+            <button type="button" className="navbar-action" style={{ color: favorites.includes(exercise.slug) ? 'var(--gold, #fbbf24)' : 'var(--text-quaternary)' }} onClick={() => { haptic('light'); import('../../lib/actions').then(m => m.toggleFavoriteExercise(exercise.slug)) }}>
+              <Icon name={favorites.includes(exercise.slug) ? "star.fill" : "star"} size={22} strokeWidth={favorites.includes(exercise.slug) ? 0 : 2} />
+            </button>
+          }
         trailing={
           <button type="button" className="navbar-action strong" onClick={() => nav.back()}>
             Done
@@ -648,4 +753,10 @@ export function ExerciseSheet({ slug }: { slug: string }) {
     </>
   )
 }
+
+
+
+
+
+
 

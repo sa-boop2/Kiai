@@ -61,7 +61,7 @@ export default function App() {
         />
       )}
       {stage === 'main' ? <MainApp tab={navState.tab} /> : stage === 'onboarding' ? <Onboarding /> : <Login />}
-      {navState.plan && <PlayerOverlay key={navState.plan.id} plan={navState.plan} />}
+      {navState.plan && <PlayerOverlay key={navState.plan.id} plan={navState.plan} minimized={navState.planMinimized} />}
       <ActionSheetHost />
       <ToastHost />
     </>

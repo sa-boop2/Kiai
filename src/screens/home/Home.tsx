@@ -12,8 +12,9 @@ import { nav } from '../../lib/nav'
 import { makeSnapshot } from '../../lib/progression'
 import { getState, useProfile, useSessions, useSettings, useUserKatas } from '../../lib/store'
 
-import { reorderKatas } from '../../lib/actions'
+import { reorderKatas, sortUserKatas } from '../../lib/actions'
 import { useState } from 'react'
+import { confirmAction } from '../../components/ActionSheet'
 
 export function HomeScreen() {
   const katas = useUserKatas()
@@ -85,7 +86,7 @@ export function HomeScreen() {
             nav.present({ name: 'quickStats' })
           }}
         >
-          <EmberBadge lit={snapshot.currentStreak > 0} size={18} />
+          <EmberBadge lit={snapshot.trainedToday} size={18} />
           <span style={{ fontWeight: 600 }}>{snapshot.currentStreak}</span>
         </button>
       </div>
@@ -109,7 +110,7 @@ export function HomeScreen() {
               <Icon name={quick.isRepeat ? 'arrow.clockwise' : 'sparkles'} size={12} strokeWidth={2.4} />
               {t(quick.isRepeat ? 'Repeat last workout' : 'Recommended')}
             </span>
-            {heroMeta?.lastPerformedAt && (
+            {heroMeta?.lastPerformedAt && new Date(heroMeta.lastPerformedAt).toDateString() !== new Date().toDateString() && (
               <span className="home-hero-last">
                 {relativeDay(heroMeta.lastPerformedAt, locale)}
               </span>
@@ -159,16 +160,46 @@ export function HomeScreen() {
         <h2 className="home-section-title">{t("Your Kata's")}</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {displayKatas.length > 1 && (
-            <button
-              type="button"
-              className={`reorder-toggle no-sheet-drag ${reordering ? 'active' : ''}`}
-              onClick={() => {
-                haptic('light')
-                setReordering((v) => !v)
-              }}
-            >
-              {reordering ? 'Done' : 'Reorder'}
-            </button>
+            <>
+              <button
+                type="button"
+                className="reorder-toggle no-sheet-drag"
+                onClick={async () => {
+                  const choice = await confirmAction({
+                    title: 'Sort Katas',
+                    actions: [
+                      { label: 'Name (A-Z)' },
+                      { label: 'Duration (Shortest first)' },
+                      { label: 'Duration (Longest first)' },
+                      { label: 'Last Performed (Recent first)' },
+                    ],
+                    cancelLabel: 'Cancel',
+                  })
+                  if (choice === 0) {
+                    sortUserKatas((a, b) => a.name.localeCompare(b.name))
+                  } else if (choice === 1) {
+                    sortUserKatas((a, b) => estimatedSeconds(a, settings.restSeconds) - estimatedSeconds(b, settings.restSeconds))
+                  } else if (choice === 2) {
+                    sortUserKatas((a, b) => estimatedSeconds(b, settings.restSeconds) - estimatedSeconds(a, settings.restSeconds))
+                  } else if (choice === 3) {
+                    sortUserKatas((a, b) => (b.lastPerformedAt ?? 0) - (a.lastPerformedAt ?? 0))
+                  }
+                  if (choice !== null) haptic('success')
+                }}
+              >
+                Sort
+              </button>
+              <button
+                type="button"
+                className={`reorder-toggle no-sheet-drag ${reordering ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('light')
+                  setReordering((v) => !v)
+                }}
+              >
+                {reordering ? 'Done' : 'Reorder'}
+              </button>
+            </>
           )}
           <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
         </div>
@@ -231,7 +262,7 @@ export function HomeScreen() {
                           moveKata(index, index - 1)
                         }}
                       >
-                        <Icon name="chevron.up" size={14} strokeWidth={2.8} />
+                        <Icon name="arrow.up" size={16} strokeWidth={2.5} />
                       </button>
                       <button
                         type="button"
@@ -242,15 +273,15 @@ export function HomeScreen() {
                           moveKata(index, index + 1)
                         }}
                       >
-                        <Icon name="chevron.down" size={14} strokeWidth={2.8} />
+                        <Icon name="arrow.down" size={16} strokeWidth={2.5} />
                       </button>
                     </div>
                   ) : (
-                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={60} />
+                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={72} />
                   )}
                   <span className="kata-row-text">
-                    <strong>{kata.name}</strong>
-                    <span className="meta-row">
+                    <strong style={{ fontSize: "20px" }}>{kata.name}</strong>
+                    <span className="meta-row" style={{ marginTop: "4px", fontSize: "14px" }}>
                       <span>
                         <Icon name="clock" size={13} strokeWidth={2.4} />
                         {minutes(estimatedSeconds(kata, settings.restSeconds))}
@@ -260,7 +291,7 @@ export function HomeScreen() {
                         {kata.items.length} exercises
                       </span>
                     </span>
-                    {kata.lastPerformedAt && <span className="kata-row-last">Last trained {relativeDay(kata.lastPerformedAt, locale)}</span>}
+                    {kata.lastPerformedAt && <span className="kata-row-last" style={{ fontSize: "13px" }}>Last trained {relativeDay(kata.lastPerformedAt, locale)}</span>}
                   </span>
                   {!isReordering && <Icon name="chevron.right" size={16} strokeWidth={2.6} className="kata-row-chevron" />}
                 </div>
@@ -339,7 +370,7 @@ export function QuickStatsSheet() {
   return (
     <div className="sheet-scroll quick-stats">
       <div className="streak-hero">
-        <EmberBadge lit={snapshot.currentStreak > 0} size={60} />
+        <EmberBadge lit={snapshot.currentStreak > 0} size={72} />
         <span className="streak-hero-number">{snapshot.currentStreak}</span>
         <span className="streak-hero-label">{t('day streak')}</span>
         <p>{message}</p>

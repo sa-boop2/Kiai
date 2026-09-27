@@ -1,4 +1,4 @@
-import { type ReactNode, useMemo, useRef, useState } from 'react'
+﻿import { type ReactNode, useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { toast } from '../../components/Toast'
@@ -11,7 +11,7 @@ import { MARTIAL_ARTS, artById } from '../../data/content'
 import { nextRank } from '../../data/levels'
 import { TINTS, tintColor, tintTitle } from '../../data/meta'
 import {
-  APPEARANCE_OPTIONS, LANGUAGE_OPTIONS, PREPARE_OPTIONS, REMINDER_MODES, REST_OPTIONS, SOUND_OPTIONS, prepareLabel, restLabel,
+  APPEARANCE_OPTIONS, LANGUAGE_OPTIONS, PREPARE_OPTIONS, REMINDER_MODES, SOUND_OPTIONS, prepareLabel, restLabel,
 } from '../../data/settings'
 import type { CountdownSound } from '../../data/types'
 import { updateProfile, updateSettings } from '../../lib/actions'
@@ -88,7 +88,18 @@ export function SettingsScreen() {
 
   return (
     <Screen title={t('Settings')} largeTitle>
-      <ProfileCard />
+            <ProfileCard />
+
+      <Group>
+        <SettingsRow
+          icon="crown.fill"
+          tint="var(--gold)"
+          title="Kiai Pro Lifetime"
+          trailing={<span className="muted" style={{ fontWeight: 600 }}>€9,99</span>}
+          chevron
+          onClick={() => nav.push({ name: 'paywall' })}
+        />
+      </Group>
 
       <Group title={t('Preferences')}>
         <SettingsRow
@@ -220,12 +231,35 @@ export function WorkoutSettingsScreen() {
           tint="var(--ember)"
           title={t('Rest between exercises')}
           trailing={
-            <NativeSelect
-              label={t('Rest between exercises')}
-              value={settings.restSeconds}
-              options={REST_OPTIONS.map((o) => ({ value: o, title: restLabel(o) }))}
-              onChange={(restSeconds) => updateSettings({ restSeconds })}
-            />
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <input 
+                type="number"
+                min={0}
+                max={300}
+                value={settings.restSeconds}
+                onChange={(e) => updateSettings({ restSeconds: parseInt(e.target.value) || 0 })}
+                style={{ width: '50px', textAlign: 'right', background: 'color-mix(in srgb, var(--text) 10%, transparent)', border: 'none', color: 'var(--text)', fontSize: '16px', borderRadius: '6px', padding: '4px 8px' }}
+              />
+              <span className="muted">s</span>
+            </div>
+          }
+        />
+        <SettingsRow
+          icon="arrow.left.and.right"
+          tint="var(--jade)"
+          title={t('Switch sides pause')}
+          trailing={
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <input 
+                type="number"
+                min={0}
+                max={60}
+                value={settings.switchSidesSeconds ?? 5}
+                onChange={(e) => updateSettings({ switchSidesSeconds: parseInt(e.target.value) || 0 })}
+                style={{ width: '50px', textAlign: 'right', background: 'color-mix(in srgb, var(--text) 10%, transparent)', border: 'none', color: 'var(--text)', fontSize: '16px', borderRadius: '6px', padding: '4px 8px' }}
+              />
+              <span className="muted">s</span>
+            </div>
           }
         />
         <SettingsRow
@@ -289,6 +323,18 @@ export function WorkoutSettingsScreen() {
               label={t('Halfway stretch chime')}
               checked={settings.halfwayChime ?? false}
               onChange={(halfwayChime) => updateSettings({ halfwayChime })}
+            />
+          }
+        />
+              <SettingsRow
+          icon="textformat.123"
+          tint="var(--indigo)"
+          title={t('Use Arabic Numerals (1,2,3)')}
+          trailing={
+            <Toggle
+              label={t('Use Arabic Numerals')}
+              checked={settings.arabicTimer ?? false}
+              onChange={(arabicTimer) => updateSettings({ arabicTimer })}
             />
           }
         />
@@ -790,3 +836,5 @@ export function FaqScreen() {
     </Screen>
   )
 }
+
+

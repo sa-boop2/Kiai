@@ -1,9 +1,9 @@
-import type { Phase, SessionEntry } from '../data/types'
+﻿import type { Phase, SessionEntry } from '../data/types'
 import { audio, type SoundCue } from './audio'
 import { haptic, type HapticKind } from './haptics'
 import type { PlayerStep, WorkoutPlan } from './plan'
 
-export type PlayerStatus = 'ready' | 'running' | 'paused' | 'awaitingContinue' | 'finished'
+export type PlayerStatus = 'ready' | 'running' | 'paused' | 'switchingSides' | 'awaitingContinue' | 'finished'
 
 const CUE_HAPTICS: Record<SoundCue, HapticKind> = {
   tick: 'light',
@@ -57,7 +57,36 @@ export class WorkoutPlayer {
     this.listeners.forEach((listener) => listener())
   }
 
-  // Derived state ------------------------------------------------------------------------------
+  // Derived state
+  getPnfPhase(now = performance.now()): 'passive' | 'contract' | 'deep' | null {
+    const step = this.currentStep
+    if (!step || !step.pnf || step.kind !== 'work') return null
+    if (this.status === 'switchingSides') return null
+    
+    // Time remaining on CURRENT side
+    let rem = this.remaining(now)
+    let totalForSide = step.bilateral ? step.duration / 2 : step.duration
+    
+    // If it's bilateral and we haven't switched sides yet, rem is relative to the total step duration (e.g. 60)
+    // but the side's active duration is only 30.
+    if (step.bilateral && !this.hasSwitchedSides) {
+      rem = rem - totalForSide // E.g. if 60 total, and rem is 50, side rem is 20. Wait.
+      // E.g. total 60, halfway is 30. If remaining is 45, it means we have 15s left in the FIRST side.
+      // So sideRem = rem - 30.
+    }
+    
+    // So sideRem is the seconds left for the current side.
+    const sideRem = step.bilateral && !this.hasSwitchedSides ? rem - totalForSide : rem
+    const elapsedOnSide = totalForSide - sideRem
+
+    // PNF Ratios: ~33% passive, ~17% contract, ~50% deep stretch
+    const passiveTime = totalForSide * 0.33
+    const contractTime = totalForSide * 0.17
+    
+    if (elapsedOnSide < passiveTime) return 'passive'
+    if (elapsedOnSide < passiveTime + contractTime) return 'contract'
+    return 'deep'
+  } // ------------------------------------------------------------------------------
 
   get currentStep(): PlayerStep | null {
     return this.plan.steps[this.index] ?? null
@@ -76,7 +105,7 @@ export class WorkoutPlayer {
   }
 
   remaining(now = performance.now()): number {
-    if (this.status === 'running') return Math.max(0, (this.stepEndTime - now) / 1000)
+    if (this.status === 'running' || this.status === 'switchingSides') return Math.max(0, (this.stepEndTime - now) / 1000)
     if (this.status === 'finished') return 0
     return this.frozenRemaining
   }
@@ -84,6 +113,7 @@ export class WorkoutPlayer {
   stepProgress(now = performance.now()): number {
     const step = this.currentStep
     if (!step || step.duration <= 0) return 1
+    if (this.status === 'switchingSides') return 0.5
     return Math.min(Math.max(1 - this.remaining(now) / step.duration, 0), 1)
   }
 
@@ -91,7 +121,7 @@ export class WorkoutPlayer {
     const total = this.plan.steps.reduce((sum, s) => sum + s.duration, 0)
     if (total <= 0) return 0
     const done = this.plan.steps.slice(0, this.index).reduce((sum, s) => sum + s.duration, 0)
-    const current = (this.currentStep?.duration ?? 0) - this.remaining(now)
+    const current = (this.currentStep?.duration ?? 0) - (this.status === 'switchingSides' ? this.frozenRemaining : this.remaining(now))
     return Math.min(Math.max((done + current) / total, 0), 1)
   }
 
@@ -150,6 +180,7 @@ export class WorkoutPlayer {
         this.start()
         return
       case 'running':
+      case 'switchingSides':
         this.frozenRemaining = this.remaining()
         this.commitSegment()
         this.status = 'paused'
@@ -158,6 +189,7 @@ export class WorkoutPlayer {
         this.stepEndTime = performance.now() + this.frozenRemaining * 1000
         this.segmentStart = performance.now()
         this.status = 'running'
+        // Note: if paused while switching sides, we resume as running, which effectively skips the rest of the switch pause. This is a fine default for a manual resume.
         break
       case 'awaitingContinue':
         this.continueAfterSet()
@@ -169,7 +201,7 @@ export class WorkoutPlayer {
   }
 
   pauseIfRunning() {
-    if (this.status === 'running') this.togglePause()
+    if (this.status === 'running' || this.status === 'switchingSides') this.togglePause()
   }
 
   continueAfterSet() {
@@ -189,7 +221,7 @@ export class WorkoutPlayer {
     const step = this.currentStep
     if (!step || this.status === 'finished' || this.status === 'ready') return
     const autoplay = this.status !== 'paused'
-    const spent = step.duration - this.remaining()
+    const spent = step.duration - (this.status === 'switchingSides' ? this.frozenRemaining : this.remaining())
     if (spent > 3 || this.index === 0) {
       this.enter(this.index, autoplay)
       return
@@ -227,7 +259,21 @@ export class WorkoutPlayer {
 
   private tick() {
     const step = this.currentStep
-    if (this.status !== 'running' || !step) return
+    if (!step) return
+    
+    if (this.status === 'switchingSides') {
+      const left = this.remaining()
+      if (left <= 0) {
+        this.stepEndTime = performance.now() + this.frozenRemaining * 1000
+        this.segmentStart = performance.now()
+        this.status = 'running'
+        this.cue('go')
+        this.emitChange()
+      }
+      return
+    }
+    
+    if (this.status !== 'running') return
     const left = this.remaining()
 
     // 3-2-1 countdown cues, skipped for very short rests so cues don't pile up.
@@ -242,7 +288,16 @@ export class WorkoutPlayer {
     if (step.kind === 'work' && step.bilateral && !this.hasSwitchedSides && left <= step.duration / 2) {
       this.hasSwitchedSides = true
       this.cue('switchSides')
+      
+      if (this.plan.switchSidesSeconds > 0) {
+        this.frozenRemaining = left
+        this.commitSegment()
+        this.stepEndTime = performance.now() + this.plan.switchSidesSeconds * 1000
+        this.status = 'switchingSides'
+      }
+      
       this.emitChange()
+      return
     }
 
     if (left <= 0) this.completeCurrentStep()
@@ -296,3 +351,5 @@ export class WorkoutPlayer {
     if (this.plan.hapticsEnabled) haptic(CUE_HAPTICS[cue])
   }
 }
+
+

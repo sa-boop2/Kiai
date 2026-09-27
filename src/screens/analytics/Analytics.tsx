@@ -1,4 +1,4 @@
-import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
+﻿import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
@@ -31,55 +31,98 @@ export function AnalyticsScreen() {
       <ConsistencyCard value={snapshot.consistency} />
 
       <div className="grid-2">
-        <StatTile
-          title={t('Longest streak')}
-          value={String(snapshot.longestStreak)}
-          caption={snapshot.longestStreak === 1 ? '1 day · View' : `${snapshot.longestStreak} days · View`}
-          icon="flame.fill"
-          tint="var(--ember)"
+                <button
+          type="button"
+          className="card stat-tile pressable"
+          style={{ '--tint': 'var(--ember)', cursor: 'pointer', textAlign: 'left', border: 'none', position: 'relative' } as CSSProperties}
           onClick={() => {
             haptic('selection')
             nav.push({ name: 'streak' })
           }}
-        />
-        <StatTile
-          title={t('Achievements')}
-          value={`${unlockedCount} / ${achievements.length}`}
-          caption={unlockedCount === achievements.length ? 'All unlocked!' : `${unlockedCount} unlocked · View`}
-          icon="trophy.fill"
-          tint="var(--gold)"
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-start', marginBottom: '5px' }}>
+            <span className="stat-icon" style={{ marginBottom: 0 }}>
+              <Icon name="flame.fill" size={15} />
+            </span>
+            {snapshot.trainedToday && (
+              <span style={{ fontSize: '10px', fontWeight: 800, color: 'var(--ember)', background: 'color-mix(in srgb, var(--ember) 15%, transparent)', padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase' }}>Active</span>
+            )}
+          </div>
+          <span className="stat-value">{snapshot.longestStreak}</span>
+          <span className="stat-title">{t('Longest streak')}</span>
+          <div style={{ width: '100%', height: '4px', background: 'color-mix(in srgb, var(--ember) 15%, transparent)', borderRadius: '2px', marginTop: '8px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', background: 'var(--ember)', width: `${Math.min(100, (snapshot.longestStreak / (snapshot.longestStreak < 7 ? 7 : snapshot.longestStreak < 30 ? 30 : snapshot.longestStreak < 100 ? 100 : 365)) * 100)}%` }} />
+          </div>
+        </button>
+
+        <button
+          type="button"
+          className="card stat-tile pressable"
+          style={{ '--tint': 'var(--gold)', cursor: 'pointer', textAlign: 'left', border: 'none', position: 'relative' } as CSSProperties}
           onClick={() => {
             haptic('selection')
             nav.push({ name: 'achievements' })
           }}
-        />
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', width: '100%', alignItems: 'flex-start', marginBottom: '5px' }}>
+            <span className="stat-icon" style={{ marginBottom: 0 }}>
+              <Icon name="trophy.fill" size={15} />
+            </span>
+            <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', marginTop: '4px' }}>
+              {unlockedCount} / {achievements.length}
+            </span>
+          </div>
+          <span className="stat-value">{unlockedCount}</span>
+          <span className="stat-title">{t('Achievements')}</span>
+          <div style={{ width: '100%', height: '4px', background: 'color-mix(in srgb, var(--gold) 15%, transparent)', borderRadius: '2px', marginTop: '8px', overflow: 'hidden' }}>
+            <div style={{ height: '100%', background: 'var(--gold)', width: `${(unlockedCount / achievements.length) * 100}%` }} />
+          </div>
+        </button>
       </div>
 
-      <button type="button" className="card flexibility-row pressable" onClick={() => nav.push({ name: 'flexibility' })}>
+            <button type="button" className="card flexibility-row pressable" onClick={() => nav.push({ name: 'flexibility' })}>
         <div className="flexibility-rings" style={{ flexShrink: 0 }}>
           {FLEXIBILITY_BENCHMARKS.map((benchmark) => {
             const best = Math.max(0, ...flexibilityRecords.filter((r) => r.benchmark === benchmark).map((r) => r.progressPercent))
+            const milestone = currentMilestone(benchmark, best)
             const meta = flexibilityMeta(benchmark)
             const circumference = 2 * Math.PI * 15
+            
+            // Smart progress calculation towards NEXT milestone
+            let renderPercent = 0
+            if (!milestone.next) {
+              renderPercent = 1 // Maxed out
+            } else {
+              const base = milestone.percent
+              const next = milestone.next.percent
+              renderPercent = Math.max(0, Math.min(1, (best - base) / (next - base)))
+            }
+            
             return (
-              <svg key={benchmark} viewBox="0 0 40 40" className="flexibility-ring" style={{ '--tint': meta.tint } as CSSProperties}>
-                <circle cx="20" cy="20" r="15" className="flexibility-ring-track" />
-                <circle
-                  cx="20"
-                  cy="20"
-                  r="15"
-                  className="flexibility-ring-fill"
-                  strokeDasharray={circumference}
-                  strokeDashoffset={circumference * (1 - best / 100)}
-                  transform="rotate(-90 20 20)"
-                />
-              </svg>
+              <div key={benchmark} style={{ position: 'relative', width: 40, height: 40 }}>
+                <svg viewBox="0 0 40 40" className="flexibility-ring" style={{ '--tint': meta.tint } as CSSProperties}>
+                  <circle cx="20" cy="20" r="15" className="flexibility-ring-track" />
+                  <circle
+                    cx="20"
+                    cy="20"
+                    r="15"
+                    className="flexibility-ring-fill"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={circumference * (1 - renderPercent)}
+                    transform="rotate(-90 20 20)"
+                  />
+                </svg>
+                {/* Center dot or icon indicating the current level */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800, color: meta.tint }}>
+                  {milestone.level}
+                </div>
+              </div>
             )
           })}
         </div>
         <span className="art-card-row-text">
           <strong>Flexibility</strong>
-          <span>Splits, kicks &amp; pike stretch over time</span>
+          <span>Progress to next milestone</span>
         </span>
         <Icon name="chevron.right" size={14} strokeWidth={2.8} className="row-chevron" />
       </button>
@@ -827,4 +870,7 @@ export function StreakDetailScreen() {
     </Screen>
   )
 }
+
+
+
 

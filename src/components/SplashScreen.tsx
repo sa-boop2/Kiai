@@ -32,7 +32,6 @@ export function SplashScreen({ onComplete }: { onComplete: () => void }) {
           <div className="splash-halo" />
           <KiaiLogo size={72} />
         </div>
-        <h1 className="splash-title">KIAI</h1>
         <p className="splash-subtitle">Martial Mobility</p>
       </div>
     </div>

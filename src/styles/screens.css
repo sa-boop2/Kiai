@@ -1,4 +1,4 @@
-/* ============================================================================================
+﻿/* ============================================================================================
  * Home
  * ========================================================================================== */
 
@@ -613,7 +613,7 @@
   display: flex;
   align-items: center;
   gap: 16px;
-  padding: 18px;
+  padding: 22px 20px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -1007,7 +1007,7 @@
   display: flex;
   align-items: flex-end;
   height: 176px;
-  padding: 18px;
+  padding: 22px 20px;
   border-radius: var(--radius-card);
   overflow: hidden;
   background: linear-gradient(135deg, color-mix(in srgb, var(--tint) 30%, transparent), color-mix(in srgb, var(--tint) 6%, transparent));
@@ -1651,7 +1651,7 @@
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 18px;
+  padding: 22px 20px;
   margin-top: 6px;
 }
 
@@ -1747,19 +1747,9 @@
   margin-top: 26px;
 }
 
-.group-title {
-  padding: 0 16px 8px;
-  font-size: 13px;
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-  color: var(--text-secondary);
-}
+.group-title { padding: 0 16px 8px; font-size: 15px; font-weight: 600; color: var(--text-secondary); }
 
-.group-card {
-  padding: 0;
-  overflow: hidden;
-}
+.group-card { padding: 0; overflow: hidden; background: var(--surface); border-radius: 16px; border: 1px solid var(--separator); }
 
 .group-footer {
   padding: 8px 16px 0;
@@ -4129,6 +4119,7 @@
 .library-quick-add-btn:active {
   transform: scale(0.88);
 }
+
 
 
 

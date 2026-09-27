@@ -1,4 +1,4 @@
-import { useSyncExternalStore, useMemo } from 'react'
+﻿import { useSyncExternalStore, useMemo } from 'react'
 import { EXERCISES } from '../data/generated/exercises'
 import { DEFAULT_SETTINGS } from '../data/settings'
 import type { FlexibilityRecord, Kata, Profile, Session, Settings, StoredCredential } from '../data/types'
@@ -9,6 +9,7 @@ import type { FlexibilityRecord, Kata, Profile, Session, Settings, StoredCredent
  * code, so only user data is stored here.
  */
 export interface AppState {
+  isPremium?: boolean
   version: 1
   profile: Profile
   settings: Settings
@@ -23,6 +24,7 @@ export interface AppState {
   flexibilityRecords: FlexibilityRecord[]
   /** 1.2: Custom exercises created by the user */
   customExercises: import('../data/types').Exercise[]
+  favoriteExercises?: string[]
 }
 
 export const STORAGE_KEY = 'kiai.state.v1'
@@ -54,6 +56,7 @@ export function freshState(): AppState {
     accounts: {},
     flexibilityRecords: [],
     customExercises: [],
+    favoriteExercises: [],
   }
 }
 
@@ -149,4 +152,9 @@ export const useCustomExercises = () => useAppState((s) => s.customExercises)
 export const useAllExercises = () => {
   const custom = useCustomExercises()
   return useMemo(() => [...EXERCISES, ...custom], [custom])
+}
+
+
+export function useFavoriteExercises() {
+  return useSyncExternalStore(subscribe, () => getState().favoriteExercises || [])
 }

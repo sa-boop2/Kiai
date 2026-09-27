@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+﻿import type { ReactNode } from 'react'
 import { SheetHeader } from '../components/SheetHost'
 import type { Route, SheetRoute, Tab } from '../lib/nav'
 import { AnalyticsScreen, AchievementsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet, StreakDetailScreen } from './analytics/Analytics'
@@ -6,12 +6,14 @@ import { HomeScreen, QuickStatsSheet } from './home/Home'
 import { EditorSheet, PickerSheet } from './katas/Editor'
 import { KataDetailScreen, PremadeWorkoutsScreen } from './katas/Katas'
 import { ArtDetailSheet, ExerciseSheet, LibraryScreen } from './library/Library'
+import { MuscleDetailScreen } from './library/Muscle'
 import { Login } from './onboarding/Login'
 import {
   AppearanceScreen, AudioSettingsScreen, FaqScreen, PrivacyScreen, RemindersScreen, SettingsScreen,
   TermsScreen, WorkoutSettingsScreen,
 } from './settings/Settings'
 import { CustomExerciseSheet } from './katas/CustomExercise'
+import { PaywallScreen } from './paywall/Paywall'
 import { nav } from '../lib/nav'
 
 export function renderRoot(tab: Tab): ReactNode {
@@ -20,7 +22,7 @@ export function renderRoot(tab: Tab): ReactNode {
       return <HomeScreen />
     case 'library':
       return <LibraryScreen />
-    case 'analytics':
+        case 'analytics':
       return <AnalyticsScreen />
     case 'settings':
       return <SettingsScreen />
@@ -29,6 +31,8 @@ export function renderRoot(tab: Tab): ReactNode {
 
 export function renderRoute(route: Route): ReactNode {
   switch (route.name) {
+    case 'muscle':
+      return <MuscleDetailScreen part={route.part as any} />
     case 'kata':
       return <KataDetailScreen id={route.id} />
     case 'workoutSettings':
@@ -53,6 +57,8 @@ export function renderRoute(route: Route): ReactNode {
       return <FaqScreen />
     case 'achievements':
       return <AchievementsScreen />
+    case 'paywall':
+      return <PaywallScreen />
     case 'streak':
       return <StreakDetailScreen />
     default:
@@ -93,3 +99,7 @@ export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'la
       return { content: <div>Not found</div> }
   }
 }
+
+
+
+

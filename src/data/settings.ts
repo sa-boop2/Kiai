@@ -16,9 +16,11 @@ export const DEFAULT_SETTINGS: Settings = {
   reminderMinute: 0,
   disableWarmupCooldown: false,
   accentColor: 'ember',
+  arabicTimer: false,
   keepScreenAwake: true,
   autoAdvance: true,
   halfwayChime: false,
+  switchSidesSeconds: 5,
 }
 
 export const REST_OPTIONS = [0, 3, 5, 10, 15]

@@ -171,6 +171,13 @@ export function reorderKatas(fromIndex: number, toIndex: number) {
   })
 }
 
+export function sortUserKatas(compareFn: (a: Kata, b: Kata) => number) {
+  setState((s) => {
+    const list = [...s.katas].sort(compareFn)
+    return { ...s, katas: list }
+  })
+}
+
 // Flexibility ------------------------------------------------------------------------------------
 
 /** 1.1: logs a Flexibility check-in (0-100% self-rating). */
@@ -211,4 +218,12 @@ export function lastSession(): Session | undefined {
   let latest: Session | undefined
   for (const session of sessions) if (!latest || session.startedAt > latest.startedAt) latest = session
   return latest
+}
+
+export function toggleFavoriteExercise(slug: string) {
+  setState((s) => {
+    const list = s.favoriteExercises || []
+    if (list.includes(slug)) return { ...s, favoriteExercises: list.filter((x) => x !== slug) }
+    return { ...s, favoriteExercises: [...list, slug] }
+  })
 }

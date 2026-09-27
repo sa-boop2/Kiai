@@ -1,4 +1,4 @@
-import type { AppState } from './store'
+﻿import type { AppState } from './store'
 import { makeSnapshot } from './progression'
 
 export interface Achievement {
@@ -116,6 +116,76 @@ export const ACHIEVEMENTS: Achievement[] = [
       return { current: Math.min(maxPercent, 50), max: 50, unlocked: maxPercent >= 50 }
     },
   },
+  {
+    id: 'streak_30',
+    title: 'Unbreakable Spirit',
+    description: 'Maintain a 30-day training streak.',
+    icon: 'flame.fill',
+    tint: 'var(--ember)',
+    progress: (state) => {
+      const snap = makeSnapshot(state.sessions, state.profile.createdAt)
+      const maxStreak = Math.max(snap.currentStreak, snap.longestStreak)
+      return { current: Math.min(maxStreak, 30), max: 30, unlocked: maxStreak >= 30 }
+    },
+  },
+  {
+    id: 'streak_100',
+    title: 'The Hundred-Day Legend',
+    description: 'Maintain a 100-day training streak.',
+    icon: 'crown.fill',
+    tint: 'var(--gold)',
+    progress: (state) => {
+      const snap = makeSnapshot(state.sessions, state.profile.createdAt)
+      const maxStreak = Math.max(snap.currentStreak, snap.longestStreak)
+      return { current: Math.min(maxStreak, 100), max: 100, unlocked: maxStreak >= 100 }
+    },
+  },
+  {
+    id: 'sessions_100',
+    title: 'Iron Consistency',
+    description: 'Complete 100 martial mobility sessions.',
+    icon: 'checkmark.seal.fill',
+    tint: 'var(--jade)',
+    progress: (state) => {
+      const count = state.sessions.length
+      return { current: Math.min(count, 100), max: 100, unlocked: count >= 100 }
+    },
+  },
+  {
+    id: 'minutes_1000',
+    title: 'Thousand-Minute Master',
+    description: 'Accumulate 1,000 minutes of active martial mobility.',
+    icon: 'hourglass.bottomhalf.filled',
+    tint: 'var(--indigo)',
+    progress: (state) => {
+      const snap = makeSnapshot(state.sessions, state.profile.createdAt)
+      const mins = Math.floor(snap.totalSeconds / 60)
+      return { current: Math.min(mins, 1000), max: 1000, unlocked: mins >= 1000 }
+    },
+  },
+  {
+    id: 'splits_master',
+    title: 'The Full Van Damme',
+    description: 'Reach Level 5 (Full Split) in Splits.',
+    icon: 'figure.split',
+    tint: 'var(--gold)',
+    progress: (state) => {
+      const records = state.flexibilityRecords.filter((r) => r.benchmark === 'splits')
+      const maxPercent = records.reduce((max, r) => Math.max(max, r.progressPercent), 0)
+      return { current: Math.min(maxPercent, 100), max: 100, unlocked: maxPercent >= 100 }
+    },
+  },
+  {
+    id: 'kata_sensei',
+    title: 'Kata Sensei',
+    description: 'Design and save 5 custom Kata routines.',
+    icon: 'text.book.closed.fill',
+    tint: 'var(--sakura)',
+    progress: (state) => {
+      const customKatas = state.katas.filter((k) => !k.isPremade).length
+      return { current: Math.min(customKatas, 5), max: 5, unlocked: customKatas >= 5 }
+    },
+  },
 ]
 
 export function computeAchievements(state: AppState) {
@@ -127,3 +197,4 @@ export function computeAchievements(state: AppState) {
     }
   })
 }
+

@@ -48,6 +48,7 @@ export interface WorkoutItem {
   slug: string
   duration: number
   phase: Phase | string
+  note?: string
 }
 
 export interface PremadeWorkout {
@@ -190,12 +191,16 @@ export interface Settings {
   disableWarmupCooldown: boolean
   /** 1.15: Settings → Appearance. Mirrors AppSettings.accentColorRaw / KiaiTint on iOS. */
   accentColor: Tint
+  /** 1.5.3: Use Arabic numerals (1,2,3) instead of Kanji for the timer. */
+  arabicTimer?: boolean
   /** 1.5: Keep screen awake during workouts (Wake Lock API). */
   keepScreenAwake?: boolean
   /** 1.5: Auto-advance to next stretch. */
   autoAdvance?: boolean
   /** 1.5: Subtle chime halfway through a timed stretch. */
   halfwayChime?: boolean
+  /** 1.6: Pause between switching sides for bilateral exercises. */
+  switchSidesSeconds?: number
 }
 
 /** Salted + PBKDF2-hashed local email/password credential (see lib/auth.ts). Never contains a

@@ -1,4 +1,4 @@
-import { useSyncExternalStore } from 'react'
+﻿import { useSyncExternalStore } from 'react'
 import type { FlexibilityBenchmark, HowTo, Phase, WorkoutTemplate } from '../data/types'
 import type { WorkoutPlan } from './plan'
 
@@ -21,7 +21,9 @@ export type Route =
   | { name: 'terms' }
   | { name: 'faq' }
   | { name: 'achievements' }
+  | { name: 'muscle'; part: string }
   | { name: 'streak' }
+  | { name: 'paywall' }
 
 export type EditorMode =
   | { kind: 'create' }
@@ -51,6 +53,7 @@ export interface NavState {
   stacks: Record<Tab, Entry<Route>[]>
   sheets: Entry<SheetRoute>[]
   plan: WorkoutPlan | null
+  planMinimized?: boolean
 }
 
 /**
@@ -64,6 +67,7 @@ class NavStore {
     stacks: { home: [], library: [], analytics: [], settings: [] },
     sheets: [],
     plan: null,
+    planMinimized: false,
   }
   private listeners = new Set<() => void>()
   private nextKey = 1
@@ -184,15 +188,25 @@ class NavStore {
     this.set({ sheets: [] })
   }
 
-  // Player ---------------------------------------------------------------------------------------
+  planMinimized?: boolean
+
+  // ...
 
   startPlan(plan: WorkoutPlan) {
     if (plan.steps.length === 0) return
-    this.set({ plan, sheets: [] })
+    this.set({ plan, planMinimized: false, sheets: [] })
+  }
+
+  minimizePlan() {
+    this.set({ planMinimized: true })
+  }
+
+  maximizePlan() {
+    this.set({ planMinimized: false })
   }
 
   closePlan() {
-    this.set({ plan: null })
+    this.set({ plan: null, planMinimized: false })
   }
 }
 

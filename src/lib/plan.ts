@@ -1,4 +1,4 @@
-import { exerciseBySlug, howToForExercise, howToForTechnique, orderedItems } from '../data/content'
+﻿import { exerciseBySlug, howToForExercise, howToForTechnique, orderedItems } from '../data/content'
 import { phaseMeta } from '../data/meta'
 import type { CountdownSound, HowTo, Phase, SessionKind, Settings, Technique, WorkoutTemplate } from '../data/types'
 
@@ -16,6 +16,8 @@ export interface PlayerStep {
   symbol: string
   bilateral: boolean
   howTo: HowTo | null
+  note?: string
+  pnf?: boolean
 }
 
 /** Immutable run-sheet. Settings are captured at start so changes mid-workout can't desync. */
@@ -30,6 +32,7 @@ export interface WorkoutPlan {
   soundEnabled: boolean
   sound: CountdownSound
   hapticsEnabled: boolean
+  switchSidesSeconds: number
 }
 
 export function stepTint(step: PlayerStep): string {
@@ -55,6 +58,7 @@ function basePlan(settings: Settings, fields: Pick<WorkoutPlan, 'title' | 'worko
     soundEnabled: settings.soundEnabled,
     sound: settings.sound,
     hapticsEnabled: settings.hapticsEnabled,
+    switchSidesSeconds: settings.switchSidesSeconds ?? 5,
     ...fields,
   }
 }
@@ -92,6 +96,7 @@ export function planForTemplate(template: WorkoutTemplate, settings: Settings): 
       symbol: exercise.symbol,
       bilateral: exercise.bilateral,
       howTo: howToForExercise(exercise),
+      note: item.note,
     })
     if (rest > 0 && index < resolved.length - 1) {
       steps.push(restStep(steps.length, rest, resolved[index + 1].exercise.name))

@@ -64,3 +64,25 @@ export function displayName(name: string): string {
 export function clamp(value: number, min = 0, max = 1): number {
   return Math.min(Math.max(value, min), max)
 }
+
+export function toKanjiTimer(totalSeconds: number): string {
+  const KANJI = ['?', '?', '?', '?', '?', '?', '?', '?', '?', '?']
+  
+  const toK = (n: number) => {
+    if (n < 10) return KANJI[n]
+    if (n === 10) return '?'
+    const tens = Math.floor(n / 10)
+    const ones = n % 10
+    return (tens > 1 ? KANJI[tens] : '') + '?' + (ones > 0 ? KANJI[ones] : '')
+  }
+
+  const s = Math.max(0, Math.floor(totalSeconds))
+  const h = Math.floor(s / 3600)
+  const m = Math.floor((s % 3600) / 60)
+  const sec = s % 60
+  
+  if (h > 0) {
+    return `${toK(h)}:${toK(m)}:${toK(sec)}`
+  }
+  return `${toK(m)}:${toK(sec)}`
+}

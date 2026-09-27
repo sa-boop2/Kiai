@@ -243,6 +243,13 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                   onClick={() => clickPart('adductors')}
                 />
 
+                {/* Abductors / Outer Thighs */}
+                <path
+                  d="M146 300 C138 325 138 365 146 410 L151 408 C144 365 144 325 151 300 Z M234 300 C242 325 242 365 234 410 L229 408 C236 365 236 325 229 300 Z"
+                  className={`anatomy-part selectable ${isSel('hipFlexors') ? 'selected' : ''}`}
+                  onClick={() => clickPart('hipFlexors')}
+                />
+
                 {/* Quadriceps (Vastus Lateralis, Rectus Femoris, Vastus Medialis Teardrop) */}
                 <path
                   d="M150 298 C140 324 135 365 146 410 C154 414 168 414 172 398 C172 368 170 324 164 298 Z"
@@ -335,6 +342,18 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
               <g className="anatomy-label-target" onClick={() => clickPart('core')}>
                 <rect x="8" y="270" width="72" height="38" rx="10" className="anatomy-label-plate" />
                 <text x="14" y="294" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Obliques</text>
+              </g>
+
+              {/* Left 4.5: Abductors */}
+              <line x1="72" y1="335" x2="142" y2="335" className={`anatomy-dashed ${isSel('hipFlexors') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('hipFlexors')}>
+                <circle cx="142" cy="335" r="22" fill="transparent" />
+                {isSel('hipFlexors') && <circle cx="142" cy="335" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="142" cy="335" r="7" className={`anatomy-pin-dot ${isSel('hipFlexors') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('hipFlexors')}>
+                <rect x="8" y="315" width="82" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="14" y="339" className={`anatomy-callout-text ${isSel('hipFlexors') ? 'selected' : ''}`}>Abductors</text>
               </g>
 
               {/* Left 5: Quads */}
@@ -507,11 +526,7 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 />
                 <path d="M222 255 Q208 275 200 292" className="anatomy-striation" />
 
-                {/* Outer hips — part of the silhouette only, not a selectable target on this view */}
-                <path
-                  d="M140 240 C132 262 134 292 144 310 L156 306 C150 284 148 258 154 240 Z M240 240 C248 262 246 292 236 310 L224 306 C230 284 232 258 226 240 Z"
-                  className="anatomy-part neutral"
-                />
+                
 
                 {/* Hamstrings (Biceps Femoris & Semitendinosus) */}
                 <path
@@ -673,3 +688,5 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
     </div>
   )
 }
+
+

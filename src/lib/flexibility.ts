@@ -1,4 +1,4 @@
-import type { FlexibilityBenchmark } from '../data/types'
+﻿import type { FlexibilityBenchmark } from '../data/types'
 
 export const FLEXIBILITY_BENCHMARKS: FlexibilityBenchmark[] = ['splits', 'kickHeight', 'pikeStretch']
 
@@ -9,12 +9,14 @@ export interface Milestone {
   subtitle: string
   description: string
   symbol: string
+  next?: Milestone
 }
 
 export interface BenchmarkMeta {
   title: string
   goalDescription: string
   symbol: string
+  next?: Milestone
   tint: string
   milestones: Milestone[]
 }
@@ -172,7 +174,8 @@ export const BENCHMARK_MILESTONES: Record<FlexibilityBenchmark, Milestone[]> = {
   ],
 }
 
-const META: Record<FlexibilityBenchmark, { title: string; goalDescription: string; symbol: string; tint: string }> = {
+const META: Record<FlexibilityBenchmark, { title: string; goalDescription: string; symbol: string
+  next?: Milestone; tint: string }> = {
   splits: { title: 'Splits', goalDescription: 'Progress from wide straddle to a flat 180° floor split.', symbol: 'figure.split', tint: 'var(--crimson)' },
   kickHeight: { title: 'Kick Height', goalDescription: 'Progress from low thigh kicks to overhead axe kicks.', symbol: 'figure.kickboxing', tint: 'var(--gold)' },
   pikeStretch: { title: 'Forward Fold', goalDescription: 'Progress from knees reach to a full chest-to-shin fold.', symbol: 'figure.forward.fold', tint: 'var(--jade)' },
