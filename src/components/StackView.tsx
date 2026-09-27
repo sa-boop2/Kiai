@@ -197,17 +197,22 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
 
     if (g.isTabBack) {
       const rootEl = layerRefs.current.get(-1)
-      if (rootEl) {
+      if (commit) {
+        // Leaving this tab entirely — clear the drag offset instantly instead of springing it
+        // back into place, or the outgoing tab visibly snaps before the new one appears.
+        if (rootEl) {
+          rootEl.style.transition = ''
+          rootEl.style.transform = ''
+        }
+        haptic('light')
+        nav.back()
+      } else if (rootEl) {
         rootEl.style.transition = 'transform 240ms cubic-bezier(0.2, 0.8, 0.25, 1)'
         rootEl.style.transform = 'translate3d(0,0,0)'
         window.setTimeout(() => {
           rootEl.style.transition = ''
           rootEl.style.transform = ''
         }, 250)
-      }
-      if (commit) {
-        haptic('light')
-        nav.back()
       }
       return
     }

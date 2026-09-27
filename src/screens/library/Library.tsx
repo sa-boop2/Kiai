@@ -396,13 +396,14 @@ export function LibraryScreen() {
                   <div
                     key={art.id}
                     className="library-art-card pressable"
+                    style={{ '--art-tint': tintColor(art.tint) } as CSSProperties}
                     onClick={() => {
                       haptic('selection')
                       nav.present({ name: 'artLearnMore', artId: art.id })
                     }}
                   >
                     <div className="library-art-emblem-wrap">
-                      <MartialArtEmblem artId={art.id} size={50} tint={tintColor(art.tint)} />
+                      <MartialArtEmblem artId={art.id} size={56} tint={tintColor(art.tint)} />
                     </div>
                     <span className="library-art-name">{art.name}</span>
                     <span className="library-art-origin">{art.origin}</span>
@@ -516,6 +517,7 @@ function formatMuscleTitle(part: BodyPart): string {
 export function ArtDetailSheet({ artId }: { artId: string }) {
   const art = MARTIAL_ARTS.find((a) => a.id === artId)
   if (!art) return null
+  const tint = tintColor(art.tint)
 
   return (
     <>
@@ -528,108 +530,17 @@ export function ArtDetailSheet({ artId }: { artId: string }) {
         }
       />
       <div className="sheet-scroll form">
-        <div className="detail-hero">
-          <MartialArtEmblem artId={art.id} size={72} tint={tintColor(art.tint)} />
+        <div className="detail-hero" style={{ '--tint': tint } as CSSProperties}>
+          <div className="detail-hero-glow" aria-hidden="true" />
+          <MartialArtEmblem artId={art.id} size={88} tint={tint} />
           <h2>{art.name}</h2>
-          <p style={{ margin: '4px 0', fontSize: '13.5px', color: 'var(--text-secondary)' }}>
+          <p>
             {art.origin} · {art.tagline}
           </p>
-        </div>
-
-        <div className="form-section">
-          <div className="library-art-placeholder-tag" style={{ marginBottom: 8, display: 'inline-flex' }}>
-            <Icon name="sparkles" size={12} /> Discipline Hub · Coming in v1.6
-          </div>
-          <p style={{ margin: '0 0 10px', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
-            {art.about}
+          <p className="art-detail-future-note">
+            More on this discipline is coming in a future update.
           </p>
-          <div className="library-art-focus-row">
-            {art.focusAreas.map((focus) => (
-              <span key={focus} className="library-art-chip">
-                {focus}
-              </span>
-            ))}
-          </div>
         </div>
-
-        {art.stretches && art.stretches.length > 0 && (
-          <div className="form-section">
-            <h4 style={{ margin: '0 0 10px', fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
-              Recommended Stretches
-            </h4>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {art.stretches.map((s) => (
-                <div
-                  key={s.slug}
-                  style={{
-                    background: 'var(--surface-elevated, var(--surface))',
-                    border: '1px solid var(--stroke)',
-                    borderRadius: 'var(--radius-medium)',
-                    padding: '12px 14px',
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <span style={{ fontWeight: 600, fontSize: '14px', textTransform: 'capitalize' }}>
-                      {s.slug.replace(/-/g, ' ')}
-                    </span>
-                    <button
-                      type="button"
-                      className="btn btn-secondary"
-                      style={{ fontSize: '12px', padding: '4px 10px' }}
-                      onClick={() => {
-                        nav.present({ name: 'exercise', slug: s.slug })
-                      }}
-                    >
-                      View
-                    </button>
-                  </div>
-                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
-                    {s.why}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {art.drills && art.drills.length > 0 && (
-          <div className="form-section">
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
-              <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
-                Foundational Drills
-              </h4>
-              <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>
-                Placeholder
-              </span>
-            </div>
-            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-              {art.drills.map((d) => (
-                <div
-                  key={d.slug}
-                  style={{
-                    background: 'var(--surface-elevated, var(--surface))',
-                    border: '1px solid var(--stroke)',
-                    borderRadius: 'var(--radius-medium)',
-                    padding: '12px 14px',
-                    opacity: 0.9,
-                  }}
-                >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                    <span style={{ fontWeight: 600, fontSize: '14px', textTransform: 'capitalize' }}>
-                      {d.slug.replace(/-/g, ' ')}
-                    </span>
-                    <span className="library-art-placeholder-tag" style={{ fontSize: '10px', padding: '2px 6px' }}>
-                      Drill Preview
-                    </span>
-                  </div>
-                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
-                    {d.why}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </>
   )

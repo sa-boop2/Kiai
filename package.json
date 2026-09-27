@@ -1,7 +1,7 @@
 {
   "name": "kiai-web",
   "private": true,
-  "version": "1.6.0",
+  "version": "1.6.1",
   "description": "Kiai — stretching & mobility for martial artists. Web/PWA version of the native iOS app.",
   "type": "module",
   "scripts": {

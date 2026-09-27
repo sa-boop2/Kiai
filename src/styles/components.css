@@ -1291,22 +1291,37 @@
   border-top: 0.5px solid var(--separator);
 }
 
-.editor-row.dragging {
-  z-index: 10;
-  transform: scale(1.03);
-  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
-  border-radius: 14px;
-  background: var(--surface-raised);
+.reorder-toggle {
+  margin-left: auto;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 12%, transparent);
+  border-radius: 999px;
 }
 
-.drag-handle {
+.reorder-toggle.active {
+  color: #fff;
+  background: var(--accent);
+}
+
+.reorder-controls {
+  display: flex;
+  flex-direction: column;
+  width: 32px;
+  flex-shrink: 0;
+}
+
+.reorder-controls button {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 44px;
-  color: var(--text-tertiary);
-  touch-action: none;
-  cursor: grab;
+  height: 22px;
+  color: var(--text-secondary);
+}
+
+.reorder-controls button:disabled {
+  opacity: 0.25;
 }
 
 .editor-row-info {
@@ -1316,6 +1331,11 @@
   align-items: center;
   gap: 10px;
   text-align: left;
+}
+
+.editor-row-info:disabled {
+  cursor: default;
+  opacity: 0.85;
 }
 
 .editor-row-info > span {

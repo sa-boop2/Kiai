@@ -135,6 +135,12 @@ class NavStore {
 
   /** Pops the top-most sheet or pushed screen synchronously to prevent transition glitching. */
   back() {
+    // A workout in progress is locked in — every exit path (gesture, hardware back, sheet close)
+    // routes through the player's own confirm-and-pause flow instead of silently popping underneath it.
+    if (this.state.plan) {
+      window.dispatchEvent(new CustomEvent('kiai:request-quit'))
+      return
+    }
     this.popLayer()
     if (this.depth > 0) {
       this.depth--

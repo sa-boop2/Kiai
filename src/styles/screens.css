@@ -691,6 +691,16 @@
   margin-top: 16px;
 }
 
+.art-detail-future-note {
+  margin-top: 10px;
+  padding: 10px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  color: color-mix(in srgb, var(--tint) 80%, var(--text));
+  background: color-mix(in srgb, var(--tint) 12%, transparent);
+  border-radius: 999px;
+}
+
 .detail-card h4 {
   margin: 0 0 14px;
   font-family: var(--font-rounded);
@@ -3745,28 +3755,79 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
+   1.6.1 Update: Profile avatar picker (photo or icon)
+   ───────────────────────────────────────────────────────────────────────────── */
+.avatar-picker-body {
+  padding: 12px 16px 18px;
+  overflow-y: auto;
+}
+
+.avatar-picker-photo-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border-radius: var(--radius-medium);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, transparent);
+}
+
+.avatar-symbol-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.avatar-symbol-choice {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: var(--radius-medium);
+  color: var(--tint);
+  background: color-mix(in srgb, var(--tint) 12%, var(--surface));
+  border: 1.5px solid transparent;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.avatar-symbol-choice.selected {
+  border-color: var(--tint);
+  background: color-mix(in srgb, var(--tint) 20%, var(--surface));
+}
+
+.avatar-symbol-choice:active {
+  transform: scale(0.92);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
    1.5.3.1 Update: Martial Arts Disciplines 2-Column Grid (iOS Liquid Glass)
    ───────────────────────────────────────────────────────────────────────────── */
 .library-arts-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
+  gap: 14px;
 }
 
 .library-art-card {
   position: relative;
   overflow: hidden;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 18px 12px 14px;
-  background: var(--surface-glass, rgba(255, 255, 255, 0.04));
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: var(--radius-card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  min-height: 172px;
+  justify-content: center;
+  padding: 26px 14px 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0) 45%),
+    var(--surface-glass, rgba(255, 255, 255, 0.05));
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-radius: 28px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.1);
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
@@ -3776,16 +3837,28 @@
               background-color 0.2s ease;
 }
 
+.library-art-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 90% at 50% -10%, color-mix(in srgb, var(--art-tint, var(--accent)) 22%, transparent), transparent 65%);
+  pointer-events: none;
+  z-index: -1;
+}
+
 :root[data-theme='light'] .library-art-card {
-  background: rgba(255, 255, 255, 0.88);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.05);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.7), rgba(255, 255, 255, 0) 45%),
+    rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.7);
 }
 
 .library-art-card:hover {
   transform: translateY(-2px);
-  border-color: color-mix(in srgb, var(--accent, #facc15) 40%, rgba(255, 255, 255, 0.15));
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+  border-color: color-mix(in srgb, var(--art-tint, var(--accent)) 45%, rgba(255, 255, 255, 0.15));
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.32);
 }
 
 .library-art-card:active {
@@ -3796,7 +3869,7 @@
 .library-art-emblem-wrap {
   display: grid;
   place-items: center;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
@@ -3805,11 +3878,12 @@
 }
 
 .library-art-name {
-  font-size: 15px;
+  font-family: var(--font-rounded);
+  font-size: 16px;
   font-weight: 700;
   letter-spacing: -0.2px;
   color: var(--text);
-  margin-bottom: 4px;
+  margin-bottom: 5px;
   line-height: 1.25;
 }
 
@@ -3839,7 +3913,7 @@
   gap: 4px;
   font-size: 11.5px;
   font-weight: 600;
-  color: var(--accent);
+  color: var(--art-tint, var(--accent));
   margin-top: 2px;
   opacity: 0.9;
 }

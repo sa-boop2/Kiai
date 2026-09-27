@@ -16,6 +16,7 @@ import {
 import type { CountdownSound } from '../../data/types'
 import { updateProfile, updateSettings } from '../../lib/actions'
 import { audio } from '../../lib/audio'
+import { AVATAR_SYMBOLS } from '../../lib/avatar'
 import { exportData, importData, type ImportMode } from '../../lib/backup'
 import { displayName, timeOfDay } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
@@ -26,7 +27,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '1.6'
+const VERSION = '1.6.1'
 
 export function SettingsScreen() {
   const settings = useSettings()
@@ -377,6 +378,7 @@ function ProfileCard() {
   const fileRef = useRef<HTMLInputElement>(null)
   const [editing, setEditing] = useState(false)
   const [draftName, setDraftName] = useState(profile.name)
+  const [pickerOpen, setPickerOpen] = useState(false)
   const { t } = useI18n()
   const next = nextRank(snapshot.rank)
 
@@ -398,14 +400,17 @@ function ProfileCard() {
           type="button"
           className="avatar-button pressable"
           aria-label="Change profile picture"
-          onClick={() => fileRef.current?.click()}
+          onClick={() => {
+            haptic('light')
+            setPickerOpen(true)
+          }}
         >
           <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={76} />
           <span className="avatar-camera">
             <Icon name="camera.fill" size={13} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
           </span>
         </button>
-        <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => pick(e.target.files?.[0])} />
+        <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); setPickerOpen(false) }} />
 
         <div className="profile-text">
           {editing ? (
@@ -460,6 +465,79 @@ function ProfileCard() {
       </div>
       <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={8} label="Rank progress" />
       {artById(profile.primaryArt) === undefined && <span className="sr-only">No primary art</span>}
+
+      {pickerOpen && (
+        <div className="picker-modal-overlay" onClick={() => setPickerOpen(false)}>
+          <div className="picker-modal-content avatar-picker" onClick={(e) => e.stopPropagation()}>
+            <div className="picker-modal-header">
+              <div>
+                <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 700 }}>Profile picture</h3>
+                <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  Choose a photo or an icon
+                </p>
+              </div>
+              <button
+                type="button"
+                className="search-clear"
+                style={{ width: 28, height: 28 }}
+                onClick={() => setPickerOpen(false)}
+                aria-label="Close"
+              >
+                <Icon name="xmark" size={16} />
+              </button>
+            </div>
+
+            <div className="avatar-picker-body">
+              <button type="button" className="picker-modal-item" onClick={() => fileRef.current?.click()}>
+                <span className="avatar-picker-photo-icon">
+                  <Icon name="photo.fill" size={20} />
+                </span>
+                <div style={{ textAlign: 'left', flex: 1 }}>
+                  <div style={{ fontWeight: 600, fontSize: '15px' }}>Choose a photo</div>
+                </div>
+                <Icon name="chevron.right" size={14} className="muted" />
+              </button>
+
+              <div className="divider" />
+
+              <div className="tint-picker no-sheet-drag" style={{ padding: '2px 0 14px' }}>
+                {TINTS.map((option) => (
+                  <button
+                    key={option}
+                    type="button"
+                    className={`tint-choice pressable ${profile.avatarTint === option ? 'selected' : ''}`}
+                    style={{ '--tint': tintColor(option) } as React.CSSProperties}
+                    aria-label={tintTitle(option)}
+                    aria-pressed={profile.avatarTint === option}
+                    onClick={() => {
+                      haptic('selection')
+                      updateProfile({ avatar: null, avatarTint: option, avatarSymbol: profile.avatarSymbol ?? AVATAR_SYMBOLS[0] })
+                    }}
+                  />
+                ))}
+              </div>
+
+              <div className="avatar-symbol-grid">
+                {AVATAR_SYMBOLS.map((symbol) => (
+                  <button
+                    key={symbol}
+                    type="button"
+                    className={`avatar-symbol-choice pressable ${profile.avatarSymbol === symbol && !profile.avatar ? 'selected' : ''}`}
+                    style={{ '--tint': tintColor(profile.avatarTint ?? 'ember') } as React.CSSProperties}
+                    aria-label={symbol}
+                    onClick={() => {
+                      haptic('selection')
+                      updateProfile({ avatar: null, avatarSymbol: symbol, avatarTint: profile.avatarTint ?? 'ember' })
+                    }}
+                  >
+                    <Icon name={symbol} size={22} />
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </Card>
   )
 }

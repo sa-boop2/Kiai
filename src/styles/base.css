@@ -648,14 +648,14 @@ img {
 
 .screen-grabber-zone {
   position: absolute;
-  top: 0;
+  top: var(--safe-top);
   left: 0;
   right: 0;
   height: 22px;
   z-index: 15;
   display: flex;
   justify-content: center;
-  padding-top: 6px;
+  padding-top: 8px;
   touch-action: none;
   cursor: grab;
 }
