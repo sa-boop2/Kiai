@@ -34,9 +34,13 @@ export function AnalyticsScreen() {
         <StatTile
           title={t('Longest streak')}
           value={String(snapshot.longestStreak)}
-          caption={snapshot.longestStreak === 1 ? 'day' : 'days'}
+          caption={snapshot.longestStreak === 1 ? '1 day · View' : `${snapshot.longestStreak} days · View`}
           icon="flame.fill"
           tint="var(--ember)"
+          onClick={() => {
+            haptic('selection')
+            nav.push({ name: 'streak' })
+          }}
         />
         <StatTile
           title={t('Achievements')}
@@ -652,3 +656,175 @@ export function AchievementsScreen() {
     </Screen>
   )
 }
+
+export function StreakDetailScreen() {
+  const sessions = useSessions()
+  const profile = useProfile()
+  const { locale } = useI18n()
+  const snapshot = useMemo(() => makeSnapshot(sessions, profile.createdAt, false), [sessions, profile.createdAt])
+
+  const streakMilestones = [
+    { target: 3, title: '3-Day Spark', desc: 'Complete 3 consecutive active days', icon: 'flame.fill' },
+    { target: 7, title: '7-Day Warrior', desc: 'A full unbroken week of daily practice', icon: 'flame.fill' },
+    { target: 14, title: '14-Day Iron Will', desc: 'Two solid weeks of consistency', icon: 'bolt.fill' },
+    { target: 30, title: '30-Day Master', desc: 'A full calendar month on the mat', icon: 'trophy.fill' },
+    { target: 100, title: '100-Day Legend', desc: 'Centurion level martial discipline', icon: 'crown.fill' },
+  ]
+
+  // Calculate past 7 days active status
+  const weekDays = useMemo(() => {
+    const days: { label: string; date: string; active: boolean }[] = []
+    const today = new Date()
+    const sessionDays = new Set(sessions.map((s) => startOfDay(s.startedAt)))
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today)
+      d.setDate(today.getDate() - i)
+      const dayStart = startOfDay(d.getTime())
+      const label = d.toLocaleDateString(locale, { weekday: 'narrow' })
+      days.push({ label, date: d.toLocaleDateString(locale, { month: 'short', day: 'numeric' }), active: sessionDays.has(dayStart) })
+    }
+    return days
+  }, [sessions, locale])
+
+  return (
+    <Screen title="Streak & Consistency" back contentClassName="list-stack">
+      {/* Hero Streak Card */}
+      <div
+        className="card"
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          textAlign: 'center',
+          padding: '24px 20px',
+          background: 'linear-gradient(135deg, color-mix(in srgb, var(--ember) 25%, var(--surface)) 0%, var(--surface) 100%)',
+          border: '1px solid color-mix(in srgb, var(--ember) 35%, var(--stroke))',
+        }}
+      >
+        <div
+          style={{
+            width: 60,
+            height: 60,
+            borderRadius: 999,
+            background: 'color-mix(in srgb, var(--ember) 18%, transparent)',
+            color: 'var(--ember)',
+            display: 'grid',
+            placeItems: 'center',
+            marginBottom: '10px',
+          }}
+        >
+          <Icon name="flame.fill" size={34} />
+        </div>
+        <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          Current Streak
+        </span>
+        <div style={{ fontFamily: 'var(--font-rounded)', fontSize: '46px', fontWeight: 800, color: 'var(--text)', lineHeight: 1.1, margin: '2px 0 4px' }}>
+          {snapshot.currentStreak} {snapshot.currentStreak === 1 ? 'Day' : 'Days'}
+        </div>
+        <p style={{ margin: 0, fontSize: '14px', color: 'var(--text-secondary)' }}>
+          All-time longest record: <strong style={{ color: 'var(--ember)' }}>{snapshot.longestStreak} days</strong>
+        </p>
+      </div>
+
+      {/* 7-Day Activity Tracker */}
+      <div className="card" style={{ padding: '16px' }}>
+        <h4 style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 600 }}>Past 7 Days</h4>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {weekDays.map((w, idx) => (
+            <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--text-tertiary)', fontWeight: 600 }}>{w.label}</span>
+              <div
+                style={{
+                  width: 32,
+                  height: 32,
+                  borderRadius: 999,
+                  display: 'grid',
+                  placeItems: 'center',
+                  background: w.active ? 'var(--ember)' : 'var(--surface-raised)',
+                  color: w.active ? '#fff' : 'var(--text-tertiary)',
+                  border: w.active ? 'none' : '1px solid var(--stroke)',
+                }}
+              >
+                {w.active ? <Icon name="checkmark" size={14} strokeWidth={2.8} /> : <span style={{ fontSize: '10px' }}>•</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Stats Breakdown */}
+      <div className="grid-2">
+        <StatTile
+          title="Total Sessions"
+          value={String(snapshot.sessionCount)}
+          caption="workouts logged"
+          icon="checkmark.seal.fill"
+          tint="var(--jade)"
+        />
+        <StatTile
+          title="Total Time"
+          value={minutes(snapshot.totalSeconds)}
+          caption={`${snapshot.activeDays} active days`}
+          icon="clock.fill"
+          tint="var(--accent)"
+        />
+      </div>
+
+      {/* Streak Milestones */}
+      <div className="card" style={{ padding: '16px' }}>
+        <h4 style={{ margin: '0 0 12px', fontSize: '15px', fontWeight: 600 }}>Streak Milestones</h4>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {streakMilestones.map((m) => {
+            const unlocked = snapshot.longestStreak >= m.target
+            return (
+              <div
+                key={m.target}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px 12px',
+                  borderRadius: 'var(--radius-medium)',
+                  background: unlocked ? 'color-mix(in srgb, var(--ember) 8%, var(--surface))' : 'var(--surface-raised)',
+                  border: `1px solid ${unlocked ? 'color-mix(in srgb, var(--ember) 25%, var(--stroke))' : 'var(--stroke)'}`,
+                  opacity: unlocked ? 1 : 0.65,
+                }}
+              >
+                <div
+                  style={{
+                    width: 34,
+                    height: 34,
+                    borderRadius: 999,
+                    background: unlocked ? 'var(--ember)' : 'color-mix(in srgb, var(--text) 8%, transparent)',
+                    color: unlocked ? '#fff' : 'var(--text-secondary)',
+                    display: 'grid',
+                    placeItems: 'center',
+                    flexShrink: 0,
+                  }}
+                >
+                  <Icon name={m.icon} size={16} />
+                </div>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <strong style={{ fontSize: '14px', color: 'var(--text)' }}>{m.title}</strong>
+                    {unlocked ? (
+                      <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--ember)', textTransform: 'uppercase' }}>
+                        Unlocked
+                      </span>
+                    ) : (
+                      <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                        {snapshot.longestStreak} / {m.target}
+                      </span>
+                    )}
+                  </div>
+                  <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--text-secondary)' }}>{m.desc}</p>
+                </div>
+              </div>
+            )
+          })}
+        </div>
+      </div>
+    </Screen>
+  )
+}
+

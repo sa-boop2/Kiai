@@ -15,7 +15,7 @@ import {
 } from '../../components/ui'
 import { MARTIAL_ARTS } from '../../data/content'
 import { categoryMeta, equipmentMeta, tintColor } from '../../data/meta'
-import type { BodyRegion, Exercise, MartialArt } from '../../data/types'
+import type { BodyRegion, Exercise } from '../../data/types'
 import { addExerciseToKata } from '../../lib/actions'
 import { toast } from '../../components/Toast'
 import { haptic } from '../../lib/haptics'
@@ -52,6 +52,7 @@ function matchesBodyPart(exercise: Exercise, part: BodyPart): boolean {
   if (p === 'quads') return cat === 'quads' || name.includes('quad') || name.includes('thigh')
   if (p === 'calves') return cat === 'calves' || cat === 'shins' || name.includes('calf') || name.includes('calves') || name.includes('shin')
   if (p === 'feet') return cat === 'feet' || name.includes('foot') || name.includes('feet') || name.includes('ankle') || name.includes('toe')
+  if (p === 'cardio') return cat === 'cardio' || cat.includes('cardio') || name.includes('cardio') || name.includes('hiit') || name.includes('jump') || name.includes('burpee') || name.includes('skip') || name.includes('shadow')
   return cat === p || (exercise.targets ? exercise.targets.some((t) => t.toLowerCase().includes(p)) : false)
 }
 
@@ -81,7 +82,6 @@ export function LibraryScreen() {
   const [query, setQuery] = useState('')
   const [selectedMuscle, setSelectedMuscle] = useState<BodyPart | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
-  const [selectedArt, setSelectedArt] = useState<MartialArt | null>(null)
 
   // Filter exercises
   const filteredExercises = useMemo(() => {
@@ -331,7 +331,7 @@ export function LibraryScreen() {
                         className="btn btn-secondary library-art-btn"
                         onClick={() => {
                           haptic('selection')
-                          setSelectedArt(art)
+                          nav.present({ name: 'artLearnMore', artId: art.id })
                         }}
                       >
                         View Drills & Mobility
@@ -344,130 +344,6 @@ export function LibraryScreen() {
           </>
         )}
       </div>
-
-      {/* Selected Martial Art Detail Modal */}
-      {selectedArt && (
-        <div className="picker-modal-overlay" onClick={() => setSelectedArt(null)}>
-          <div className="picker-modal-content" style={{ maxHeight: '85vh' }} onClick={(e) => e.stopPropagation()}>
-            <div className="picker-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
-                <SymbolTile icon={selectedArt.symbol} tint={tintColor(selectedArt.tint)} size={44} />
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 700 }}>{selectedArt.name}</h3>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{selectedArt.origin}</span>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="search-clear"
-                style={{ width: 28, height: 28 }}
-                onClick={() => setSelectedArt(null)}
-                aria-label="Close"
-              >
-                <Icon name="xmark" size={16} />
-              </button>
-            </div>
-
-            <div className="picker-modal-list" style={{ gap: 14 }}>
-              <div style={{ padding: '4px 0' }}>
-                <div className="library-art-placeholder-tag" style={{ marginBottom: 8 }}>
-                  <Icon name="sparkles" size={12} /> Discipline Hub · Coming in v1.6
-                </div>
-                <p style={{ margin: '0 0 8px', fontSize: '13.5px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-                  {selectedArt.about}
-                </p>
-                <div className="library-art-focus-row">
-                  {selectedArt.focusAreas.map((focus) => (
-                    <span key={focus} className="library-art-chip">
-                      {focus}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              {selectedArt.stretches && selectedArt.stretches.length > 0 && (
-                <div>
-                  <h4 style={{ margin: '8px 0 8px', fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
-                    Recommended Stretches
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {selectedArt.stretches.map((s) => (
-                      <div
-                        key={s.slug}
-                        style={{
-                          background: 'var(--surface)',
-                          border: '1px solid var(--stroke)',
-                          borderRadius: 'var(--radius-medium)',
-                          padding: '10px 12px',
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                          <span style={{ fontWeight: 600, fontSize: '14px', textTransform: 'capitalize' }}>
-                            {s.slug.replace(/-/g, ' ')}
-                          </span>
-                          <button
-                            type="button"
-                            className="btn btn-secondary"
-                            style={{ fontSize: '11.5px', padding: '3px 10px' }}
-                            onClick={() => {
-                              setSelectedArt(null)
-                              nav.present({ name: 'exercise', slug: s.slug })
-                            }}
-                          >
-                            View
-                          </button>
-                        </div>
-                        <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
-                          {s.why}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {selectedArt.drills && selectedArt.drills.length > 0 && (
-                <div>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', margin: '8px 0 8px' }}>
-                    <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
-                      Foundational Drills
-                    </h4>
-                    <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>
-                      Placeholder
-                    </span>
-                  </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
-                    {selectedArt.drills.map((d) => (
-                      <div
-                        key={d.slug}
-                        style={{
-                          background: 'var(--surface)',
-                          border: '1px solid var(--stroke)',
-                          borderRadius: 'var(--radius-medium)',
-                          padding: '10px 12px',
-                          opacity: 0.85,
-                        }}
-                      >
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
-                          <span style={{ fontWeight: 600, fontSize: '14px', textTransform: 'capitalize' }}>
-                            {d.slug.replace(/-/g, ' ')}
-                          </span>
-                          <span className="library-art-placeholder-tag" style={{ fontSize: '10px', padding: '2px 6px' }}>
-                            Drill Preview
-                          </span>
-                        </div>
-                        <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
-                          {d.why}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
     </Screen>
   )
 }
@@ -490,8 +366,131 @@ function formatMuscleTitle(part: BodyPart): string {
     quads: 'Quadriceps',
     calves: 'Calf & Shin',
     feet: 'Foot & Ankle',
+    cardio: 'Cardio & Conditioning',
   }
   return map[part] || part
+}
+
+export function ArtDetailSheet({ artId }: { artId: string }) {
+  const art = MARTIAL_ARTS.find((a) => a.id === artId)
+  if (!art) return null
+
+  return (
+    <>
+      <SheetHeader
+        title={art.name}
+        trailing={
+          <button type="button" className="navbar-action strong" onClick={() => nav.back()}>
+            Done
+          </button>
+        }
+      />
+      <div className="sheet-scroll form">
+        <div className="detail-hero">
+          <SymbolTile icon={art.symbol} tint={tintColor(art.tint)} size={72} />
+          <h2>{art.name}</h2>
+          <p style={{ margin: '4px 0', fontSize: '13.5px', color: 'var(--text-secondary)' }}>
+            {art.origin} · {art.tagline}
+          </p>
+        </div>
+
+        <div className="form-section">
+          <div className="library-art-placeholder-tag" style={{ marginBottom: 8, display: 'inline-flex' }}>
+            <Icon name="sparkles" size={12} /> Discipline Hub · Coming in v1.6
+          </div>
+          <p style={{ margin: '0 0 10px', fontSize: '14px', color: 'var(--text-secondary)', lineHeight: 1.5 }}>
+            {art.about}
+          </p>
+          <div className="library-art-focus-row">
+            {art.focusAreas.map((focus) => (
+              <span key={focus} className="library-art-chip">
+                {focus}
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {art.stretches && art.stretches.length > 0 && (
+          <div className="form-section">
+            <h4 style={{ margin: '0 0 10px', fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
+              Recommended Stretches
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {art.stretches.map((s) => (
+                <div
+                  key={s.slug}
+                  style={{
+                    background: 'var(--surface-elevated, var(--surface))',
+                    border: '1px solid var(--stroke)',
+                    borderRadius: 'var(--radius-medium)',
+                    padding: '12px 14px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontWeight: 600, fontSize: '14px', textTransform: 'capitalize' }}>
+                      {s.slug.replace(/-/g, ' ')}
+                    </span>
+                    <button
+                      type="button"
+                      className="btn btn-secondary"
+                      style={{ fontSize: '12px', padding: '4px 10px' }}
+                      onClick={() => {
+                        nav.present({ name: 'exercise', slug: s.slug })
+                      }}
+                    >
+                      View
+                    </button>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                    {s.why}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {art.drills && art.drills.length > 0 && (
+          <div className="form-section">
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 10 }}>
+              <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 700, color: 'var(--text)' }}>
+                Foundational Drills
+              </h4>
+              <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', textTransform: 'uppercase', fontWeight: 600 }}>
+                Placeholder
+              </span>
+            </div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+              {art.drills.map((d) => (
+                <div
+                  key={d.slug}
+                  style={{
+                    background: 'var(--surface-elevated, var(--surface))',
+                    border: '1px solid var(--stroke)',
+                    borderRadius: 'var(--radius-medium)',
+                    padding: '12px 14px',
+                    opacity: 0.9,
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                    <span style={{ fontWeight: 600, fontSize: '14px', textTransform: 'capitalize' }}>
+                      {d.slug.replace(/-/g, ' ')}
+                    </span>
+                    <span className="library-art-placeholder-tag" style={{ fontSize: '10px', padding: '2px 6px' }}>
+                      Drill Preview
+                    </span>
+                  </div>
+                  <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                    {d.why}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  )
 }
 
 export function ExerciseSheet({ slug }: { slug: string }) {

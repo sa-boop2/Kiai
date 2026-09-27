@@ -462,12 +462,12 @@ img {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 3px;
   z-index: 20;
   display: flex;
   justify-content: center;
-  /* Lowered to almost bottom of the screen */
-  padding: 0 calc(var(--safe-right) + 12px) max(var(--safe-bottom), 3px) calc(var(--safe-left) + 12px);
+  /* Placed right at the bottom edge with a tiny bit of space */
+  padding: 0 calc(var(--safe-right) + 12px) 0 calc(var(--safe-left) + 12px);
   pointer-events: none;
 }
 

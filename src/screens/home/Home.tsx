@@ -197,28 +197,7 @@ export function HomeScreen() {
       {/* Your Kata's section */}
       <div className="home-katas-header">
         <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{t("Your Kata's")}</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <button
-            type="button"
-            className="filter-pill pressable"
-            style={{
-              fontSize: '12px',
-              padding: '6px 12px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '6px',
-              fontWeight: 600,
-            }}
-            onClick={() => {
-              haptic('selection')
-              nav.push({ name: 'premadeWorkouts' })
-            }}
-          >
-            <Icon name="books.vertical.fill" size={13} strokeWidth={2.4} />
-            <span>Premade Katas</span>
-          </button>
-          <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
-        </div>
+        <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
       </div>
 
       <div className="home-katas-list">
@@ -287,6 +266,51 @@ export function HomeScreen() {
                 </div>
               )
             })}
+
+            {/* Intelligent Browse Premade Katas entry placed cleanly BELOW custom katas */}
+            <button
+              type="button"
+              className="card browse-premade-card pressable"
+              onClick={() => {
+                haptic('selection')
+                nav.push({ name: 'premadeWorkouts' })
+              }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '13px 16px',
+                marginTop: '4px',
+                background: 'color-mix(in srgb, var(--accent) 7%, var(--surface))',
+                border: '1px dashed color-mix(in srgb, var(--accent) 30%, var(--stroke))',
+                borderRadius: 'var(--radius-medium)',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: 36,
+                    height: 36,
+                    borderRadius: 999,
+                    background: 'color-mix(in srgb, var(--accent) 16%, transparent)',
+                    color: 'var(--accent)',
+                    display: 'grid',
+                    placeItems: 'center',
+                  }}
+                >
+                  <Icon name="books.vertical.fill" size={16} strokeWidth={2.4} />
+                </div>
+                <div style={{ textAlign: 'left' }}>
+                  <div style={{ fontWeight: 600, fontSize: '14.5px', color: 'var(--text)' }}>
+                    Browse Dojo Katas
+                  </div>
+                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                    Explore curated routines for all flexibility levels
+                  </div>
+                </div>
+              </div>
+              <Icon name="chevron.right" size={14} className="muted" />
+            </button>
           </div>
         )}
       </div>

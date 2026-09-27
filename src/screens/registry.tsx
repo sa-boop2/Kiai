@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
 import { SheetHeader } from '../components/SheetHost'
 import type { Route, SheetRoute, Tab } from '../lib/nav'
-import { AnalyticsScreen, AchievementsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet } from './analytics/Analytics'
+import { AnalyticsScreen, AchievementsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet, StreakDetailScreen } from './analytics/Analytics'
 import { HomeScreen, QuickStatsSheet } from './home/Home'
 import { EditorSheet, PickerSheet } from './katas/Editor'
 import { KataDetailScreen, PremadeWorkoutsScreen } from './katas/Katas'
-import { ExerciseSheet, LibraryScreen } from './library/Library'
+import { ArtDetailSheet, ExerciseSheet, LibraryScreen } from './library/Library'
 import { Login } from './onboarding/Login'
 import {
   AppearanceScreen, AudioSettingsScreen, FaqScreen, PrivacyScreen, RemindersScreen, SettingsScreen,
@@ -53,6 +53,8 @@ export function renderRoute(route: Route): ReactNode {
       return <FaqScreen />
     case 'achievements':
       return <AchievementsScreen />
+    case 'streak':
+      return <StreakDetailScreen />
     default:
       return <div>Not found</div>
   }
@@ -62,6 +64,8 @@ export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'la
   switch (route.name) {
     case 'exercise':
       return { content: <ExerciseSheet slug={route.slug} /> }
+    case 'artLearnMore':
+      return { content: <ArtDetailSheet artId={route.artId} />, size: 'large' }
     case 'howTo':
       return {
         content: (

@@ -36,18 +36,18 @@
   text-align: left;
   overflow: hidden;
   isolation: isolate;
-  /* 1.52: Translucent liquid glass card with glowing prismatic rim */
+  /* 1.53: Translucent liquid glass card dynamically adapting to user accent */
   background: linear-gradient(
     135deg,
-    color-mix(in srgb, var(--accent) 42%, rgba(255, 255, 255, 0.16)) 0%,
-    color-mix(in srgb, var(--ember-deep) 48%, rgba(22, 14, 32, 0.72)) 50%,
-    color-mix(in srgb, #1a0808 80%, rgba(255, 255, 255, 0.08)) 100%
+    color-mix(in srgb, var(--accent) 52%, rgba(255, 255, 255, 0.16)) 0%,
+    color-mix(in srgb, var(--accent) 26%, rgba(18, 20, 28, 0.85)) 50%,
+    color-mix(in srgb, var(--accent) 12%, rgba(10, 11, 16, 0.95)) 100%
   );
   backdrop-filter: blur(28px) saturate(180%);
   -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow:
-    0 20px 48px -12px color-mix(in srgb, var(--accent) 40%, rgba(0, 0, 0, 0.4)),
+    0 20px 48px -12px color-mix(in srgb, var(--accent) 35%, rgba(0, 0, 0, 0.6)),
     inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.55),
     inset 0 -1px 1px 0 rgba(0, 0, 0, 0.2);
   color: #fff;
@@ -3237,33 +3237,33 @@
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
-   1.51 Update: Redesigned Side-by-side Dual Anatomical Body Diagram
+   1.53 Update: Premium Overhaul Anatomical Body Diagram (iOS Style)
    ───────────────────────────────────────────────────────────────────────────── */
 .anatomy-card {
   position: relative;
   overflow: hidden;
-  padding: 16px 16px 14px;
-  background: #0d1422;
+  padding: 16px 14px 14px;
+  background: linear-gradient(180deg, #131926 0%, #0d121c 100%);
   border-radius: var(--radius-card);
   display: flex;
   flex-direction: column;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   margin-bottom: 8px;
 }
 
 :root[data-theme='light'] .anatomy-card {
-  background: #f1f5f9;
+  background: linear-gradient(180deg, #f8fafc 0%, #edf2f7 100%);
   border: 1px solid rgba(0, 0, 0, 0.08);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
 }
 
 .anatomy-header {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 8px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .anatomy-title-row {
@@ -3273,80 +3273,118 @@
 }
 
 .anatomy-title {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 700;
   letter-spacing: -0.2px;
   color: var(--text);
   margin: 0;
 }
 
-.anatomy-badges-row {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.anatomy-badge-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.anatomy-badge-label {
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  color: var(--text-tertiary);
-}
-
-.anatomy-pill {
+.anatomy-view-switcher {
   display: inline-flex;
   align-items: center;
-  padding: 4px 12px;
+  padding: 2px;
   border-radius: 999px;
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--text-secondary);
-  border: 1px solid rgba(255, 255, 255, 0.06);
-  transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-:root[data-theme='light'] .anatomy-pill {
-  background: rgba(0, 0, 0, 0.05);
-  color: var(--text-secondary);
+:root[data-theme='light'] .anatomy-view-switcher {
+  background: rgba(0, 0, 0, 0.06);
   border: 1px solid rgba(0, 0, 0, 0.06);
 }
 
-.anatomy-pill.active {
-  background: #a78bfa;
-  color: #120e24;
-  border-color: #c4b5fd;
-  box-shadow: 0 0 14px rgba(167, 139, 250, 0.45);
+.anatomy-switch-btn {
+  padding: 3px 12px;
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
-:root[data-theme='light'] .anatomy-pill.active {
-  background: #7c3aed;
-  color: #ffffff;
-  border-color: #6d28d9;
+.anatomy-switch-btn.active {
+  background: rgba(255, 255, 255, 0.22);
+  color: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.2);
+}
+
+:root[data-theme='light'] .anatomy-switch-btn.active {
+  background: #ffffff;
+  color: #0f172a;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.anatomy-selection-bar {
+  display: flex;
+  align-items: center;
+  min-height: 28px;
+}
+
+.anatomy-selected-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--accent, #facc15) 18%, rgba(255, 255, 255, 0.06));
+  border: 1px solid color-mix(in srgb, var(--accent, #facc15) 50%, transparent);
+  font-size: 12px;
+  color: #fff;
+}
+
+:root[data-theme='light'] .anatomy-selected-badge {
+  background: color-mix(in srgb, var(--accent, #d97706) 14%, rgba(0, 0, 0, 0.04));
+  border-color: color-mix(in srgb, var(--accent, #d97706) 40%, transparent);
+  color: #0f172a;
+}
+
+.anatomy-dot-indicator {
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  background: var(--accent, #facc15);
+  box-shadow: 0 0 6px var(--accent, #facc15);
+}
+
+.anatomy-clear-inline {
+  background: none;
+  border: none;
+  color: var(--text-secondary);
+  cursor: pointer;
+  padding: 0 0 0 4px;
+  font-size: 12px;
+  display: inline-flex;
+}
+
+.anatomy-hint-text {
+  font-size: 12px;
+  color: var(--text-tertiary);
+  font-weight: 500;
 }
 
 .anatomy-stage {
   position: relative;
   width: 100%;
-  max-width: 360px;
+  max-width: 390px;
   margin: 0 auto;
   user-select: none;
   -webkit-user-select: none;
+  touch-action: pan-y;
+}
+
+.anatomy-figure-container {
+  width: 100%;
+  transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.25, 1, 0.5, 1);
 }
 
 .anatomy-svg {
   width: 100%;
   height: auto;
-  max-height: 310px;
+  max-height: 520px;
   display: block;
 }
 
@@ -3357,7 +3395,7 @@
 
 .anatomy-part.neutral {
   fill: #1e2838;
-  opacity: 0.6;
+  opacity: 0.65;
 }
 
 :root[data-theme='light'] .anatomy-part.neutral {
@@ -3366,19 +3404,19 @@
 }
 
 .anatomy-part.selectable {
-  fill: #1a2333;
-  stroke: #0d1420;
+  fill: #1c2536;
+  stroke: #101620;
   stroke-width: 0.75px;
   cursor: pointer;
 }
 
 :root[data-theme='light'] .anatomy-part.selectable {
   fill: #94a3b8;
-  stroke: #f1f5f9;
+  stroke: #f8fafc;
 }
 
 .anatomy-part.selectable:hover {
-  fill: #2d3b52;
+  fill: #2e3d56;
 }
 
 :root[data-theme='light'] .anatomy-part.selectable:hover {
@@ -3386,15 +3424,150 @@
 }
 
 .anatomy-part.selectable.selected {
-  fill: #a78bfa !important;
-  stroke: #c4b5fd !important;
-  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.9));
+  fill: var(--accent, #facc15) !important;
+  stroke: #ffffff !important;
+  filter: drop-shadow(0 0 8px color-mix(in srgb, var(--accent, #facc15) 80%, transparent));
 }
 
-:root[data-theme='light'] .anatomy-part.selectable.selected {
-  fill: #7c3aed !important;
-  stroke: #6d28d9 !important;
-  filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.7));
+.anatomy-dashed {
+  stroke: rgba(255, 255, 255, 0.45);
+  stroke-width: 1.5;
+  stroke-dasharray: 3.5, 3.5;
+  transition: stroke 0.2s ease, stroke-width 0.2s ease;
+  pointer-events: none;
+}
+
+:root[data-theme='light'] .anatomy-dashed {
+  stroke: rgba(0, 0, 0, 0.35);
+}
+
+.anatomy-dashed.active {
+  stroke: var(--accent, #facc15);
+  stroke-width: 2.2;
+  stroke-dasharray: 4, 3;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent, #facc15) 75%, transparent));
+}
+
+.anatomy-pin-target {
+  cursor: pointer;
+}
+
+.anatomy-pin-dot {
+  fill: #facc15;
+  stroke: #121824;
+  stroke-width: 2px;
+  transition: all 0.2s ease;
+}
+
+.anatomy-pin-dot.selected {
+  fill: var(--accent, #facc15);
+  stroke: #ffffff;
+  stroke-width: 2.5px;
+  filter: drop-shadow(0 0 8px var(--accent, #facc15));
+}
+
+.anatomy-pulse-ring {
+  fill: none;
+  stroke: var(--accent, #facc15);
+  stroke-width: 2px;
+  opacity: 0.9;
+}
+
+.anatomy-label-target {
+  cursor: pointer;
+}
+
+.anatomy-callout-text {
+  fill: #ffffff;
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+  transition: fill 0.2s ease, font-weight 0.2s ease;
+  user-select: none;
+}
+
+:root[data-theme='light'] .anatomy-callout-text {
+  fill: #0f172a;
+}
+
+.anatomy-callout-text.selected {
+  fill: var(--accent, #facc15);
+  font-weight: 800;
+  filter: drop-shadow(0 0 4px color-mix(in srgb, var(--accent, #facc15) 60%, transparent));
+}
+
+:root[data-theme='light'] .anatomy-callout-text.selected {
+  fill: var(--accent, #d97706);
+}
+
+.anatomy-flip-btn {
+  position: absolute;
+  left: 12px;
+  bottom: 12px;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  background: rgba(18, 24, 36, 0.9);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1.5px solid color-mix(in srgb, var(--accent, #facc15) 50%, rgba(255, 255, 255, 0.2));
+  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.45);
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+:root[data-theme='light'] .anatomy-flip-btn {
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+}
+
+.anatomy-flip-btn:active {
+  transform: scale(0.92);
+}
+
+.anatomy-flip-arrows {
+  display: grid;
+  place-items: center;
+}
+
+.anatomy-flip-caption {
+  font-size: 9px;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: var(--accent, #facc15);
+  letter-spacing: 0.5px;
+  margin-top: -2px;
+}
+
+.anatomy-swipe-pill {
+  position: absolute;
+  right: 12px;
+  bottom: 16px;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.65);
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(8px);
+  pointer-events: none;
+}
+
+:root[data-theme='light'] .anatomy-swipe-pill {
+  color: rgba(0, 0, 0, 0.6);
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────

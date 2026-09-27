@@ -1,4 +1,6 @@
+import { useRef, useState } from 'react'
 import { haptic } from '../lib/haptics'
+import { Icon } from './Icon'
 
 export type BodyPart =
   | 'neck'
@@ -17,53 +19,110 @@ export type BodyPart =
   | 'quads'
   | 'calves'
   | 'feet'
+  | 'cardio'
 
 export interface BodyDiagramProps {
   selectedPart: BodyPart | null
   onSelectPart: (part: BodyPart | null) => void
 }
 
-const MUSCLE_INFO: Record<BodyPart, { title: string; secondary: string }> = {
-  shoulders: { title: 'SHOULDERS', secondary: 'TRAPS & NECK' },
-  neck: { title: 'TRAPS & NECK', secondary: 'UPPER BACK' },
-  chest: { title: 'CHEST', secondary: 'SHOULDERS & TRICEPS' },
-  arms: { title: 'ARMS', secondary: 'FOREARMS & DELTOIDS' },
-  biceps: { title: 'BICEPS', secondary: 'FOREARMS & BACK' },
-  triceps: { title: 'TRICEPS', secondary: 'CHEST & SHOULDERS' },
-  core: { title: 'CORE & ABS', secondary: 'HIP FLEXORS' },
-  lowerBack: { title: 'LOWER BACK', secondary: 'GLUTES & HAMSTRINGS' },
-  lats: { title: 'LATS & BACK', secondary: 'TRAPS & BICEPS' },
-  glutes: { title: 'GLUTES', secondary: 'HAMSTRINGS & LOWER BACK' },
-  hipFlexors: { title: 'HIP FLEXORS', secondary: 'QUADS & CORE' },
-  adductors: { title: 'ADDUCTORS', secondary: 'HIPS & HAMSTRINGS' },
-  hamstrings: { title: 'HAMSTRINGS', secondary: 'GLUTES & CALVES' },
-  quads: { title: 'QUADRICEPS', secondary: 'HIP FLEXORS & KNEES' },
-  calves: { title: 'CALVES & SHINS', secondary: 'FEET & ANKLES' },
-  feet: { title: 'FEET & ANKLES', secondary: 'CALVES' },
+const MUSCLE_TITLES: Record<BodyPart, string> = {
+  shoulders: 'Shoulders',
+  neck: 'Traps & Neck',
+  chest: 'Chest',
+  arms: 'Forearms & Arms',
+  biceps: 'Biceps',
+  triceps: 'Triceps',
+  core: 'Abs & Obliques',
+  lowerBack: 'Lower Back',
+  lats: 'Lats & Upper Back',
+  glutes: 'Glutes',
+  hipFlexors: 'Abductors & Hips',
+  adductors: 'Adductors & Groin',
+  hamstrings: 'Hamstrings',
+  quads: 'Quadriceps',
+  calves: 'Calves & Shins',
+  feet: 'Feet & Ankles',
+  cardio: 'Cardio & Agility',
 }
 
 export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
-  const clickPart = (part: BodyPart, e: React.MouseEvent) => {
-    e.stopPropagation()
+  const [view, setView] = useState<'front' | 'back'>('front')
+  const touchStartX = useRef<number | null>(null)
+  const touchStartY = useRef<number | null>(null)
+
+  const clickPart = (part: BodyPart) => {
     haptic('selection')
     onSelectPart(selectedPart === part ? null : part)
   }
 
   const isSel = (part: BodyPart) => selectedPart === part
 
-  const info = selectedPart ? MUSCLE_INFO[selectedPart] : null
+  // Touch swipe between Front and Back
+  const handleTouchStart = (e: React.TouchEvent) => {
+    touchStartX.current = e.touches[0].clientX
+    touchStartY.current = e.touches[0].clientY
+  }
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    if (touchStartX.current === null || touchStartY.current === null) return
+    const diffX = e.changedTouches[0].clientX - touchStartX.current
+    const diffY = e.changedTouches[0].clientY - touchStartY.current
+
+    // Horizontal swipe threshold: 40px and more horizontal than vertical
+    if (Math.abs(diffX) > 40 && Math.abs(diffX) > Math.abs(diffY)) {
+      if (diffX < 0 && view === 'front') {
+        haptic('selection')
+        setView('back')
+      } else if (diffX > 0 && view === 'back') {
+        haptic('selection')
+        setView('front')
+      }
+    }
+    touchStartX.current = null
+    touchStartY.current = null
+  }
 
   return (
     <div className="card anatomy-card">
-      {/* Header matching reference mockup */}
+      {/* Header: Clean iOS presentation showing Muscle Selection only (No Primary/Secondary) */}
       <div className="anatomy-header">
         <div className="anatomy-title-row">
-          <h3 className="anatomy-title">Muscles Worked</h3>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <h3 className="anatomy-title">Target Muscles</h3>
+            {/* View Pill switcher */}
+            <div className="anatomy-view-switcher">
+              <button
+                type="button"
+                className={`anatomy-switch-btn ${view === 'front' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('selection')
+                  setView('front')
+                }}
+              >
+                Front
+              </button>
+              <button
+                type="button"
+                className={`anatomy-switch-btn ${view === 'back' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('selection')
+                  setView('back')
+                }}
+              >
+                Back
+              </button>
+            </div>
+          </div>
+
           {selectedPart && (
             <button
               type="button"
               className="clear-filter-btn"
-              onClick={() => onSelectPart(null)}
+              onClick={() => {
+                haptic('light')
+                onSelectPart(null)
+              }}
               aria-label="Clear muscle filter"
             >
               Clear ✕
@@ -71,304 +130,596 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
           )}
         </div>
 
-        <div className="anatomy-badges-row">
-          <div className="anatomy-badge-item">
-            <span className="anatomy-badge-label">Primary</span>
-            <span className={`anatomy-pill primary ${info ? 'active' : ''}`}>
-              {info ? info.title : 'TAP A MUSCLE'}
+        {/* Selected muscle indicator bar */}
+        <div className="anatomy-selection-bar">
+          {selectedPart ? (
+            <div className="anatomy-selected-badge">
+              <span className="anatomy-dot-indicator" />
+              <span>Selected:</span>
+              <strong>{MUSCLE_TITLES[selectedPart]}</strong>
+              <button
+                type="button"
+                className="anatomy-clear-inline"
+                onClick={() => onSelectPart(null)}
+                aria-label="Deselect"
+              >
+                ✕
+              </button>
+            </div>
+          ) : (
+            <span className="anatomy-hint-text">
+              Swipe or tap any dot or muscle to filter exercises
             </span>
-          </div>
-
-          <div className="anatomy-badge-item">
-            <span className="anatomy-badge-label">Secondary</span>
-            <span className={`anatomy-pill secondary ${info ? 'active' : ''}`}>
-              {info ? info.secondary : 'FRONT & BACK'}
-            </span>
-          </div>
+          )}
         </div>
       </div>
 
-      {/* Side-by-side Dual Anatomical Figures SVG */}
-      <div className="anatomy-stage">
-        <svg viewBox="0 0 380 340" className="anatomy-svg" aria-label="Interactive body diagram">
-          <defs>
-            <filter id="purple-glow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#a78bfa" floodOpacity="0.8" />
-            </filter>
-          </defs>
+      {/* Swipeable Large Anatomy Stage */}
+      <div
+        className="anatomy-stage"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        <div className={`anatomy-figure-container ${view === 'front' ? 'show-front' : 'show-back'}`}>
+          {view === 'front' ? (
+            /* FRONT VIEW SVG */
+            <svg viewBox="0 0 380 560" className="anatomy-svg" aria-label="Interactive Front Body Diagram">
+              <defs>
+                <filter id="yellow-glow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#facc15" floodOpacity="0.8" />
+                </filter>
+                <filter id="accent-glow" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="6" floodColor="var(--accent, #facc15)" floodOpacity="0.9" />
+                </filter>
+              </defs>
 
-          {/* ================================================================================= */}
-          {/* FRONT FIGURE (Left, centered at X=100) */}
-          {/* ================================================================================= */}
+              {/* Athletic Silhouette Anatomy Vector Shapes */}
+              <g className="anatomy-body-shapes">
+                {/* Head & Neck */}
+                <path
+                  d="M190 28 C176 28 166 38 166 54 C166 70 176 80 190 80 C204 80 214 70 214 54 C214 38 204 28 190 28 Z"
+                  className="anatomy-part neutral"
+                />
+                <path
+                  d="M180 80 L200 80 L206 98 L218 106 L162 106 L174 98 Z"
+                  className={`anatomy-part selectable ${isSel('neck') ? 'selected' : ''}`}
+                  onClick={() => clickPart('neck')}
+                />
 
-          {/* Head & Cranium */}
-          <path
-            d="M100 24 C90 24 83 31 83 43 C83 55 90 64 100 64 C110 64 117 55 117 43 C117 31 110 24 100 24 Z"
-            className="anatomy-part neutral"
-          />
+                {/* Shoulders / Deltoids */}
+                <path
+                  d="M160 106 C150 110 134 118 126 136 C122 150 130 160 142 160 C150 160 156 144 160 128 Z"
+                  className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
+                  onClick={() => clickPart('shoulders')}
+                />
+                <path
+                  d="M220 106 C230 110 246 118 254 136 C258 150 250 160 238 160 C230 160 224 144 220 128 Z"
+                  className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
+                  onClick={() => clickPart('shoulders')}
+                />
 
-          {/* Neck / Anterior Traps */}
-          <path
-            d="M93 64 L107 64 L110 76 L119 82 L81 82 L90 76 Z"
-            className={`anatomy-part selectable ${isSel('neck') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('neck', e)}
-          />
+                {/* Chest / Pectorals */}
+                <path
+                  d="M160 108 L188 112 L188 155 L160 152 C154 138 156 120 160 108 Z"
+                  className={`anatomy-part selectable ${isSel('chest') ? 'selected' : ''}`}
+                  onClick={() => clickPart('chest')}
+                />
+                <path
+                  d="M220 108 L192 112 L192 155 L220 152 C226 138 224 120 220 108 Z"
+                  className={`anatomy-part selectable ${isSel('chest') ? 'selected' : ''}`}
+                  onClick={() => clickPart('chest')}
+                />
 
-          {/* Left Shoulder (Anterior Deltoid) */}
-          <path
-            d="M79 82 C72 84 62 90 58 102 C55 112 60 119 68 119 C74 119 78 108 80 98 Z"
-            className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('shoulders', e)}
-          />
+                {/* Biceps & Arms */}
+                <path
+                  d="M126 140 L116 186 L130 190 L140 164 Z"
+                  className={`anatomy-part selectable ${isSel('biceps') || isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('biceps')}
+                />
+                <path
+                  d="M254 140 L264 186 L250 190 L240 164 Z"
+                  className={`anatomy-part selectable ${isSel('biceps') || isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('biceps')}
+                />
 
-          {/* Right Shoulder (Anterior Deltoid) */}
-          <path
-            d="M121 82 C128 84 138 90 142 102 C145 112 140 119 132 119 C126 119 122 108 120 98 Z"
-            className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('shoulders', e)}
-          />
+                {/* Forearms */}
+                <path
+                  d="M116 190 L102 248 L118 252 L132 194 Z"
+                  className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('arms')}
+                />
+                <path
+                  d="M264 190 L278 248 L262 252 L248 194 Z"
+                  className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('arms')}
+                />
 
-          {/* Left Pectoral (Chest) */}
-          <path
-            d="M80 84 L99 86 L99 116 L80 114 C76 104 77 92 80 84 Z"
-            className={`anatomy-part selectable ${isSel('chest') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('chest', e)}
-          />
+                {/* Hands */}
+                <path d="M102 252 L92 286 L104 288 L114 256 Z" className="anatomy-part neutral" />
+                <path d="M278 252 L288 286 L276 288 L266 256 Z" className="anatomy-part neutral" />
 
-          {/* Right Pectoral (Chest) */}
-          <path
-            d="M120 84 L101 86 L101 116 L120 114 C124 104 123 92 120 84 Z"
-            className={`anatomy-part selectable ${isSel('chest') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('chest', e)}
-          />
+                {/* Abdominals (6-pack) */}
+                <path
+                  d="M164 158 L187 158 L187 182 L164 182 Z M193 158 L216 158 L216 182 L193 182 Z M164 185 L187 185 L187 208 L164 208 Z M193 185 L216 185 L216 208 L193 208 Z M167 211 L187 211 L187 232 L167 232 Z M193 211 L213 211 L213 232 L193 232 Z"
+                  className={`anatomy-part selectable ${isSel('core') ? 'selected' : ''}`}
+                  onClick={() => clickPart('core')}
+                />
 
-          {/* Left Bicep & Arm */}
-          <path
-            d="M58 104 L52 136 L62 138 L68 120 Z"
-            className={`anatomy-part selectable ${isSel('arms') || isSel('biceps') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Obliques */}
+                <path
+                  d="M154 156 L162 158 L162 228 L154 222 Z M226 156 L218 158 L218 228 L226 222 Z"
+                  className={`anatomy-part selectable ${isSel('core') ? 'selected' : ''}`}
+                  onClick={() => clickPart('core')}
+                />
 
-          {/* Right Bicep & Arm */}
-          <path
-            d="M142 104 L148 136 L138 138 L132 120 Z"
-            className={`anatomy-part selectable ${isSel('arms') || isSel('biceps') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Black Athletic Training Shorts (realistic contrast) */}
+                <path
+                  d="M152 232 L228 232 L234 300 L195 304 L190 265 L185 304 L146 300 Z"
+                  fill="#11141c"
+                  stroke="#1c2230"
+                  strokeWidth="1.5"
+                />
 
-          {/* Left Forearm */}
-          <path
-            d="M52 138 L43 178 L53 180 L62 140 Z"
-            className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Adductors / Inner Thighs */}
+                <path
+                  d="M175 298 L190 268 L184 340 L174 340 Z M205 298 L190 268 L196 340 L206 340 Z"
+                  className={`anatomy-part selectable ${isSel('adductors') ? 'selected' : ''}`}
+                  onClick={() => clickPart('adductors')}
+                />
 
-          {/* Right Forearm */}
-          <path
-            d="M148 138 L157 178 L147 180 L138 140 Z"
-            className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Quadriceps */}
+                <path
+                  d="M150 298 C140 324 135 365 146 410 C154 414 168 414 172 398 C172 368 170 324 164 298 Z"
+                  className={`anatomy-part selectable ${isSel('quads') ? 'selected' : ''}`}
+                  onClick={() => clickPart('quads')}
+                />
+                <path
+                  d="M230 298 C240 324 245 365 234 410 C226 414 212 414 208 398 C208 368 210 324 216 298 Z"
+                  className={`anatomy-part selectable ${isSel('quads') ? 'selected' : ''}`}
+                  onClick={() => clickPart('quads')}
+                />
 
-          {/* Left Hand */}
-          <path d="M42 180 L35 204 L43 205 L49 182 Z" className="anatomy-part neutral" />
-          {/* Right Hand */}
-          <path d="M158 180 L165 204 L157 205 L151 182 Z" className="anatomy-part neutral" />
+                {/* Knees */}
+                <circle cx="158" cy="418" r="7" className="anatomy-part neutral" />
+                <circle cx="222" cy="418" r="7" className="anatomy-part neutral" />
 
-          {/* Core / Abdominals (Upper, Mid, Lower) */}
-          <path
-            d="M82 118 L98 118 L98 134 L82 134 Z M102 118 L118 118 L118 134 L102 134 Z M82 136 L98 136 L98 152 L82 152 Z M102 136 L118 136 L118 152 L102 152 Z M84 154 L98 154 L98 168 L84 168 Z M102 154 L116 154 L116 168 L102 168 Z"
-            className={`anatomy-part selectable ${isSel('core') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('core', e)}
-          />
+                {/* Calves & Shins */}
+                <path
+                  d="M150 426 C140 450 144 482 150 512 L164 512 C168 482 170 450 166 426 Z"
+                  className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
+                  onClick={() => clickPart('calves')}
+                />
+                <path
+                  d="M230 426 C240 450 236 482 230 512 L216 512 C212 482 210 450 214 426 Z"
+                  className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
+                  onClick={() => clickPart('calves')}
+                />
 
-          {/* Obliques & Flanks */}
-          <path
-            d="M74 116 L80 118 L80 166 L74 162 Z M126 116 L120 118 L120 166 L126 162 Z"
-            className={`anatomy-part selectable ${isSel('core') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('core', e)}
-          />
+                {/* Feet */}
+                <path
+                  d="M146 514 L140 538 L165 538 L162 514 Z M234 514 L240 538 L215 538 L218 514 Z"
+                  className={`anatomy-part selectable ${isSel('feet') ? 'selected' : ''}`}
+                  onClick={() => clickPart('feet')}
+                />
+              </g>
 
-          {/* Hip Flexors & Groin */}
-          <path
-            d="M76 168 L124 168 L108 190 L92 190 Z"
-            className={`anatomy-part selectable ${isSel('hipFlexors') || isSel('adductors') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('hipFlexors', e)}
-          />
+              {/* ========================================================================= */}
+              {/* CALLOUT PINS & DASHED CONNECTIONS (MATCHING FRONT SCREENSHOT) */}
+              {/* ========================================================================= */}
 
-          {/* Left Quadriceps (Front Thigh) */}
-          <path
-            d="M74 172 C68 188 64 215 72 245 C78 248 88 248 90 238 C90 216 88 188 84 172 Z"
-            className={`anatomy-part selectable ${isSel('quads') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('quads', e)}
-          />
+              {/* Left 1: Shoulders */}
+              <line x1="82" y1="135" x2="135" y2="135" className={`anatomy-dashed ${isSel('shoulders') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('shoulders')}>
+                <circle cx="135" cy="135" r="22" fill="transparent" />
+                {isSel('shoulders') && <circle cx="135" cy="135" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="135" cy="135" r="7" className={`anatomy-pin-dot ${isSel('shoulders') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('shoulders')}>
+                <rect x="8" y="115" width="80" height="38" rx="8" fill="transparent" />
+                <text x="14" y="139" className={`anatomy-callout-text ${isSel('shoulders') ? 'selected' : ''}`}>Shoulders</text>
+              </g>
 
-          {/* Right Quadriceps (Front Thigh) */}
-          <path
-            d="M126 172 C132 188 136 215 128 245 C122 248 112 248 110 238 C110 216 112 188 116 172 Z"
-            className={`anatomy-part selectable ${isSel('quads') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('quads', e)}
-          />
+              {/* Left 2: Chest */}
+              <line x1="58" y1="175" x2="165" y2="175" className={`anatomy-dashed ${isSel('chest') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('chest')}>
+                <circle cx="165" cy="175" r="22" fill="transparent" />
+                {isSel('chest') && <circle cx="165" cy="175" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="165" cy="175" r="7" className={`anatomy-pin-dot ${isSel('chest') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('chest')}>
+                <rect x="8" y="155" width="60" height="38" rx="8" fill="transparent" />
+                <text x="14" y="179" className={`anatomy-callout-text ${isSel('chest') ? 'selected' : ''}`}>Chest</text>
+              </g>
 
-          {/* Knee joints */}
-          <circle cx="80" cy="251" r="5" className="anatomy-part neutral" />
-          <circle cx="120" cy="251" r="5" className="anatomy-part neutral" />
+              {/* Left 3: Forearms */}
+              <line x1="78" y1="245" x2="110" y2="245" className={`anatomy-dashed ${isSel('arms') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('arms')}>
+                <circle cx="110" cy="245" r="22" fill="transparent" />
+                {isSel('arms') && <circle cx="110" cy="245" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="110" cy="245" r="7" className={`anatomy-pin-dot ${isSel('arms') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('arms')}>
+                <rect x="8" y="225" width="76" height="38" rx="8" fill="transparent" />
+                <text x="14" y="249" className={`anatomy-callout-text ${isSel('arms') ? 'selected' : ''}`}>Forearms</text>
+              </g>
 
-          {/* Left Calves & Shin */}
-          <path
-            d="M74 257 C68 274 70 295 74 316 L83 316 C85 295 86 274 84 257 Z"
-            className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('calves', e)}
-          />
+              {/* Left 4: Obliques */}
+              <line x1="72" y1="290" x2="160" y2="285" className={`anatomy-dashed ${isSel('core') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('core')}>
+                <circle cx="160" cy="285" r="22" fill="transparent" />
+                {isSel('core') && <circle cx="160" cy="285" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="160" cy="285" r="7" className={`anatomy-pin-dot ${isSel('core') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('core')}>
+                <rect x="8" y="270" width="72" height="38" rx="8" fill="transparent" />
+                <text x="14" y="294" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Obliques</text>
+              </g>
 
-          {/* Right Calves & Shin */}
-          <path
-            d="M126 257 C132 274 130 295 126 316 L117 316 C115 295 114 274 116 257 Z"
-            className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('calves', e)}
-          />
+              {/* Left 5: Quads */}
+              <line x1="56" y1="365" x2="155" y2="365" className={`anatomy-dashed ${isSel('quads') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('quads')}>
+                <circle cx="155" cy="365" r="22" fill="transparent" />
+                {isSel('quads') && <circle cx="155" cy="365" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="155" cy="365" r="7" className={`anatomy-pin-dot ${isSel('quads') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('quads')}>
+                <rect x="8" y="345" width="56" height="38" rx="8" fill="transparent" />
+                <text x="14" y="369" className={`anatomy-callout-text ${isSel('quads') ? 'selected' : ''}`}>Quads</text>
+              </g>
 
-          {/* Feet (Front) */}
-          <path
-            d="M71 318 L67 332 L83 332 L81 318 Z M129 318 L133 332 L117 332 L119 318 Z"
-            className={`anatomy-part selectable ${isSel('feet') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('feet', e)}
-          />
+              {/* Right 1: Cardio (with Heart icon) */}
+              <line x1="285" y1="105" x2="366" y2="105" className={`anatomy-dashed ${isSel('cardio') ? 'active' : ''}`} />
+              <g className="anatomy-label-target" onClick={() => clickPart('cardio')}>
+                <rect x="270" y="85" width="102" height="38" rx="8" fill="transparent" />
+                {/* Yellow Heart Icon */}
+                <path
+                  d="M276 96 C273 93 268 93 266 97 C264 93 259 93 256 97 C253 102 256 107 266 114 C276 107 279 102 276 96 Z"
+                  fill="#facc15"
+                />
+                <text x="366" y="100" textAnchor="end" className={`anatomy-callout-text ${isSel('cardio') ? 'selected' : ''}`}>Cardio</text>
+              </g>
 
-          {/* ================================================================================= */}
-          {/* BACK FIGURE (Right, centered at X=280) */}
-          {/* ================================================================================= */}
+              {/* Right 2: Biceps */}
+              <line x1="315" y1="195" x2="265" y2="195" className={`anatomy-dashed ${isSel('biceps') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('biceps')}>
+                <circle cx="265" cy="195" r="22" fill="transparent" />
+                {isSel('biceps') && <circle cx="265" cy="195" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="265" cy="195" r="7" className={`anatomy-pin-dot ${isSel('biceps') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('biceps')}>
+                <rect x="305" y="175" width="67" height="38" rx="8" fill="transparent" />
+                <text x="366" y="199" textAnchor="end" className={`anatomy-callout-text ${isSel('biceps') ? 'selected' : ''}`}>Biceps</text>
+              </g>
 
-          {/* Head & Cranium (Back) */}
-          <path
-            d="M280 24 C270 24 263 31 263 43 C263 55 270 64 280 64 C290 64 297 55 297 43 C297 31 290 24 280 24 Z"
-            className="anatomy-part neutral"
-          />
+              {/* Right 3: Abs */}
+              <line x1="330" y1="245" x2="205" y2="245" className={`anatomy-dashed ${isSel('core') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('core')}>
+                <circle cx="205" cy="245" r="22" fill="transparent" />
+                {isSel('core') && <circle cx="205" cy="245" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="205" cy="245" r="7" className={`anatomy-pin-dot ${isSel('core') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('core')}>
+                <rect x="325" y="225" width="47" height="38" rx="8" fill="transparent" />
+                <text x="366" y="249" textAnchor="end" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Abs</text>
+              </g>
 
-          {/* Large Trapezius Diamond (Back Traps & Upper Neck) - Key focal highlight */}
-          <path
-            d="M275 64 L285 64 L289 74 L306 82 L289 122 L280 148 L271 122 L254 82 L271 74 Z"
-            className={`anatomy-part selectable ${isSel('neck') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('neck', e)}
-          />
+              {/* Right 4: Adductors */}
+              <line x1="295" y1="390" x2="200" y2="380" className={`anatomy-dashed ${isSel('adductors') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('adductors')}>
+                <circle cx="200" cy="380" r="22" fill="transparent" />
+                {isSel('adductors') && <circle cx="200" cy="380" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="200" cy="380" r="7" className={`anatomy-pin-dot ${isSel('adductors') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('adductors')}>
+                <rect x="285" y="370" width="87" height="38" rx="8" fill="transparent" />
+                <text x="366" y="394" textAnchor="end" className={`anatomy-callout-text ${isSel('adductors') ? 'selected' : ''}`}>Adductors</text>
+              </g>
+            </svg>
+          ) : (
+            /* BACK VIEW SVG */
+            <svg viewBox="0 0 380 560" className="anatomy-svg" aria-label="Interactive Back Body Diagram">
+              <defs>
+                <filter id="yellow-glow-back" x="-30%" y="-30%" width="160%" height="160%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="5" floodColor="#facc15" floodOpacity="0.8" />
+                </filter>
+              </defs>
 
-          {/* Left Rear Deltoid (Shoulder) */}
-          <path
-            d="M252 82 C245 84 238 90 236 102 C234 112 240 119 248 119 C252 119 256 108 258 98 Z"
-            className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('shoulders', e)}
-          />
+              {/* Athletic Silhouette Anatomy Vector Shapes (Back) */}
+              <g className="anatomy-body-shapes">
+                {/* Head (Back) */}
+                <path
+                  d="M190 28 C176 28 166 38 166 54 C166 70 176 80 190 80 C204 80 214 70 214 54 C214 38 204 28 190 28 Z"
+                  className="anatomy-part neutral"
+                />
 
-          {/* Right Rear Deltoid (Shoulder) */}
-          <path
-            d="M308 82 C315 84 322 90 324 102 C326 112 320 119 312 119 C308 119 304 108 302 98 Z"
-            className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('shoulders', e)}
-          />
+                {/* Trapezius Diamond */}
+                <path
+                  d="M182 80 L198 80 L204 96 L232 108 L204 165 L190 200 L176 165 L148 108 L176 96 Z"
+                  className={`anatomy-part selectable ${isSel('neck') ? 'selected' : ''}`}
+                  onClick={() => clickPart('neck')}
+                />
 
-          {/* Left Tricep & Arm */}
-          <path
-            d="M236 104 L230 136 L240 138 L246 120 Z"
-            className={`anatomy-part selectable ${isSel('arms') || isSel('triceps') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Rear Deltoids */}
+                <path
+                  d="M144 108 C134 112 124 122 122 140 C118 152 128 162 138 162 C146 162 152 146 156 130 Z"
+                  className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
+                  onClick={() => clickPart('shoulders')}
+                />
+                <path
+                  d="M236 108 C246 112 256 122 258 140 C262 152 252 162 242 162 C234 162 228 146 224 130 Z"
+                  className={`anatomy-part selectable ${isSel('shoulders') ? 'selected' : ''}`}
+                  onClick={() => clickPart('shoulders')}
+                />
 
-          {/* Right Tricep & Arm */}
-          <path
-            d="M324 104 L330 136 L320 138 L314 120 Z"
-            className={`anatomy-part selectable ${isSel('arms') || isSel('triceps') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Triceps */}
+                <path
+                  d="M122 142 L112 188 L126 192 L136 166 Z"
+                  className={`anatomy-part selectable ${isSel('triceps') || isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('triceps')}
+                />
+                <path
+                  d="M258 142 L268 188 L254 192 L244 166 Z"
+                  className={`anatomy-part selectable ${isSel('triceps') || isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('triceps')}
+                />
 
-          {/* Left Rear Forearm */}
-          <path
-            d="M230 138 L221 178 L231 180 L240 140 Z"
-            className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Forearms (Back) */}
+                <path
+                  d="M112 192 L98 250 L114 254 L128 196 Z"
+                  className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('arms')}
+                />
+                <path
+                  d="M268 192 L282 250 L266 254 L252 196 Z"
+                  className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
+                  onClick={() => clickPart('arms')}
+                />
 
-          {/* Right Rear Forearm */}
-          <path
-            d="M330 138 L339 178 L329 180 L320 140 Z"
-            className={`anatomy-part selectable ${isSel('arms') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('arms', e)}
-          />
+                {/* Hands (Back) */}
+                <path d="M98 254 L88 288 L100 290 L110 258 Z" className="anatomy-part neutral" />
+                <path d="M282 254 L292 288 L280 290 L270 258 Z" className="anatomy-part neutral" />
 
-          {/* Left Hand (Back) */}
-          <path d="M220 180 L213 204 L221 205 L227 182 Z" className="anatomy-part neutral" />
-          {/* Right Hand (Back) */}
-          <path d="M340 180 L347 204 L339 205 L333 182 Z" className="anatomy-part neutral" />
+                {/* Lats (Latissimus Dorsi Wings) */}
+                <path
+                  d="M148 142 L172 168 L175 208 L152 194 C146 176 144 158 148 142 Z"
+                  className={`anatomy-part selectable ${isSel('lats') ? 'selected' : ''}`}
+                  onClick={() => clickPart('lats')}
+                />
+                <path
+                  d="M232 142 L208 168 L205 208 L228 194 C234 176 236 158 232 142 Z"
+                  className={`anatomy-part selectable ${isSel('lats') ? 'selected' : ''}`}
+                  onClick={() => clickPart('lats')}
+                />
 
-          {/* Left Latissimus Dorsi (Lats / Upper Back Wing) */}
-          <path
-            d="M255 106 L270 124 L272 152 L256 142 C252 130 252 118 255 106 Z"
-            className={`anatomy-part selectable ${isSel('lats') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('lats', e)}
-          />
+                {/* Lower Back / Erector Spinae */}
+                <path
+                  d="M180 202 L200 202 L204 238 L176 238 Z"
+                  className={`anatomy-part selectable ${isSel('lowerBack') ? 'selected' : ''}`}
+                  onClick={() => clickPart('lowerBack')}
+                />
 
-          {/* Right Latissimus Dorsi (Lats / Upper Back Wing) */}
-          <path
-            d="M305 106 L290 124 L288 152 L304 142 C308 130 308 118 305 106 Z"
-            className={`anatomy-part selectable ${isSel('lats') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('lats', e)}
-          />
+                {/* Shorts / Pelvis */}
+                <path
+                  d="M148 238 L232 238 L238 308 L195 312 L190 274 L185 312 L142 308 Z"
+                  fill="#11141c"
+                  stroke="#1c2230"
+                  strokeWidth="1.5"
+                />
 
-          {/* Lower Back (Erector Spinae / Lumbar) */}
-          <path
-            d="M274 150 L286 150 L288 174 L272 174 Z"
-            className={`anatomy-part selectable ${isSel('lowerBack') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('lowerBack', e)}
-          />
+                {/* Glutes */}
+                <path
+                  d="M154 240 C154 274 170 300 185 300 L185 240 Z"
+                  className={`anatomy-part selectable ${isSel('glutes') ? 'selected' : ''}`}
+                  onClick={() => clickPart('glutes')}
+                />
+                <path
+                  d="M226 240 C226 274 210 300 195 300 L195 240 Z"
+                  className={`anatomy-part selectable ${isSel('glutes') ? 'selected' : ''}`}
+                  onClick={() => clickPart('glutes')}
+                />
 
-          {/* Left Glute (Gluteus Maximus) */}
-          <path
-            d="M260 174 C260 196 270 212 279 212 L279 174 Z"
-            className={`anatomy-part selectable ${isSel('glutes') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('glutes', e)}
-          />
+                {/* Abductors / Outer Hips */}
+                <path
+                  d="M142 242 C136 265 140 295 146 308 L154 306 C150 285 148 260 152 242 Z M238 242 C244 265 240 295 234 308 L226 306 C230 285 232 260 228 242 Z"
+                  className={`anatomy-part selectable ${isSel('hipFlexors') ? 'selected' : ''}`}
+                  onClick={() => clickPart('hipFlexors')}
+                />
 
-          {/* Right Glute (Gluteus Maximus) */}
-          <path
-            d="M300 174 C300 196 290 212 281 212 L281 174 Z"
-            className={`anatomy-part selectable ${isSel('glutes') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('glutes', e)}
-          />
+                {/* Hamstrings */}
+                <path
+                  d="M152 310 C146 332 148 358 158 364 C168 364 176 348 180 310 Z"
+                  className={`anatomy-part selectable ${isSel('hamstrings') ? 'selected' : ''}`}
+                  onClick={() => clickPart('hamstrings')}
+                />
+                <path
+                  d="M228 310 C234 332 232 358 222 364 C212 364 204 348 200 310 Z"
+                  className={`anatomy-part selectable ${isSel('hamstrings') ? 'selected' : ''}`}
+                  onClick={() => clickPart('hamstrings')}
+                />
 
-          {/* Left Hamstring (Back Thigh) */}
-          <path
-            d="M260 214 C256 228 258 245 264 248 C270 248 276 238 278 214 Z"
-            className={`anatomy-part selectable ${isSel('hamstrings') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('hamstrings', e)}
-          />
+                {/* Popliteal / Knee Back */}
+                <circle cx="158" cy="385" r="7" className="anatomy-part neutral" />
+                <circle cx="222" cy="385" r="7" className="anatomy-part neutral" />
 
-          {/* Right Hamstring (Back Thigh) */}
-          <path
-            d="M300 214 C304 228 302 245 296 248 C290 248 284 238 282 214 Z"
-            className={`anatomy-part selectable ${isSel('hamstrings') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('hamstrings', e)}
-          />
+                {/* Calves */}
+                <path
+                  d="M148 395 C138 424 142 460 148 495 L162 495 C166 460 168 424 164 395 Z"
+                  className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
+                  onClick={() => clickPart('calves')}
+                />
+                <path
+                  d="M232 395 C242 424 238 460 232 495 L218 495 C214 460 212 424 216 395 Z"
+                  className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
+                  onClick={() => clickPart('calves')}
+                />
 
-          {/* Left Calf (Gastrocnemius - Dual Heads) */}
-          <path
-            d="M256 257 C250 274 252 295 256 316 L265 316 C267 295 268 274 266 257 Z"
-            className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('calves', e)}
-          />
+                {/* Feet (Back) */}
+                <path
+                  d="M144 498 L138 528 L163 528 L160 498 Z M236 498 L242 528 L217 528 L220 498 Z"
+                  className={`anatomy-part selectable ${isSel('feet') ? 'selected' : ''}`}
+                  onClick={() => clickPart('feet')}
+                />
+              </g>
 
-          {/* Right Calf (Gastrocnemius - Dual Heads) */}
-          <path
-            d="M304 257 C310 274 308 295 304 316 L295 316 C293 295 292 274 294 257 Z"
-            className={`anatomy-part selectable ${isSel('calves') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('calves', e)}
-          />
+              {/* ========================================================================= */}
+              {/* CALLOUT PINS & DASHED CONNECTIONS (MATCHING BACK SCREENSHOT) */}
+              {/* ========================================================================= */}
 
-          {/* Feet (Back / Achilles) */}
-          <path
-            d="M253 318 L249 332 L265 332 L263 318 Z M307 318 L311 332 L295 332 L297 318 Z"
-            className={`anatomy-part selectable ${isSel('feet') ? 'selected' : ''}`}
-            onClick={(e) => clickPart('feet', e)}
-          />
-        </svg>
+              {/* Left 1: Traps & Neck */}
+              <line x1="102" y1="120" x2="185" y2="120" className={`anatomy-dashed ${isSel('neck') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('neck')}>
+                <circle cx="185" cy="120" r="22" fill="transparent" />
+                {isSel('neck') && <circle cx="185" cy="120" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="185" cy="120" r="7" className={`anatomy-pin-dot ${isSel('neck') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('neck')}>
+                <rect x="8" y="100" width="98" height="38" rx="8" fill="transparent" />
+                <text x="14" y="124" className={`anatomy-callout-text ${isSel('neck') ? 'selected' : ''}`}>Traps & Neck</text>
+              </g>
+
+              {/* Left 2: Triceps */}
+              <line x1="68" y1="185" x2="115" y2="185" className={`anatomy-dashed ${isSel('triceps') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('triceps')}>
+                <circle cx="115" cy="185" r="22" fill="transparent" />
+                {isSel('triceps') && <circle cx="115" cy="185" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="115" cy="185" r="7" className={`anatomy-pin-dot ${isSel('triceps') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('triceps')}>
+                <rect x="8" y="165" width="68" height="38" rx="8" fill="transparent" />
+                <text x="14" y="189" className={`anatomy-callout-text ${isSel('triceps') ? 'selected' : ''}`}>Triceps</text>
+              </g>
+
+              {/* Left 3: Abductors */}
+              <line x1="88" y1="275" x2="150" y2="275" className={`anatomy-dashed ${isSel('hipFlexors') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('hipFlexors')}>
+                <circle cx="150" cy="275" r="22" fill="transparent" />
+                {isSel('hipFlexors') && <circle cx="150" cy="275" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="150" cy="275" r="7" className={`anatomy-pin-dot ${isSel('hipFlexors') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('hipFlexors')}>
+                <rect x="8" y="255" width="86" height="38" rx="8" fill="transparent" />
+                <text x="14" y="279" className={`anatomy-callout-text ${isSel('hipFlexors') ? 'selected' : ''}`}>Abductors</text>
+              </g>
+
+              {/* Left 4: Hamstrings */}
+              <line x1="92" y1="365" x2="160" y2="365" className={`anatomy-dashed ${isSel('hamstrings') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('hamstrings')}>
+                <circle cx="160" cy="365" r="22" fill="transparent" />
+                {isSel('hamstrings') && <circle cx="160" cy="365" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="160" cy="365" r="7" className={`anatomy-pin-dot ${isSel('hamstrings') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('hamstrings')}>
+                <rect x="8" y="345" width="90" height="38" rx="8" fill="transparent" />
+                <text x="14" y="369" className={`anatomy-callout-text ${isSel('hamstrings') ? 'selected' : ''}`}>Hamstrings</text>
+              </g>
+
+              {/* Left 5: Calves */}
+              <line x1="62" y1="460" x2="160" y2="460" className={`anatomy-dashed ${isSel('calves') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('calves')}>
+                <circle cx="160" cy="460" r="22" fill="transparent" />
+                {isSel('calves') && <circle cx="160" cy="460" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="160" cy="460" r="7" className={`anatomy-pin-dot ${isSel('calves') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('calves')}>
+                <rect x="8" y="440" width="62" height="38" rx="8" fill="transparent" />
+                <text x="14" y="464" className={`anatomy-callout-text ${isSel('calves') ? 'selected' : ''}`}>Calves</text>
+              </g>
+
+              {/* Right 1: Cardio (with Heart icon) */}
+              <line x1="285" y1="105" x2="366" y2="105" className={`anatomy-dashed ${isSel('cardio') ? 'active' : ''}`} />
+              <g className="anatomy-label-target" onClick={() => clickPart('cardio')}>
+                <rect x="270" y="85" width="102" height="38" rx="8" fill="transparent" />
+                <path
+                  d="M276 96 C273 93 268 93 266 97 C264 93 259 93 256 97 C253 102 256 107 266 114 C276 107 279 102 276 96 Z"
+                  fill="#facc15"
+                />
+                <text x="366" y="100" textAnchor="end" className={`anatomy-callout-text ${isSel('cardio') ? 'selected' : ''}`}>Cardio</text>
+              </g>
+
+              {/* Right 2: Lats */}
+              <line x1="325" y1="185" x2="225" y2="185" className={`anatomy-dashed ${isSel('lats') ? 'active' : ''}`} />
+              <g className="anatomy-pin-target" onClick={() => clickPart('lats')}>
+                <circle cx="225" cy="185" r="22" fill="transparent" />
+                {isSel('lats') && <circle cx="225" cy="185" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="225" cy="185" r="7" className={`anatomy-pin-dot ${isSel('lats') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('lats')}>
+                <rect x="315" y="165" width="55" height="38" rx="8" fill="transparent" />
+                <text x="366" y="189" textAnchor="end" className={`anatomy-callout-text ${isSel('lats') ? 'selected' : ''}`}>Lats</text>
+              </g>
+
+              {/* Right 3: Lower back (L-shaped line from screenshot) */}
+              <path
+                d="M366 275 L200 275 L200 250"
+                fill="none"
+                className={`anatomy-dashed ${isSel('lowerBack') ? 'active' : ''}`}
+              />
+              <g className="anatomy-pin-target" onClick={() => clickPart('lowerBack')}>
+                <circle cx="200" cy="250" r="22" fill="transparent" />
+                {isSel('lowerBack') && <circle cx="200" cy="250" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="200" cy="250" r="7" className={`anatomy-pin-dot ${isSel('lowerBack') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('lowerBack')}>
+                <rect x="275" y="255" width="97" height="38" rx="8" fill="transparent" />
+                <text x="366" y="272" textAnchor="end" className={`anatomy-callout-text ${isSel('lowerBack') ? 'selected' : ''}`}>Lower back</text>
+              </g>
+
+              {/* Right 4: Glutes (L-shaped line from screenshot) */}
+              <path
+                d="M366 325 L215 325 L215 305"
+                fill="none"
+                className={`anatomy-dashed ${isSel('glutes') ? 'active' : ''}`}
+              />
+              <g className="anatomy-pin-target" onClick={() => clickPart('glutes')}>
+                <circle cx="215" cy="305" r="22" fill="transparent" />
+                {isSel('glutes') && <circle cx="215" cy="305" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="215" cy="305" r="7" className={`anatomy-pin-dot ${isSel('glutes') ? 'selected' : ''}`} />
+              </g>
+              <g className="anatomy-label-target" onClick={() => clickPart('glutes')}>
+                <rect x="305" y="305" width="67" height="38" rx="8" fill="transparent" />
+                <text x="366" y="322" textAnchor="end" className={`anatomy-callout-text ${isSel('glutes') ? 'selected' : ''}`}>Glutes</text>
+              </g>
+            </svg>
+          )}
+        </div>
+
+        {/* Floating Circular 3D Flip Button in Bottom-Left (Matching Screenshot) */}
+        <button
+          type="button"
+          className="anatomy-flip-btn pressable"
+          onClick={() => {
+            haptic('selection')
+            setView((v) => (v === 'front' ? 'back' : 'front'))
+          }}
+          aria-label={`Flip body to ${view === 'front' ? 'back' : 'front'} view`}
+        >
+          <div className="anatomy-flip-arrows">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+              <path
+                d="M19 12 A7 7 0 0 1 8 18.5 L6.5 20 M8 18.5 L8 15 M8 18.5 L11.5 18.5"
+                stroke="#facc15"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M5 12 A7 7 0 0 1 16 5.5 L17.5 4 M16 5.5 L16 9 M16 5.5 L12.5 5.5"
+                stroke="#facc15"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <circle cx="12" cy="12" r="3" fill="#ffffff" opacity="0.8" />
+            </svg>
+          </div>
+          <span className="anatomy-flip-caption">{view === 'front' ? 'Back' : 'Front'}</span>
+        </button>
+
+        {/* Swipe Hint Pill */}
+        <div className="anatomy-swipe-pill">
+          <Icon name="arrow.left.arrow.right" size={11} strokeWidth={2.5} />
+          <span>Swipe to flip</span>
+        </div>
       </div>
     </div>
   )

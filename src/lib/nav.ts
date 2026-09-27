@@ -21,6 +21,7 @@ export type Route =
   | { name: 'terms' }
   | { name: 'faq' }
   | { name: 'achievements' }
+  | { name: 'streak' }
 
 export type EditorMode =
   | { kind: 'create' }
