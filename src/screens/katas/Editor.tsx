@@ -1,9 +1,10 @@
 import { useMemo, useRef, useState } from 'react'
+import { BodyDiagram, type BodyPart } from '../../components/BodyDiagram'
 import { Icon } from '../../components/Icon'
 import { SheetHeader } from '../../components/SheetHost'
 import { toast } from '../../components/Toast'
-import { FilterPill, NativeSelect, SymbolTile } from '../../components/ui'
-import { CATEGORIES, PHASE, TINTS, categoryMeta, phaseMeta, tintColor, tintTitle } from '../../data/meta'
+import { NativeSelect, SymbolTile } from '../../components/ui'
+import { PHASE, TINTS, categoryMeta, phaseMeta, tintColor, tintTitle } from '../../data/meta'
 import { KATA_SYMBOLS, NEW_KATA_ITEMS, estimatedSeconds } from '../../data/content'
 import { KATA_REST_CHOICES, restLabel } from '../../data/settings'
 import type { BodyRegion, Phase, Tint } from '../../data/types'
@@ -12,6 +13,7 @@ import { clock, short } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
 import { findKata } from '../../lib/launch'
+import { getExerciseRelevance, matchesBodyPart } from '../../lib/muscleMatch'
 import { type EditorMode, nav } from '../../lib/nav'
 import { useSettings, useAllExercises } from '../../lib/store'
 
@@ -347,18 +349,19 @@ function PhaseEditor({
 
 export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: string[]) => void }) {
   const [query, setQuery] = useState('')
-  const [category, setCategory] = useState<BodyRegion | null>(null)
+  const [selectedMuscle, setSelectedMuscle] = useState<BodyPart | null>(null)
   const allExercises = useAllExercises()
   const [selection, setSelection] = useState<string[]>([])
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return allExercises.filter(
+    const matches = allExercises.filter(
       (e) =>
-        (!category || e.category === category) &&
+        (!selectedMuscle || matchesBodyPart(e, selectedMuscle)) &&
         (!q || e.name.toLowerCase().includes(q) || e.targets.some((target) => target.toLowerCase().includes(q)))
     )
-  }, [query, category])
+    return [...matches].sort((a, b) => getExerciseRelevance(b, selectedMuscle) - getExerciseRelevance(a, selectedMuscle))
+  }, [query, selectedMuscle, allExercises])
 
   const toggle = (slug: string) => {
     haptic('selection')
@@ -395,12 +398,11 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
             <Icon name="magnifyingglass" size={17} strokeWidth={2.4} />
             <input type="search" value={query} placeholder="Search exercises" onChange={(e) => setQuery(e.target.value)} />
           </label>
-          <div className="h-scroll pills no-sheet-drag">
-            <FilterPill title="All" selected={category === null} onClick={() => setCategory(null)} />
-            {CATEGORIES.map((item) => (
-              <FilterPill key={item} title={categoryMeta(item).title} icon={categoryMeta(item).symbol} selected={category === item} onClick={() => setCategory(category === item ? null : item)} />
-            ))}
+
+          <div className="picker-diagram no-sheet-drag">
+            <BodyDiagram selectedPart={selectedMuscle} onSelectPart={setSelectedMuscle} />
           </div>
+
           <button
             type="button"
             className="navbar-action tinted"

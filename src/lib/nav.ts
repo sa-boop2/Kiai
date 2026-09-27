@@ -111,10 +111,6 @@ class NavStore {
     this.set({ tab })
   }
 
-  hasTabHistory(): boolean {
-    return this.tabHistory.length > 0
-  }
-
   // Stack ----------------------------------------------------------------------------------------
 
   push(route: Route) {

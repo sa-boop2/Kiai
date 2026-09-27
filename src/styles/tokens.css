@@ -63,8 +63,8 @@
 
   /* Layout */
   --gutter: 14px;
-  --radius-card: 26px;
-  --radius-medium: 18px;
+  --radius-card: 28px;
+  --radius-medium: 20px;
   --radius-small: 12px;
   --tabbar-height: 64px;
   --safe-top: env(safe-area-inset-top, 0px);

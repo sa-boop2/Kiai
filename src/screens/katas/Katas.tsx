@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { type CSSProperties, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { NavIconButton, Screen } from '../../components/Screen'
 import { confirmAction } from '../../components/ActionSheet'
@@ -173,16 +173,15 @@ export function KataDetailScreen({ id }: { id: string }) {
         </div>
       }
     >
-      <div className="detail-hero">
-        <div className="detail-hero-top">
-          <SymbolTile icon={kata.symbol} tint={tint} size={68} />
-          {kata.isPremade && <TagChip text="Curated" icon="sparkles" tint={tint} />}
-        </div>
+      <div className="detail-hero centered" style={{ '--tint': tint } as CSSProperties}>
+        <div className="detail-hero-glow" aria-hidden="true" />
+        <SymbolTile icon={kata.symbol} tint={tint} size={76} />
         <h1 className="display">{kata.name}</h1>
         {kata.subtitle && <p className="secondary">{kata.subtitle}</p>}
-        {art && (
-          <div>
-            <TagChip text={art.name} icon={art.symbol} tint={tintColor(art.tint)} />
+        {(kata.isPremade || art) && (
+          <div className="detail-tags">
+            {kata.isPremade && <TagChip text="Curated" icon="sparkles" tint={tint} />}
+            {art && <TagChip text={art.name} icon={art.symbol} tint={tintColor(art.tint)} />}
           </div>
         )}
         <div className="hero-stats card">

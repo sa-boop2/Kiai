@@ -213,14 +213,27 @@
  * ========================================================================================== */
 
 .card {
+  position: relative;
+  isolation: isolate;
   display: block;
   width: 100%;
   text-align: left;
   background: var(--surface);
   border-radius: var(--radius-card);
   box-shadow: 0 0 0 0.75px var(--stroke);
-  padding: 16px;
+  padding: 18px;
   color: inherit;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(180deg, var(--glass-sheen), transparent 45%);
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: -1;
 }
 
 :root:not([data-theme='dark']) .card {
@@ -1407,6 +1420,14 @@
 
 .picker-filters .h-scroll {
   margin-top: 10px;
+}
+
+.picker-diagram {
+  margin-top: 12px;
+}
+
+.picker-diagram .anatomy-card {
+  margin-bottom: 0;
 }
 
 .picker-list {

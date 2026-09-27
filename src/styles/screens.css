@@ -200,8 +200,21 @@
   padding: 0 var(--gutter);
 }
 
+.home-section-title {
+  margin: 0;
+  font-family: var(--font-rounded);
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  color: var(--text);
+}
+
 .home-katas-list {
   padding: 0 var(--gutter) 8px;
+}
+
+.home-katas-list .list-stack {
+  gap: 14px;
 }
 
 .kata-row-wrap {
@@ -594,14 +607,33 @@
  * ========================================================================================== */
 
 .kata-row {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 14px;
+  gap: 16px;
+  padding: 18px;
   cursor: pointer;
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
+  border: 1px solid color-mix(in srgb, var(--tint, var(--accent)) 14%, var(--stroke));
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease;
+}
+
+.kata-row::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 100% at 0% 0%, color-mix(in srgb, var(--tint, var(--accent)) 10%, transparent), transparent 60%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+.kata-row:active {
+  transform: scale(0.985);
 }
 
 .kata-row:focus-visible {
@@ -609,17 +641,24 @@
   outline-offset: 2px;
 }
 
+.kata-row-chevron {
+  color: color-mix(in srgb, var(--tint, var(--accent)) 55%, var(--text-tertiary));
+  flex-shrink: 0;
+}
+
 .kata-row-text {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 5px;
 }
 
 .kata-row-text strong {
-  font-size: 17px;
-  font-weight: 600;
+  font-family: var(--font-rounded);
+  font-size: 18.5px;
+  font-weight: 700;
+  letter-spacing: -0.1px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

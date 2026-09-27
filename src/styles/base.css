@@ -244,11 +244,6 @@ img {
   -webkit-backface-visibility: hidden;
 }
 
-.stack-layer[data-pinned='true'] {
-  transform: translate3d(0, 0, 0) !important;
-  transition: none !important;
-}
-
 .stack-layer::after {
   content: '';
   position: absolute;
@@ -283,12 +278,6 @@ img {
 
 .stack-layer[data-hidden='true'] {
   visibility: hidden;
-}
-
-.stack.dragging .stack-layer,
-.stack.dragging .stack-layer::after {
-  transition: none !important;
-  animation: none !important;
 }
 
 @keyframes push-in {
@@ -506,8 +495,8 @@ img {
   left: var(--pad);
   width: calc((100% - 2 * var(--pad)) / var(--count));
   border-radius: 999px;
-  background: color-mix(in srgb, var(--text) 9%, transparent);
-  box-shadow: inset 0 0.5px 0 0 var(--glass-rim);
+  background: color-mix(in srgb, var(--accent) 16%, color-mix(in srgb, var(--text) 6%, transparent));
+  box-shadow: inset 0 0.5px 0 0 var(--glass-rim), 0 2px 10px -4px color-mix(in srgb, var(--accent) 45%, transparent);
   transform: translate3d(calc(var(--index) * 100%), 0, 0);
   transition:
     transform var(--dur-bouncy) var(--ease-bouncy),

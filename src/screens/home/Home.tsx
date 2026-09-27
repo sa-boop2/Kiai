@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { type CSSProperties, useMemo } from 'react'
 import { Icon } from '../../components/Icon'
 import { NavIconButton, Screen } from '../../components/Screen'
 import { Card, EmberBadge, EmptyState, KiaiLogo, KiaiMark, PrimaryButton, StatTile, SymbolTile } from '../../components/ui'
@@ -156,7 +156,7 @@ export function HomeScreen() {
 
       {/* Your Kata's section */}
       <div className="home-katas-header">
-        <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{t("Your Kata's")}</h2>
+        <h2 className="home-section-title">{t("Your Kata's")}</h2>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           {displayKatas.length > 1 && (
             <button
@@ -208,6 +208,7 @@ export function HomeScreen() {
                   role="button"
                   tabIndex={isReordering ? -1 : 0}
                   aria-disabled={isReordering}
+                  style={{ '--tint': tintColor(kata.tint) } as CSSProperties}
                   onClick={() => {
                     if (!isReordering) nav.push({ name: 'kata', id: kata.uuid })
                   }}
@@ -245,7 +246,7 @@ export function HomeScreen() {
                       </button>
                     </div>
                   ) : (
-                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={54} />
+                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={60} />
                   )}
                   <span className="kata-row-text">
                     <strong>{kata.name}</strong>
@@ -261,6 +262,7 @@ export function HomeScreen() {
                     </span>
                     {kata.lastPerformedAt && <span className="kata-row-last">Last trained {relativeDay(kata.lastPerformedAt, locale)}</span>}
                   </span>
+                  {!isReordering && <Icon name="chevron.right" size={16} strokeWidth={2.6} className="kata-row-chevron" />}
                 </div>
               </div>
             ))}
