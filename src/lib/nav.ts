@@ -88,6 +88,8 @@ class NavStore {
     this.listeners.forEach((listener) => listener())
   }
 
+  tabHistory: Tab[] = []
+
   private pushHistory() {
     this.depth++
     history.pushState({ kiai: this.depth }, '')
@@ -95,13 +97,21 @@ class NavStore {
 
   // Tabs -----------------------------------------------------------------------------------------
 
-  setTab(tab: Tab) {
+  setTab(tab: Tab, recordHistory = true) {
     if (tab === this.state.tab) {
       // Re-tapping the active tab pops to its root, as on iOS.
       if (this.state.stacks[tab].length > 0) this.set({ stacks: { ...this.state.stacks, [tab]: [] } })
       return
     }
+    if (recordHistory) {
+      this.tabHistory.push(this.state.tab)
+      this.pushHistory()
+    }
     this.set({ tab })
+  }
+
+  hasTabHistory(): boolean {
+    return this.tabHistory.length > 0
   }
 
   // Stack ----------------------------------------------------------------------------------------
@@ -154,7 +164,15 @@ class NavStore {
     }
     const tab = this.state.tab
     const stack = this.state.stacks[tab]
-    if (stack.length > 0) this.set({ stacks: { ...this.state.stacks, [tab]: stack.slice(0, -1) } })
+    if (stack.length > 0) {
+      this.set({ stacks: { ...this.state.stacks, [tab]: stack.slice(0, -1) } })
+      return
+    }
+    // If at root of tab and previous tab history exists, smoothly return to it
+    if (this.tabHistory.length > 0) {
+      const prevTab = this.tabHistory.pop()!
+      this.set({ tab: prevTab })
+    }
   }
 
   /** Closes every sheet (e.g. before starting a workout). */

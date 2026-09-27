@@ -36,12 +36,20 @@
   text-align: left;
   overflow: hidden;
   isolation: isolate;
-  /* Premium, rich gradient with crisp contrast */
-  background: linear-gradient(140deg, var(--accent) 0%, var(--ember-deep) 55%, #1c0804 100%);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  /* 1.52: Translucent liquid glass card with glowing prismatic rim */
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, var(--accent) 42%, rgba(255, 255, 255, 0.16)) 0%,
+    color-mix(in srgb, var(--ember-deep) 48%, rgba(22, 14, 32, 0.72)) 50%,
+    color-mix(in srgb, #1a0808 80%, rgba(255, 255, 255, 0.08)) 100%
+  );
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255, 255, 255, 0.32);
   box-shadow:
-    0 16px 40px -12px color-mix(in srgb, var(--accent) 55%, transparent),
-    0 4px 16px -2px rgba(0, 0, 0, 0.24);
+    0 20px 48px -12px color-mix(in srgb, var(--accent) 40%, rgba(0, 0, 0, 0.4)),
+    inset 0 1.5px 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 1px 0 rgba(0, 0, 0, 0.2);
   color: #fff;
   transition: transform var(--dur-snappy) var(--ease-snappy), box-shadow var(--dur-snappy) var(--ease-snappy);
 }
@@ -52,7 +60,7 @@
   position: absolute;
   inset: 0;
   z-index: 0;
-  background: radial-gradient(110% 100% at 0% 0%, rgba(255, 255, 255, 0.18), transparent 55%);
+  background: radial-gradient(110% 100% at 0% 0%, rgba(255, 255, 255, 0.26), transparent 55%);
   pointer-events: none;
 }
 
@@ -62,7 +70,7 @@
   z-index: 0;
   right: -20px;
   bottom: -20px;
-  opacity: 0.12;
+  opacity: 0.15;
   pointer-events: none;
 }
 
@@ -88,19 +96,26 @@
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: #fff;
-  background: rgba(0, 0, 0, 0.22);
-  padding: 3px 8px;
+  background: rgba(255, 255, 255, 0.22);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08), inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
+  padding: 4px 10px;
   border-radius: 999px;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .home-hero-last {
   font-size: 12px;
-  font-weight: 500;
-  color: rgba(255, 255, 255, 0.85);
-  background: rgba(0, 0, 0, 0.18);
-  padding: 2px 8px;
+  font-weight: 600;
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: inset 0 0.5px 0.5px rgba(255, 255, 255, 0.45);
+  padding: 3px 10px;
   border-radius: 999px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .home-hero-title {
@@ -120,7 +135,7 @@
 .home-hero-phases {
   font-size: 13px;
   font-weight: 500;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 255, 255, 0.92);
   margin: 0;
 }
 
@@ -134,16 +149,17 @@
 .home-hero-badge {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 5px 11px;
+  gap: 6px;
+  padding: 5px 12px;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.22);
-  border: 0.5px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.38);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1), inset 0 1px 0.5px rgba(255, 255, 255, 0.6);
   font-size: 12px;
   font-weight: 600;
   color: #ffffff;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
 }
 
 .home-hero-action {
@@ -1078,8 +1094,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 18px;
-  margin-bottom: 14px;
+  padding: 14px 16px 10px;
+  margin-bottom: 0;
 }
 
 .consistency-top {
@@ -1089,14 +1105,14 @@
 }
 
 .consistency-top h3 {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 600;
 }
 
 .gauge {
   width: 100%;
-  max-width: 320px;
-  margin-top: 12px;
+  max-width: 300px;
+  margin-top: 6px;
   overflow: visible;
 }
 
@@ -1144,19 +1160,19 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
 .consistency-number {
   font-family: var(--font-rounded);
-  font-size: 44px;
+  font-size: 40px;
   line-height: 1.05;
   font-weight: 900;
   font-variant-numeric: tabular-nums;
 }
 
 .consistency-label {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   transition: color 400ms ease;
 }
@@ -1174,8 +1190,8 @@
 }
 
 .calendar-card {
-  margin-top: 14px;
-  padding: 16px;
+  margin-top: 0;
+  padding: 13px 14px 10px;
   overflow: hidden;
 }
 
@@ -1334,8 +1350,9 @@
 .flexibility-row {
   display: flex;
   align-items: center;
-  gap: 14px;
+  gap: 12px;
   flex-wrap: nowrap;
+  padding: 12px 14px;
 }
 
 .flexibility-rings {

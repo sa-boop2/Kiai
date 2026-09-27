@@ -194,19 +194,20 @@ img {
 .tab-pages {
   position: absolute;
   inset: 0;
+  overflow: hidden;
 }
 
 .tab-page {
   position: absolute;
   inset: 0;
-  contain: strict;
-  transition: opacity 180ms ease;
 }
 
 .tab-page[data-active='false'] {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
+  display: none !important;
+}
+
+.tab-page[data-active='true'] {
+  display: block;
 }
 
 /* ============================================================================================
@@ -465,8 +466,8 @@ img {
   z-index: 20;
   display: flex;
   justify-content: center;
-  /* Noticeably lower than original, with 8px clearance above safe-area inset */
-  padding: 0 calc(var(--safe-right) + 12px) calc(var(--safe-bottom) + 8px) calc(var(--safe-left) + 12px);
+  /* Lowered to almost bottom of the screen */
+  padding: 0 calc(var(--safe-right) + 12px) max(var(--safe-bottom), 3px) calc(var(--safe-left) + 12px);
   pointer-events: none;
 }
 

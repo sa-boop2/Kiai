@@ -51,7 +51,7 @@ export function AnalyticsScreen() {
         />
       </div>
 
-      <button type="button" className="card flexibility-row pressable" onClick={() => nav.push({ name: 'flexibility' })} style={{ marginTop: '4px', marginBottom: '4px' }}>
+      <button type="button" className="card flexibility-row pressable" onClick={() => nav.push({ name: 'flexibility' })}>
         <div className="flexibility-rings" style={{ flexShrink: 0 }}>
           {FLEXIBILITY_BENCHMARKS.map((benchmark) => {
             const best = Math.max(0, ...flexibilityRecords.filter((r) => r.benchmark === benchmark).map((r) => r.progressPercent))

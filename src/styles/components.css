@@ -77,13 +77,13 @@
 .grid-2 {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
+  gap: 10px;
 }
 
 .list-stack {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .flow-chips {
@@ -430,6 +430,10 @@
   background: color-mix(in srgb, var(--tint) 14%, transparent);
 }
 
+.card.stat-tile {
+  padding: 13px 15px;
+}
+
 .stat-tile {
   --tint: var(--accent);
   display: flex;
@@ -442,12 +446,12 @@
 .stat-icon {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 28px;
+  height: 28px;
   border-radius: 999px;
   color: var(--tint);
   background: color-mix(in srgb, var(--tint) 14%, transparent);
-  margin-bottom: 8px;
+  margin-bottom: 5px;
   --icon-knock: var(--surface);
 }
 

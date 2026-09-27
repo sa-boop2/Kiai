@@ -47,6 +47,18 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
 
   useLayoutEffect(() => {
     setRendered((previous) => reconcile(previous, stack))
+    // Clear pins as soon as React has updated the layout and unmounted the top layer.
+    // This guarantees the below layer can NEVER snap back to -28% during reconciliation.
+    const topKey = stack.length > 0 ? stack[stack.length - 1].key : -1
+    if (pinnedKeys.current.has(topKey)) {
+      pinnedKeys.current.delete(topKey)
+      const el = layerRefs.current.get(topKey)
+      if (el) {
+        delete el.dataset.pinned
+        el.style.transform = ''
+        el.style.transition = ''
+      }
+    }
   }, [stack])
 
   // Safety net: if animationend never fires (tab backgrounded mid-transition), settle anyway.
@@ -69,7 +81,18 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
   const topLiveKey = liveKeys[liveKeys.length - 1]
 
   // Swipe back ------------------------------------------------------------------------------------
-  const gesture = useRef<{ id: number; startX: number; startY: number; lastX: number; lastT: number; velocity: number; active: boolean; width: number; belowKey: number } | null>(null)
+  const gesture = useRef<{
+    id: number
+    startX: number
+    startY: number
+    lastX: number
+    lastT: number
+    velocity: number
+    active: boolean
+    width: number
+    belowKey: number
+    isTabBack: boolean
+  } | null>(null)
 
   const layerElements = () => {
     const top = topLiveKey !== undefined ? layerRefs.current.get(topLiveKey) : undefined
@@ -79,21 +102,42 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
   }
 
   const onPointerDown = (event: React.PointerEvent) => {
-    if (topLiveKey === undefined || event.button !== 0) return
-    // Only respond to touches starting within 28px of the left edge
+    if (event.button !== 0) return
     const rect = containerRef.current!.getBoundingClientRect()
-    if (event.clientX - rect.left > 28) return
-    const { belowKey } = layerElements()
-    gesture.current = {
-      id: event.pointerId,
-      startX: event.clientX,
-      startY: event.clientY,
-      lastX: event.clientX,
-      lastT: performance.now(),
-      velocity: 0,
-      active: false,
-      width: rect.width,
-      belowKey,
+    // Respond to edge touches within 32px of the left screen edge
+    if (event.clientX - rect.left > 32) return
+
+    if (topLiveKey !== undefined) {
+      const { belowKey } = layerElements()
+      gesture.current = {
+        id: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        lastX: event.clientX,
+        lastT: performance.now(),
+        velocity: 0,
+        active: false,
+        width: rect.width,
+        belowKey,
+        isTabBack: false,
+      }
+      return
+    }
+
+    // At root of a tab with previous tab history
+    if (nav.hasTabHistory()) {
+      gesture.current = {
+        id: event.pointerId,
+        startX: event.clientX,
+        startY: event.clientY,
+        lastX: event.clientX,
+        lastT: performance.now(),
+        velocity: 0,
+        active: false,
+        width: rect.width,
+        belowKey: -1,
+        isTabBack: true,
+      }
     }
   }
 
@@ -109,15 +153,16 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
         gesture.current = null
         return
       }
-      if (dx < 10) return
+      if (dx < 8) return
       g.active = true
       containerRef.current!.setPointerCapture(event.pointerId)
       containerRef.current!.classList.add('dragging')
 
-      // Before moving, set explicit inline transforms so NO CSS rules fire during the gesture
-      const { top, below } = layerElements()
-      if (top) { top.style.transition = 'none'; top.style.transform = 'translate3d(0,0,0)' }
-      if (below) { below.style.transition = 'none'; below.style.transform = `translate3d(${-g.width * 0.28}px,0,0)` }
+      if (!g.isTabBack) {
+        const { top, below } = layerElements()
+        if (top) { top.style.transition = 'none'; top.style.transform = 'translate3d(0,0,0)' }
+        if (below) { below.style.transition = 'none'; below.style.transform = `translate3d(${-g.width * 0.28}px,0,0)` }
+      }
     }
 
     const now = performance.now()
@@ -126,9 +171,17 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
     g.lastT = now
 
     const x = Math.max(0, dx)
-    const { top, below } = layerElements()
-    if (top) top.style.transform = `translate3d(${x}px,0,0)`
-    if (below) below.style.transform = `translate3d(${-g.width * 0.28 + x * 0.28}px,0,0)`
+    if (!g.isTabBack) {
+      const { top, below } = layerElements()
+      if (top) top.style.transform = `translate3d(${x}px,0,0)`
+      if (below) below.style.transform = `translate3d(${-g.width * 0.28 + x * 0.28}px,0,0)`
+    } else {
+      const rootEl = layerRefs.current.get(-1)
+      if (rootEl) {
+        rootEl.style.transition = 'none'
+        rootEl.style.transform = `translate3d(${Math.min(x * 0.35, 80)}px,0,0)`
+      }
+    }
   }
 
   const onPointerUp = (event: React.PointerEvent) => {
@@ -140,9 +193,27 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
     if (!g.active) return
 
     const dx = Math.max(0, event.clientX - g.startX)
-    const commit = dx > g.width * 0.35 || (g.velocity > 0.45 && dx > 20)
+    const commit = dx > g.width * 0.3 || (g.velocity > 0.4 && dx > 15)
+
+    if (g.isTabBack) {
+      const rootEl = layerRefs.current.get(-1)
+      if (rootEl) {
+        rootEl.style.transition = 'transform 240ms cubic-bezier(0.2, 0.8, 0.25, 1)'
+        rootEl.style.transform = 'translate3d(0,0,0)'
+        window.setTimeout(() => {
+          rootEl.style.transition = ''
+          rootEl.style.transform = ''
+        }, 250)
+      }
+      if (commit) {
+        haptic('light')
+        nav.back()
+      }
+      return
+    }
+
     const { top, below } = layerElements()
-    const duration = commit ? 300 : 380
+    const duration = commit ? 280 : 320
     const easing = commit ? 'cubic-bezier(0.2, 0.8, 0.25, 1)' : 'var(--ease-snappy)'
 
     if (top) top.style.transition = `transform ${duration}ms ${easing}`
@@ -150,8 +221,6 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
 
     if (commit) {
       if (top) top.style.transform = `translate3d(${g.width}px,0,0)`
-      // Pin the below layer at 0 before calling nav.back() so reconciliation
-      // doesn't snap it to -28% between React render and next paint.
       if (below && g.belowKey !== undefined) {
         pinnedKeys.current.add(g.belowKey)
         below.dataset.pinned = 'true'
@@ -168,26 +237,12 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
         haptic('light')
         nav.back()
       }
-      // Clear inline transforms so CSS takes over — but only after the animation completes
       requestAnimationFrame(() => {
         if (top) { top.style.transition = ''; top.style.transform = '' }
         if (below) {
           below.style.transition = ''
-          // Only clear the below layer's inline transform if we're NOT committing
-          // (on commit, nav.back() has fired and the layer is no longer covered,
-          // so CSS will correctly render it at 0% rather than -28%)
           if (!commit) {
             below.style.transform = ''
-          } else {
-            // Keep the explicit 0 for one more frame, then let CSS take over
-            // by that point React has removed data-covered="true"
-            requestAnimationFrame(() => {
-              if (below) {
-                delete below.dataset.pinned
-                pinnedKeys.current.delete(g.belowKey)
-                below.style.transform = ''
-              }
-            })
           }
         }
       })
@@ -202,8 +257,21 @@ export function StackView({ tab, root, renderRoute }: { tab: Tab; root: ReactNod
     if (container) container.classList.remove('dragging')
     if (!g.active) return
 
+    if (g.isTabBack) {
+      const rootEl = layerRefs.current.get(-1)
+      if (rootEl) {
+        rootEl.style.transition = 'transform 200ms ease'
+        rootEl.style.transform = 'translate3d(0,0,0)'
+        window.setTimeout(() => {
+          rootEl.style.transition = ''
+          rootEl.style.transform = ''
+        }, 220)
+      }
+      return
+    }
+
     const { top, below } = layerElements()
-    const duration = 280
+    const duration = 240
     if (top) {
       top.style.transition = `transform ${duration}ms var(--ease-snappy)`
       top.style.transform = 'translate3d(0,0,0)'
