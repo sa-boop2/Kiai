@@ -183,6 +183,27 @@ export function SettingsScreen() {
           chevron
           onClick={() => nav.push({ name: 'faq' })}
         />
+                <SettingsRow
+          icon="arrow.triangle.2.circlepath"
+          tint="var(--jade)"
+          title="Check for Updates"
+          trailing={<span className="muted">Reload</span>}
+          onClick={async () => {
+            haptic('selection')
+            toast('Checking for updates...', { icon: 'sparkles' })
+            try {
+              if ('serviceWorker' in navigator) {
+                const regs = await navigator.serviceWorker.getRegistrations()
+                for (const r of regs) await r.update()
+                if ('caches' in window) {
+                  const keys = await caches.keys()
+                  await Promise.all(keys.map((k) => caches.delete(k)))
+                }
+              }
+            } catch {}
+            window.location.reload()
+          }}
+        />
         <SettingsRow
           icon="square.and.arrow.up"
           tint="var(--ember)"
@@ -836,5 +857,7 @@ export function FaqScreen() {
     </Screen>
   )
 }
+
+
 
 

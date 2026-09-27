@@ -77,6 +77,8 @@ function load(): AppState {
       accounts: parsed.accounts ?? {},
       flexibilityRecords: Array.isArray(parsed.flexibilityRecords) ? parsed.flexibilityRecords : [],
       customExercises: Array.isArray(parsed.customExercises) ? parsed.customExercises : [],
+      favoriteExercises: Array.isArray(parsed.favoriteExercises) ? parsed.favoriteExercises : [],
+      isPremium: parsed.isPremium ?? false,
     }
   } catch {
     return freshState()
@@ -155,6 +157,7 @@ export const useAllExercises = () => {
 }
 
 
-export function useFavoriteExercises() {
-  return useSyncExternalStore(subscribe, () => getState().favoriteExercises || [])
-}
+const EMPTY_FAVORITES: string[] = []
+export const useFavoriteExercises = () => useAppState((s) => s.favoriteExercises ?? EMPTY_FAVORITES)
+
+

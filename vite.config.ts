@@ -1,4 +1,4 @@
-import { defineConfig, type Plugin } from 'vite'
+﻿import { defineConfig, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
 
 /**
@@ -36,7 +36,7 @@ function kiaiServiceWorker(): Plugin {
       const assets = Object.keys(bundle).filter((file) => !file.endsWith('.map'))
       const precache = [...new Set([...PUBLIC_PRECACHE, ...assets])]
       // Bump SW_REVISION whenever the caching logic below changes.
-      const SW_REVISION = 2
+      const SW_REVISION = 3
       const version = hash(`${SW_REVISION}|${precache.join('|')}`)
       const source = `/* Kiai service worker — generated at build time. */
 const CACHE = 'kiai-${version}';
@@ -77,7 +77,7 @@ self.addEventListener('fetch', (event) => {
       return response;
     });
     const networkOrNothing = network.catch(() => undefined);
-    const timeout = new Promise((resolve) => setTimeout(resolve, 3000));
+    const timeout = new Promise((resolve) => setTimeout(resolve, 1500));
     event.respondWith(
       Promise.race([networkOrNothing, timeout]).then(
         (response) => response || caches.match(SHELL(), MATCH).then((cached) => cached || network)
@@ -119,3 +119,4 @@ export default defineConfig({
     sourcemap: false,
   },
 })
+

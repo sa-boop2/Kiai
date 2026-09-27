@@ -16,7 +16,7 @@ import { MARTIAL_ARTS } from '../../data/content'
 import { categoryMeta, equipmentMeta, tintColor } from '../../data/meta'
 import type { BodyRegion, Exercise, Difficulty } from '../../data/types'
 import { MartialArtEmblem } from '../../components/MartialArtEmblems'
-import { addExerciseToKata } from '../../lib/actions'
+import { addExerciseToKata, toggleFavoriteExercise } from '../../lib/actions'
 import { toast } from '../../components/Toast'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
@@ -51,9 +51,9 @@ export function LibraryScreen() {
     const baseList = allExercises.filter((ex) => {
       if (q) {
         const matchesQuery =
-          ex.name.toLowerCase().includes(q) ||
-          ex.summary.toLowerCase().includes(q) ||
-          ex.category.toLowerCase().includes(q)
+          (ex.name || "").toLowerCase().includes(q) ||
+          (ex.summary || "").toLowerCase().includes(q) ||
+          (ex.category || "").toLowerCase().includes(q)
         if (!matchesQuery) return false
       }
       if (selectedMuscle && !matchesBodyPart(ex, selectedMuscle)) {
@@ -67,6 +67,7 @@ export function LibraryScreen() {
     // Sub-filter
     const subFiltered = baseList.filter((ex) => {
       if (subFilter === 'all') return true
+      if (subFilter === 'favorites') return favorites.includes(ex.slug)
       if (subFilter === 'quick') return (ex.duration || 30) < 45
       if (subFilter === 'holds') {
         const s = (ex.name + ' ' + ex.summary).toLowerCase()
@@ -112,10 +113,10 @@ export function LibraryScreen() {
     if (!q) return MARTIAL_ARTS
     return MARTIAL_ARTS.filter(
       (art) =>
-        art.name.toLowerCase().includes(q) ||
-        art.origin.toLowerCase().includes(q) ||
-        art.tagline.toLowerCase().includes(q) ||
-        art.focusAreas.some((fa) => fa.toLowerCase().includes(q))
+        (art.name || "").toLowerCase().includes(q) ||
+        (art.origin || "").toLowerCase().includes(q) ||
+        (art.tagline || "").toLowerCase().includes(q) ||
+        (art.focusAreas || []).some((fa) => (fa || "").toLowerCase().includes(q))
     )
   }, [query])
 
@@ -123,7 +124,7 @@ export function LibraryScreen() {
   const filteredPremade = useMemo(() => {
     const q = query.trim().toLowerCase()
     return premadeKatas.filter((kata) => {
-      if (q && !kata.name.toLowerCase().includes(q) && !kata.subtitle.toLowerCase().includes(q)) return false
+      if (q && !((kata.name || "").toLowerCase().includes(q)) && !((kata.subtitle || "").toLowerCase().includes(q))) return false
       if (difficultyFilter !== 'all' && kata.difficulty !== difficultyFilter) return false
       return true
     })
@@ -533,7 +534,8 @@ export function LibraryScreen() {
 }
 
 /** Loosely compares two muscle display labels so "Hamstring" and "Hamstrings" (etc.) count as the same. */
-function sameMuscleLabel(a: string, b: string): boolean {
+function sameMuscleLabel(a: string | null | undefined, b: string | null | undefined): boolean {
+  if (!a || !b) return false
   const irregulars: Record<string, string> = { calf: 'calve', foot: 'feet' }
   const normalize = (s: string) => {
     const word = s.toLowerCase().split(/[&,]/)[0].trim().replace(/s$/, '')
@@ -613,7 +615,7 @@ export function ExerciseSheet({ slug }: { slug: string }) {
               <SheetHeader
           title={exercise.name}
           leading={
-            <button type="button" className="navbar-action" style={{ color: favorites.includes(exercise.slug) ? 'var(--gold, #fbbf24)' : 'var(--text-quaternary)' }} onClick={() => { haptic('light'); import('../../lib/actions').then(m => m.toggleFavoriteExercise(exercise.slug)) }}>
+            <button type="button" className="navbar-action" style={{ color: favorites.includes(exercise.slug) ? 'var(--gold, #fbbf24)' : 'var(--text-quaternary)' }} onClick={() => { haptic('light'); toggleFavoriteExercise(exercise.slug) }}>
               <Icon name={favorites.includes(exercise.slug) ? "star.fill" : "star"} size={22} strokeWidth={favorites.includes(exercise.slug) ? 0 : 2} />
             </button>
           }
@@ -753,6 +755,10 @@ export function ExerciseSheet({ slug }: { slug: string }) {
     </>
   )
 }
+
+
+
+
 
 
 

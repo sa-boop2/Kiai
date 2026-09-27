@@ -45,8 +45,8 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
     const list = allExercises.filter(ex => matchesBodyPart(ex, part))
     return list.sort((a, b) => {
       // Favorites first
-      const favA = favorites.includes(a.slug)
-      const favB = favorites.includes(b.slug)
+      const favA = (favorites || []).includes(a.slug)
+      const favB = (favorites || []).includes(b.slug)
       if (favA && !favB) return -1
       if (!favA && favB) return 1
       
@@ -77,7 +77,7 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
             {exercises.map((exercise) => {
               const meta = categoryMeta(exercise.category as BodyRegion)
-              const isFav = favorites.includes(exercise.slug)
+              const isFav = (favorites || []).includes(exercise.slug)
               return (
                 <div
                   key={exercise.slug}
@@ -135,3 +135,4 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
     </Screen>
   )
 }
+
