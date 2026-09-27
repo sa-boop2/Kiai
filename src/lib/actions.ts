@@ -181,6 +181,15 @@ export function sortUserKatas(compareFn: (a: Kata, b: Kata) => number) {
 // Flexibility ------------------------------------------------------------------------------------
 
 /** 1.1: logs a Flexibility check-in (0-100% self-rating). */
+/** 2.1.1: Resets flexibility check-ins for a benchmark (or all if omitted). */
+export function resetFlexibility(benchmark?: FlexibilityBenchmark) {
+  setState((s) => ({
+    ...s,
+    flexibilityRecords: benchmark
+      ? s.flexibilityRecords.filter((r) => r.benchmark !== benchmark)
+      : [],
+  }))
+}
 export function logFlexibility(benchmark: FlexibilityBenchmark, progressPercent: number) {
   const record: FlexibilityRecord = { id: uuid(), benchmark, progressPercent, recordedAt: Date.now() }
   setState((s) => ({ ...s, flexibilityRecords: [...s.flexibilityRecords, record] }))
@@ -227,3 +236,18 @@ export function toggleFavoriteExercise(slug: string) {
     return { ...s, favoriteExercises: [...list, slug] }
   })
 }
+
+export function setExerciseNote(slug: string, note: string) {
+  setState((s) => ({
+    ...s,
+    exerciseNotes: {
+      ...(s.exerciseNotes || {}),
+      [slug]: note.trim(),
+    },
+  }))
+}
+
+export function setPremium(isPremium: boolean) {
+  setState((s) => ({ ...s, isPremium }))
+}
+

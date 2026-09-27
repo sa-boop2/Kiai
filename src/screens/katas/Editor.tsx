@@ -2,6 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { BodyDiagram, type BodyPart } from '../../components/BodyDiagram'
 import { Icon } from '../../components/Icon'
 import { SheetHeader } from '../../components/SheetHost'
+import { MiniMuscleBadge, exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { toast } from '../../components/Toast'
 import { NativeSelect, SymbolTile } from '../../components/ui'
 import { PHASE, TINTS, categoryMeta, phaseMeta, tintColor, tintTitle } from '../../data/meta'
@@ -286,8 +287,7 @@ function PhaseEditor({
           const exercise = allExercises.find(e => e.slug === item.slug)
           if (!exercise) return null
           return (
-            <div key={item.id} className={`editor-row ${dragging === item.id ? 'dragging' : ''}`} style={{ viewTransitionName: `row-${item.id}`, flexDirection: 'column', alignItems: 'stretch', padding: '12px 10px 12px 4px', gap: '8px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <div key={item.id} className={`editor-row ${dragging === item.id ? 'dragging' : ''}`} style={{ viewTransitionName: `row-${item.id}` }}>
                 <button
                   type="button"
                   className="drag-handle no-sheet-drag"
@@ -312,6 +312,7 @@ function PhaseEditor({
                     </span>
                   </span>
                 </button>
+                <MiniMuscleBadge exercise={exercise} size={32} />
                 <div className="duration-edit">
                   <input
                     type="number"
@@ -337,20 +338,6 @@ function PhaseEditor({
                 >
                   <Icon name="xmark.circle.fill" size={20} />
                 </button>
-              </div>
-
-              <div style={{ display: 'flex', paddingLeft: '48px', paddingRight: '40px' }}>
-                <input 
-                  type="text" 
-                  placeholder="Add a custom note (optional)"
-                  value={item.note || ''}
-                  onChange={(e) => {
-                    const value = e.target.value
-                    onChange((list) => list.map((i) => (i.id === item.id ? { ...i, note: value } : i)))
-                  }}
-                  style={{ flex: 1, background: 'color-mix(in srgb, var(--text) 5%, transparent)', border: 'none', borderRadius: '8px', padding: '8px 12px', fontSize: '14px', color: 'var(--text)' }}
-                />
-              </div>
             </div>
           )
         })}
@@ -457,9 +444,14 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
                     <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category as BodyRegion).tint} size={44} />
                     <span className="picker-row-text">
                       <strong>{exercise.name}</strong>
-                      <span className="muted small tabular">{short(exercise.duration)}</span>
+                      <span className="muted small" style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '12px' }}>
+                        <span style={{ color: 'var(--text-secondary)' }}>{exerciseTargetLabel(exercise)}</span>
+                        <span>·</span>
+                        <span className="tabular">{short(exercise.duration)}</span>
+                      </span>
                     </span>
                   </button>
+                  <MiniMuscleBadge exercise={exercise} size={32} style={{ marginRight: '6px' }} />
                   <button type="button" className="info-btn" aria-label={`About ${exercise.name}`} onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}>
                     <Icon name="info.circle" size={21} />
                   </button>

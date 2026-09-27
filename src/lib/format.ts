@@ -1,4 +1,4 @@
-/** 75 -> "1:15", 3725 -> "1:02:05" */
+﻿/** 75 -> "1:15", 3725 -> "1:02:05" */
 export function clock(totalSeconds: number): string {
   const s = Math.max(0, Math.floor(totalSeconds))
   const h = Math.floor(s / 3600)
@@ -65,24 +65,20 @@ export function clamp(value: number, min = 0, max = 1): number {
   return Math.min(Math.max(value, min), max)
 }
 
-export function toKanjiTimer(totalSeconds: number): string {
-  const KANJI = ['?', '?', '?', '?', '?', '?', '?', '?', '?', '?']
-  
-  const toK = (n: number) => {
-    if (n < 10) return KANJI[n]
-    if (n === 10) return '?'
-    const tens = Math.floor(n / 10)
-    const ones = n % 10
-    return (tens > 1 ? KANJI[tens] : '') + '?' + (ones > 0 ? KANJI[ones] : '')
-  }
-
-  const s = Math.max(0, Math.floor(totalSeconds))
-  const h = Math.floor(s / 3600)
-  const m = Math.floor((s % 3600) / 60)
-  const sec = s % 60
-  
-  if (h > 0) {
-    return `${toK(h)}:${toK(m)}:${toK(sec)}`
-  }
-  return `${toK(m)}:${toK(sec)}`
+const EASTERN_ARABIC_DIGITS: Record<string, string> = {
+  '0': '٠', '1': '١', '2': '٢', '3': '٣', '4': '٤',
+  '5': '٥', '6': '٦', '7': '٧', '8': '٨', '9': '٩'
 }
+
+/** Converts European/Western numerals (1, 2, 3) to Eastern Arabic numerals (١, ٢, ٣). */
+export function toEasternArabicNumerals(str: string): string {
+  return str.replace(/[0-9]/g, (d) => EASTERN_ARABIC_DIGITS[d] ?? d)
+}
+
+/** Formats seconds into Eastern Arabic numerals: "٠:٤٥", "١:٣٠". */
+export function toEasternArabicTimer(totalSeconds: number): string {
+  return toEasternArabicNumerals(clock(totalSeconds))
+}
+
+/** Backwards-compatible alias for existing imports. */
+export const toKanjiTimer = toEasternArabicTimer

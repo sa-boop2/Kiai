@@ -1,8 +1,8 @@
-﻿import { type CSSProperties, useMemo, useState } from 'react'
+import { type CSSProperties, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
-import { BodyDiagram, type BodyPart } from '../../components/BodyDiagram'
+import { BodyDiagram } from '../../components/BodyDiagram'
 import {
   BulletList,
   EmptyState,
@@ -16,19 +16,17 @@ import { MARTIAL_ARTS } from '../../data/content'
 import { categoryMeta, equipmentMeta, tintColor } from '../../data/meta'
 import type { BodyRegion, Exercise, Difficulty } from '../../data/types'
 import { MartialArtEmblem } from '../../components/MartialArtEmblems'
-import { addExerciseToKata, toggleFavoriteExercise } from '../../lib/actions'
+import { addExerciseToKata, setExerciseNote, toggleFavoriteExercise } from '../../lib/actions'
 import { toast } from '../../components/Toast'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
-import { getExerciseRelevance, matchesBodyPart } from '../../lib/muscleMatch'
 import { nav } from '../../lib/nav'
-import { useAllExercises, useUserKatas, useSettings, useFavoriteExercises } from '../../lib/store'
+import { useAllExercises, useUserKatas, useSettings, useFavoriteExercises, useExerciseNote } from '../../lib/store'
+import { MiniMuscleBadge, exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { usePremadeKatas } from '../../lib/launch'
 import { FilterPill, DifficultyBadge } from '../../components/ui'
 import { estimatedSeconds } from '../../data/content'
 import { minutes } from '../../lib/format'
-
-export type SubFilterType = 'all' | 'favorites' | 'holds' | 'dynamic' | 'quick'
 
 export function LibraryScreen() {
   const { t } = useI18n()
@@ -40,72 +38,20 @@ export function LibraryScreen() {
   const settings = useSettings()
   const [activeTab, setActiveTab] = useState<'exercises' | 'premadeKatas' | 'martialArts'>('exercises')
   const [query, setQuery] = useState('')
-  const [selectedMuscle, setSelectedMuscle] = useState<BodyPart | null>(null)
-  const [subFilter, setSubFilter] = useState<SubFilterType>('all')
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>('all')
   const [pickerExercise, setPickerExercise] = useState<Exercise | null>(null)
-
-  // Filter and intelligently order exercises
-  const { filteredExercises, allCount } = useMemo(() => {
+  // Filter exercises for active search
+  const filteredExercises = useMemo(() => {
     const q = query.trim().toLowerCase()
-    const baseList = allExercises.filter((ex) => {
-      if (q) {
-        const matchesQuery =
-          (ex.name || "").toLowerCase().includes(q) ||
-          (ex.summary || "").toLowerCase().includes(q) ||
-          (ex.category || "").toLowerCase().includes(q)
-        if (!matchesQuery) return false
-      }
-      if (selectedMuscle && !matchesBodyPart(ex, selectedMuscle)) {
-        return false
-      }
-      return true
-    })
-
-    const count = baseList.length
-
-    // Sub-filter
-    const subFiltered = baseList.filter((ex) => {
-      if (subFilter === 'all') return true
-      if (subFilter === 'favorites') return favorites.includes(ex.slug)
-      if (subFilter === 'quick') return (ex.duration || 30) < 45
-      if (subFilter === 'holds') {
-        const s = (ex.name + ' ' + ex.summary).toLowerCase()
-        return (
-          (ex.duration || 30) >= 45 ||
-          s.includes('hold') ||
-          s.includes('stretch') ||
-          s.includes('static') ||
-          s.includes('pose')
-        )
-      }
-      if (subFilter === 'dynamic') {
-        const s = (ex.name + ' ' + ex.summary).toLowerCase()
-        return (
-          s.includes('dynamic') ||
-          s.includes('mobility') ||
-          s.includes('pulse') ||
-          s.includes('swing') ||
-          s.includes('rotation') ||
-          s.includes('circle') ||
-          s.includes('flow') ||
-          (ex.duration || 30) <= 30
-        )
-      }
-      return true
-    })
-
-    // Intelligent Sorting:
-    // Direct muscle target matches first, then direct name matches, then duration
-    const sorted = [...subFiltered].sort((a, b) => {
-      const scoreA = getExerciseRelevance(a, selectedMuscle)
-      const scoreB = getExerciseRelevance(b, selectedMuscle)
-      if (scoreA !== scoreB) return scoreB - scoreA
-      return (a.duration || 30) - (b.duration || 30)
-    })
-
-    return { filteredExercises: sorted, allCount: count }
-  }, [allExercises, query, selectedMuscle, subFilter, favorites])
+    if (!q) return allExercises
+    return allExercises.filter(
+      (ex) =>
+        (ex.name || '').toLowerCase().includes(q) ||
+        (ex.summary || '').toLowerCase().includes(q) ||
+        (ex.category || '').toLowerCase().includes(q) ||
+        (ex.targets || []).some((t) => (t || '').toLowerCase().includes(q))
+    )
+  }, [allExercises, query])
 
   // Filter martial arts
   const filteredArts = useMemo(() => {
@@ -196,151 +142,179 @@ export function LibraryScreen() {
           <>
             {/* Redesigned Dual Anatomical Body Diagram */}
             <BodyDiagram
-              selectedPart={selectedMuscle}
+              selectedPart={null}
               onSelectPart={(part) => {
                 if (part) nav.push({ name: 'muscle', part })
               }}
             />
 
-            {/* Results Header */}
-            <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
-              <h2 style={{ fontSize: '18px' }}>
-                {selectedMuscle ? `${formatMuscleTitle(selectedMuscle)} Stretches` : 'All Exercises'}
-              </h2>
-              <span className="library-count-badge">
-                {filteredExercises.length} {filteredExercises.length === 1 ? 'exercise' : 'exercises'}
-              </span>
-            </div>
+            {/* If actively searching, show search results */}
+            {query.trim() ? (
+              <>
+                <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
+                  <h2 style={{ fontSize: '18px' }}>Search Results</h2>
+                  <span className="library-count-badge">
+                    {filteredExercises.length} {filteredExercises.length === 1 ? 'match' : 'matches'}
+                  </span>
+                </div>
+                {filteredExercises.length === 0 ? (
+                  <EmptyState
+                    icon={<Icon name="magnifyingglass" size={44} />}
+                    title={t('No exercises found')}
+                    description={t('Try adjusting your search query.')}
+                  />
+                ) : (
+                  <div className="library-exercise-list">
+                    {filteredExercises.map((exercise) => {
+                      const meta = categoryMeta(exercise.category as BodyRegion)
+                      return (
+                        <div
+                          key={exercise.slug}
+                          className="library-exercise-card"
+                          onClick={() => {
+                            haptic('selection')
+                            nav.present({ name: 'exercise', slug: exercise.slug })
+                          }}
+                        >
+                          <SymbolTile icon={exercise.symbol} size={48} tint={meta.tint} />
+                          <div className="library-exercise-info">
+                            <span className="library-exercise-name">{exercise.name}</span>
+                            <span className="library-exercise-summary">{exercise.summary}</span>
+                            <div className="library-exercise-meta">
+                              <TagChip text={meta.title} tint={meta.tint} />
+                              <span>
+                                <Icon name="clock" size={11} strokeWidth={2.4} /> {exercise.duration}s
+                              </span>
+                            </div>
+                          </div>
+                          <MiniMuscleBadge exercise={exercise} size={36} />
+                          <button
+                            type="button"
+                            className="library-quick-add-btn"
+                            title="Add to Kata"
+                            aria-label={`Add ${exercise.name} to Kata`}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              haptic('selection')
+                              setPickerExercise(exercise)
+                            }}
+                          >
+                            <Icon name="plus" size={15} strokeWidth={2.4} />
+                          </button>
+                        </div>
+                      )
+                    })}
+                  </div>
+                )}
+              </>
+            ) : (
+              /* Normal State: Body Diagram + Redesigned Favorites Shelf */
+              <div className="library-favorites-section" style={{ marginTop: '12px' }}>
+                <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                    <Icon name="star.fill" size={16} style={{ color: '#fbbf24' }} />
+                    <h2 style={{ fontSize: '18px', margin: 0 }}>Favorited Exercises</h2>
+                  </div>
+                  <span className="library-count-badge">
+                    {favorites.length} {favorites.length === 1 ? 'saved' : 'saved'}
+                  </span>
+                </div>
 
-            {/* Quick Sub-filters: Deep Holds, Dynamic, Quick */}
-            <div className="library-subfilters">
-              <button
-                type="button"
-                className={`library-subfilter-btn ${subFilter === 'all' ? 'active' : ''}`}
-                onClick={() => {
-                  haptic('light')
-                  setSubFilter('all')
-                }}
-              >
-                All ({allCount})              </button>
-              <button
-                type="button"
-                className={`library-subfilter-btn ${subFilter === 'favorites' ? 'active' : ''}`}
-                onClick={() => {
-                  haptic('light')
-                  setSubFilter('favorites')
-                }}
-              >
-                ⭐ Favorites</button>
-              <button
-                type="button"
-                className={`library-subfilter-btn ${subFilter === 'holds' ? 'active' : ''}`}
-                onClick={() => {
-                  haptic('light')
-                  setSubFilter('holds')
-                }}
-              >
-                🧘 Deep Holds
-              </button>
-              <button
-                type="button"
-                className={`library-subfilter-btn ${subFilter === 'dynamic' ? 'active' : ''}`}
-                onClick={() => {
-                  haptic('light')
-                  setSubFilter('dynamic')
-                }}
-              >
-                ⚡ Dynamic
-              </button>
-              <button
-                type="button"
-                className={`library-subfilter-btn ${subFilter === 'quick' ? 'active' : ''}`}
-                onClick={() => {
-                  haptic('light')
-                  setSubFilter('quick')
-                }}
-              >
-                ⏱ Quick (&lt;45s)
-              </button>
-            </div>
-
-            {/* Exercise List */}
-            {filteredExercises.length === 0 ? (
-              <EmptyState
-                icon={<Icon name="figure.mind.and.body" size={48} />}
-                title={t('No exercises found')}
-                description={t('Try clearing the muscle or category filter.')}
-                action={
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => {
-                      setSelectedMuscle(null)
-                      setSubFilter('all')
-                      setQuery('')
+                {favorites.length === 0 ? (
+                  <div
+                    style={{
+                      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02))',
+                      border: '1px dashed rgba(255, 255, 255, 0.16)',
+                      borderRadius: '18px',
+                      padding: '24px 18px',
+                      textAlign: 'center',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      gap: '8px',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
                     }}
                   >
-                    Clear Filters
-                  </button>
-                }
-              />
-            ) : (
-              <div className="library-exercise-list">
-                {filteredExercises.map((exercise) => {
-                  const meta = categoryMeta(exercise.category as BodyRegion)
-                  const targetLabel = selectedMuscle ? formatMuscleTitle(selectedMuscle) : null
-                  const showTargetBadge = targetLabel !== null && !sameMuscleLabel(targetLabel, meta.title)
-                  return (
                     <div
-                      key={exercise.slug}
-                      className="library-exercise-card"
-                      onClick={() => {
-                        haptic('selection')
-                        nav.present({ name: 'exercise', slug: exercise.slug })
+                      style={{
+                        width: 44,
+                        height: 44,
+                        borderRadius: 999,
+                        background: 'rgba(251, 191, 36, 0.14)',
+                        color: '#fbbf24',
+                        display: 'grid',
+                        placeItems: 'center',
                       }}
                     >
-                      <SymbolTile icon={exercise.symbol} size={48} tint={meta.tint} />
-                      <div className="library-exercise-info">
-                        <span className="library-exercise-name">{exercise.name}</span>
-                        <span className="library-exercise-summary">{exercise.summary}</span>
-                        <div className="library-exercise-meta">
-                          {showTargetBadge && (
-                            <span className="library-target-badge">
-                              <Icon name="target" size={10} strokeWidth={2.4} /> {targetLabel}
-                            </span>
-                          )}
-                          <TagChip text={meta.title} tint={meta.tint} />
-                          <span>
-                            <Icon name="clock" size={11} strokeWidth={2.4} /> {exercise.duration}s
-                          </span>
-                          {exercise.bilateral && (
-                            <span>
-                              <Icon name="arrow.left.arrow.right" size={11} strokeWidth={2.4} /> Both sides
-                            </span>
-                          )}
-                          <span>{exercise.duration >= 45 ? '🧘 Hold' : '⚡ Dynamic'}</span>
-                        </div>
-                      </div>
-
-                      {/* Quick Add to Kata Button */}
-                      <button
-                        type="button"
-                        className="library-quick-add-btn"
-                        title="Add to Kata"
-                        aria-label={`Add ${exercise.name} to Kata`}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          haptic('selection')
-                          setPickerExercise(exercise)
-                        }}
-                      >
-                        <Icon name="plus" size={15} strokeWidth={2.4} />
-                      </button>
-
-                      <Icon name="chevron.right" size={14} className="muted" />
+                      <Icon name="star.fill" size={22} />
                     </div>
-                  )
-                })}
+                    <strong style={{ fontSize: '15px' }}>No Favorites Yet</strong>
+                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', maxWidth: '280px', lineHeight: 1.35 }}>
+                      Tap any muscle on the diagram above to explore exercises, or tap the star on any exercise to pin your favorites here.
+                    </p>
+                  </div>
+                ) : (
+                  <div className="library-exercise-list">
+                    {favorites
+                      .map((slug) => allExercises.find((e) => e.slug === slug))
+                      .filter((e): e is Exercise => Boolean(e))
+                      .map((exercise) => {
+                        const ex = exercise
+                        const meta = categoryMeta(ex.category as BodyRegion)
+                        return (
+                          <div
+                            key={ex.slug}
+                            className="library-exercise-card"
+                            onClick={() => {
+                              haptic('selection')
+                              nav.present({ name: 'exercise', slug: ex.slug })
+                            }}
+                          >
+                            <SymbolTile icon={ex.symbol} size={48} tint={meta.tint} />
+                            <div className="library-exercise-info">
+                              <span className="library-exercise-name">{ex.name}</span>
+                              <span className="library-exercise-summary">{exerciseTargetLabel(ex)}</span>
+                              <div className="library-exercise-meta">
+                                <TagChip text={meta.title} tint={meta.tint} />
+                                <span>
+                                  <Icon name="clock" size={11} strokeWidth={2.4} /> {ex.duration}s
+                                </span>
+                              </div>
+                            </div>
+                            <MiniMuscleBadge exercise={ex} size={36} />
+                            <button
+                              type="button"
+                              className="library-quick-add-btn"
+                              style={{ color: '#fbbf24' }}
+                              title="Unfavorite"
+                              aria-label={`Unfavorite ${ex.name}`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                haptic('selection')
+                                toggleFavoriteExercise(ex.slug)
+                              }}
+                            >
+                              <Icon name="star.fill" size={16} />
+                            </button>
+                            <button
+                              type="button"
+                              className="library-quick-add-btn"
+                              title="Add to Kata"
+                              aria-label={`Add ${ex.name} to Kata`}
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                haptic('selection')
+                                setPickerExercise(ex)
+                              }}
+                            >
+                              <Icon name="plus" size={15} strokeWidth={2.4} />
+                            </button>
+                          </div>
+                        )
+                      })}
+                  </div>
+                )}
               </div>
             )}
           </>
@@ -372,32 +346,52 @@ export function LibraryScreen() {
                 }
               />
             ) : (
-              <div className="library-katas-list" style={{ marginTop: '12px' }}>
+              <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginTop: '12px' }}>
                 {filteredPremade.map((kata) => (
-                  <div key={kata.uuid} className="library-kata-card" style={{ marginBottom: '16px' }}>
-                    <button
-                      type="button"
-                      className="library-kata-top"
-                      style={{ display: 'flex', gap: '16px', alignItems: 'center', width: '100%', textAlign: 'left', background: 'var(--surface)', padding: '16px', borderRadius: '16px', border: 'none' }}
-                      onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
-                    >
-                      <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={64} />
-                      <div className="library-kata-details" style={{ flex: 1 }}>
-                        <span className="library-kata-title" style={{ display: 'block', fontSize: '18px', fontWeight: 700, marginBottom: '4px' }}>{kata.name}</span>
-                        <span className="library-kata-sub" style={{ display: 'block', fontSize: '14px', color: 'var(--text-secondary)' }}>{kata.subtitle}</span>
-                        <div className="meta-row" style={{ display: 'flex', gap: '12px', marginTop: '8px', fontSize: '13px', color: 'var(--text-tertiary)' }}>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Icon name="clock" size={12} strokeWidth={2.4} />
-                            {minutes(estimatedSeconds(kata, settings.restSeconds))}
-                          </span>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Icon name="list.bullet" size={12} strokeWidth={2.4} />
-                            {kata.items.length} exercises
-                          </span>
-                          <DifficultyBadge difficulty={kata.difficulty} pill />
-                        </div>
+                  <div
+                    key={kata.uuid}
+                    className="card pressable"
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      justifyContent: 'space-between',
+                      padding: '14px',
+                      borderRadius: '18px',
+                      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+                      backdropFilter: 'blur(20px)',
+                      WebkitBackdropFilter: 'blur(20px)',
+                      cursor: 'pointer',
+                      minHeight: '160px',
+                    }}
+                    onClick={() => {
+                      haptic('selection')
+                      nav.push({ name: 'kata', id: kata.uuid })
+                    }}
+                  >
+                    <div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                        <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={42} />
+                        <DifficultyBadge difficulty={kata.difficulty} pill />
                       </div>
-                    </button>
+                      <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                        {kata.name}
+                      </strong>
+                      <p style={{ margin: '3px 0 0', fontSize: '12px', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>
+                        {kata.subtitle}
+                      </p>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '11px', color: 'var(--text-tertiary)' }}>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                        <Icon name="clock" size={11} strokeWidth={2.4} />
+                        {minutes(estimatedSeconds(kata, settings.restSeconds))}
+                      </span>
+                      <span>
+                        {kata.items.length} drills
+                      </span>
+                    </div>
                   </div>
                 ))}
               </div>
@@ -533,41 +527,6 @@ export function LibraryScreen() {
   )
 }
 
-/** Loosely compares two muscle display labels so "Hamstring" and "Hamstrings" (etc.) count as the same. */
-function sameMuscleLabel(a: string | null | undefined, b: string | null | undefined): boolean {
-  if (!a || !b) return false
-  const irregulars: Record<string, string> = { calf: 'calve', foot: 'feet' }
-  const normalize = (s: string) => {
-    const word = s.toLowerCase().split(/[&,]/)[0].trim().replace(/s$/, '')
-    return irregulars[word] ?? word
-  }
-  const na = normalize(a)
-  const nb = normalize(b)
-  return na === nb || na.startsWith(nb) || nb.startsWith(na)
-}
-
-function formatMuscleTitle(part: BodyPart): string {
-  const map: Record<BodyPart, string> = {
-    neck: 'Neck',
-    shoulders: 'Shoulder',
-    chest: 'Chest',
-    arms: 'Arms',
-    biceps: 'Biceps',
-    triceps: 'Triceps',
-    core: 'Core & Abs',
-    lowerBack: 'Lower Back',
-    lats: 'Lats & Upper Back',
-    glutes: 'Glute',
-    hipFlexors: 'Hip Flexor',
-    adductors: 'Adductor & Groin',
-    hamstrings: 'Hamstring',
-    quads: 'Quadriceps',
-    calves: 'Calf & Shin',
-    feet: 'Foot & Ankle',
-  }
-  return map[part] || part
-}
-
 export function ArtDetailSheet({ artId }: { artId: string }) {
   const art = MARTIAL_ARTS.find((a) => a.id === artId)
   if (!art) return null
@@ -605,6 +564,8 @@ export function ExerciseSheet({ slug }: { slug: string }) {
   const favorites = useFavoriteExercises()
   const userKatas = useUserKatas()
   const [showKataPicker, setShowKataPicker] = useState(false)
+  const savedNote = useExerciseNote(slug)
+  const [noteText, setNoteText] = useState(savedNote)
   const exercise = allExercises.find((e) => e.slug === slug)
   if (!exercise) return null
 
@@ -659,6 +620,37 @@ export function ExerciseSheet({ slug }: { slug: string }) {
         <div className="card detail-card">
           <h4>How to perform</h4>
           <NumberedSteps steps={exercise.instructions} />
+        </div>
+
+        <div className="card detail-card" style={{ padding: '14px 16px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <h4 style={{ margin: 0, fontSize: '15px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <Icon name="pencil" size={14} />
+              Personal Note / Cue
+            </h4>
+            {savedNote && <span style={{ fontSize: '11px', color: 'var(--jade)', fontWeight: 600 }}>Saved</span>}
+          </div>
+          <textarea
+            placeholder="Add personal cues, breathing reminders, or form tips..."
+            value={noteText}
+            rows={2}
+            onChange={(e) => {
+              setNoteText(e.target.value)
+              setExerciseNote(exercise.slug, e.target.value)
+            }}
+            style={{
+              width: '100%',
+              background: 'color-mix(in srgb, var(--surface) 60%, transparent)',
+              border: '1px solid var(--stroke)',
+              borderRadius: '10px',
+              padding: '8px 12px',
+              fontSize: '13px',
+              color: 'var(--text)',
+              fontFamily: 'inherit',
+              resize: 'none',
+              boxSizing: 'border-box',
+            }}
+          />
         </div>
 
         {exercise.tips.length > 0 && (

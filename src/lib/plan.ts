@@ -1,6 +1,7 @@
-﻿import { exerciseBySlug, howToForExercise, howToForTechnique, orderedItems } from '../data/content'
+import { exerciseBySlug, howToForExercise, howToForTechnique, orderedItems } from '../data/content'
 import { phaseMeta } from '../data/meta'
 import type { CountdownSound, HowTo, Phase, SessionKind, Settings, Technique, WorkoutTemplate } from '../data/types'
+import { getState } from './store'
 
 export type StepKind = 'prepare' | 'work' | 'rest'
 
@@ -96,7 +97,7 @@ export function planForTemplate(template: WorkoutTemplate, settings: Settings): 
       symbol: exercise.symbol,
       bilateral: exercise.bilateral,
       howTo: howToForExercise(exercise),
-      note: item.note,
+      note: item.note || getState().exerciseNotes?.[item.slug],
     })
     if (rest > 0 && index < resolved.length - 1) {
       steps.push(restStep(steps.length, rest, resolved[index + 1].exercise.name))

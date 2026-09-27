@@ -1,4 +1,4 @@
-﻿import { type CSSProperties, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
+import { type CSSProperties, useEffect, useMemo, useRef, useState, useSyncExternalStore } from 'react'
 import { confirmAction } from '../../components/ActionSheet'
 import { Icon } from '../../components/Icon'
 import { Eyebrow, GlassIconButton, PrimaryButton, ProgressBar, RankEmblem, StatTile, SymbolTile } from '../../components/ui'
@@ -8,7 +8,7 @@ import { nextRank } from '../../data/levels'
 import type { Phase, Session } from '../../data/types'
 import { recordSession } from '../../lib/actions'
 import { audio } from '../../lib/audio'
-import { clock, minutes, short, toKanjiTimer } from '../../lib/format'
+import { clock, minutes, short, toEasternArabicTimer } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
 import { nav } from '../../lib/nav'
@@ -373,7 +373,7 @@ function TimerRing({ player }: { player: WorkoutPlayer }) {
       const now = performance.now()
       const progress = player.stepProgress(now)
       if (arcRef.current) arcRef.current.style.strokeDashoffset = String(C * progress)
-      const r = Math.ceil(player.remaining(now) - 0.0001); const text = settings.arabicTimer ? clock(r) : toKanjiTimer(r)
+      const r = Math.ceil(player.remaining(now) - 0.0001); const text = settings.arabicTimer ? toEasternArabicTimer(r) : clock(r)
       if (text !== lastText && timeRef.current) {
         timeRef.current.textContent = text
         lastText = text
@@ -418,7 +418,7 @@ function TimerRing({ player }: { player: WorkoutPlayer }) {
       </svg>
       <span className="ring-center">
         <span ref={timeRef} className="ring-time tabular">
-          {settings.arabicTimer ? clock(player.remaining()) : toKanjiTimer(player.remaining())}
+          {settings.arabicTimer ? toEasternArabicTimer(player.remaining()) : clock(player.remaining())}
         </span>
         <span className="ring-status">{label}</span>
       </span>

@@ -1,4 +1,4 @@
-﻿import { type ReactNode, useMemo, useRef, useState } from 'react'
+import { type ReactNode, useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { toast } from '../../components/Toast'
@@ -25,12 +25,13 @@ import { resizeAvatar } from '../../lib/image'
 import { nav } from '../../lib/nav'
 import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
-import { useProfile, useSessions, useSettings } from '../../lib/store'
+import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '1.8'
+const VERSION = '2.1.2'
 
 export function SettingsScreen() {
   const settings = useSettings()
+  const isPremium = useIsPremium()
   const { t, locale } = useI18n()
   const fileInputRef = useRef<HTMLInputElement>(null)
   const [importing, setImporting] = useState(false)
@@ -94,8 +95,16 @@ export function SettingsScreen() {
         <SettingsRow
           icon="crown.fill"
           tint="var(--gold)"
-          title="Kiai Pro Lifetime"
-          trailing={<span className="muted" style={{ fontWeight: 600 }}>€9,99</span>}
+          title="Kiai+"
+          trailing={
+            isPremium ? (
+              <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--jade)', background: 'color-mix(in srgb, var(--jade) 16%, transparent)', padding: '2px 8px', borderRadius: '6px' }}>
+                Active Member
+              </span>
+            ) : (
+              <span className="muted" style={{ fontWeight: 600 }}>€9,99</span>
+            )
+          }
           chevron
           onClick={() => nav.push({ name: 'paywall' })}
         />
@@ -350,10 +359,10 @@ export function WorkoutSettingsScreen() {
               <SettingsRow
           icon="textformat.123"
           tint="var(--indigo)"
-          title={t('Use Arabic Numerals (1,2,3)')}
+          title={t('Eastern Arabic Numerals (١, ٢, ٣)')}
           trailing={
             <Toggle
-              label={t('Use Arabic Numerals')}
+              label={t('Eastern Arabic Numerals')}
               checked={settings.arabicTimer ?? false}
               onChange={(arabicTimer) => updateSettings({ arabicTimer })}
             />
@@ -857,6 +866,7 @@ export function FaqScreen() {
     </Screen>
   )
 }
+
 
 
 

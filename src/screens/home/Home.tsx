@@ -4,7 +4,7 @@ import { NavIconButton, Screen } from '../../components/Screen'
 import { Card, EmberBadge, EmptyState, KiaiLogo, KiaiMark, PrimaryButton, StatTile, SymbolTile } from '../../components/ui'
 import { estimatedSeconds, orderedItems } from '../../data/content'
 import { tintColor } from '../../data/meta'
-import { displayName, minutes, relativeDay } from '../../lib/format'
+import { minutes, relativeDay } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
 import { quickStart, quickStartLabel, resolveQuickStart } from '../../lib/launch'
@@ -73,9 +73,8 @@ export function HomeScreen() {
     >
       {/* Header */}
       <div className="home-header">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
           <KiaiLogo size={28} />
-          <span style={{ fontWeight: 600, fontSize: '20px' }}>{displayName(profile.name)}</span>
         </div>
         <button
           type="button"

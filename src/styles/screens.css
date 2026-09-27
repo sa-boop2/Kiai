@@ -1,4 +1,4 @@
-﻿/* ============================================================================================
+/* ============================================================================================
  * Home
  * ========================================================================================== */
 
@@ -16,13 +16,13 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px var(--gutter) 4px;
+  padding: 8px 0 4px;
 }
 
 /* ── Hero "Repeat Last Workout" card ─────────────────────────────────────────────────────── */
 
 .home-hero-wrap {
-  padding: 0 var(--gutter);
+  padding: 0;
 }
 
 .home-hero {
@@ -197,7 +197,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0 var(--gutter);
+  padding: 0 0 6px;
 }
 
 .home-section-title {
@@ -210,7 +210,7 @@
 }
 
 .home-katas-list {
-  padding: 0 var(--gutter) 8px;
+  padding: 0 0 8px;
 }
 
 .home-katas-list .list-stack {

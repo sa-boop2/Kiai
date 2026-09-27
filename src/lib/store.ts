@@ -1,4 +1,4 @@
-﻿import { useSyncExternalStore, useMemo } from 'react'
+import { useSyncExternalStore, useMemo } from 'react'
 import { EXERCISES } from '../data/generated/exercises'
 import { DEFAULT_SETTINGS } from '../data/settings'
 import type { FlexibilityRecord, Kata, Profile, Session, Settings, StoredCredential } from '../data/types'
@@ -25,6 +25,7 @@ export interface AppState {
   /** 1.2: Custom exercises created by the user */
   customExercises: import('../data/types').Exercise[]
   favoriteExercises?: string[]
+  exerciseNotes?: Record<string, string>
 }
 
 export const STORAGE_KEY = 'kiai.state.v1'
@@ -57,6 +58,7 @@ export function freshState(): AppState {
     flexibilityRecords: [],
     customExercises: [],
     favoriteExercises: [],
+    exerciseNotes: {},
   }
 }
 
@@ -78,6 +80,7 @@ function load(): AppState {
       flexibilityRecords: Array.isArray(parsed.flexibilityRecords) ? parsed.flexibilityRecords : [],
       customExercises: Array.isArray(parsed.customExercises) ? parsed.customExercises : [],
       favoriteExercises: Array.isArray(parsed.favoriteExercises) ? parsed.favoriteExercises : [],
+      exerciseNotes: parsed.exerciseNotes ?? {},
       isPremium: parsed.isPremium ?? false,
     }
   } catch {
@@ -159,5 +162,10 @@ export const useAllExercises = () => {
 
 const EMPTY_FAVORITES: string[] = []
 export const useFavoriteExercises = () => useAppState((s) => s.favoriteExercises ?? EMPTY_FAVORITES)
+const EMPTY_NOTES: Record<string, string> = {}
+export const useExerciseNotes = () => useAppState((s) => s.exerciseNotes ?? EMPTY_NOTES)
+export const useExerciseNote = (slug: string) => useAppState((s) => s.exerciseNotes?.[slug] ?? '')
+export const useIsPremium = () => useAppState((s) => s.isPremium ?? false)
+
 
 

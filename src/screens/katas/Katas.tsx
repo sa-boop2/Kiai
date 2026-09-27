@@ -1,6 +1,7 @@
 import { type CSSProperties, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { NavIconButton, Screen } from '../../components/Screen'
+import { MiniMuscleBadge, exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { confirmAction } from '../../components/ActionSheet'
 import { toast } from '../../components/Toast'
 import { DifficultyBadge, EmptyState, FilterPill, KiaiMark, PrimaryButton, SecondaryButton, SymbolTile, TagChip } from '../../components/ui'
@@ -260,11 +261,15 @@ function HeroStat({ value, label }: { value: string; label: string }) {
 /** Shared exercise row: symbol, name, difficulty, both-sides/equipment hints and a trailing value. */
 export function ExerciseRow({ exercise, trailing, onClick, children }: { exercise: Exercise; trailing?: string; onClick?: () => void; children?: React.ReactNode }) {
   const category = categoryMeta(exercise.category)
+  const targetLabel = exerciseTargetLabel(exercise)
   return (
     <button type="button" className="exercise-row" onClick={onClick}>
       <SymbolTile icon={exercise.symbol} tint={category.tint} size={48} />
       <span className="exercise-row-text">
         <strong>{exercise.name}</strong>
+        <span className="exercise-target-sub" style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'flex', alignItems: 'center', gap: '4px' }}>
+          {targetLabel}
+        </span>
         <span className="exercise-row-meta">
           {exercise.bilateral && <Icon name="arrow.left.and.right" size={13} strokeWidth={2.6} className="muted-icon" title="Both sides" />}
           {exercise.equipment.length > 0 && <Icon name="shippingbox" size={13} strokeWidth={2.4} className="muted-icon" title="Equipment needed" />}
@@ -272,6 +277,7 @@ export function ExerciseRow({ exercise, trailing, onClick, children }: { exercis
         {children}
       </span>
       {trailing && <span className="exercise-row-trailing tabular">{trailing}</span>}
+      <MiniMuscleBadge exercise={exercise} size={36} />
       <Icon name="info.circle" size={19} className="muted-icon" />
     </button>
   )
@@ -363,48 +369,51 @@ export function PremadeWorkoutsScreen() {
             }
           />
         ) : (
-          <div className="library-katas-list">
+          <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
             {filtered.map((kata) => (
-              <div key={kata.uuid} className="library-kata-card">
-                <button
-                  type="button"
-                  className="library-kata-top"
-                  onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
-                >
-                  <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={56} />
-                  <div className="library-kata-details">
-                    <span className="library-kata-title">{kata.name}</span>
-                    <span className="library-kata-sub">{kata.subtitle}</span>
-                    <div className="meta-row" style={{ marginTop: 2 }}>
-                      <span>
-                        <Icon name="clock" size={12} strokeWidth={2.4} />
-                        {minutes(estimatedSeconds(kata, settings.restSeconds))}
-                      </span>
-                      <span>
-                        <Icon name="list.bullet" size={12} strokeWidth={2.4} />
-                        {kata.items.length} exercises
-                      </span>
-                      <DifficultyBadge difficulty={kata.difficulty} pill />
-                    </div>
+              <div
+                key={kata.uuid}
+                className="card pressable"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  justifyContent: 'space-between',
+                  padding: '14px',
+                  borderRadius: '18px',
+                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+                  border: '1px solid rgba(255, 255, 255, 0.12)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+                  backdropFilter: 'blur(20px)',
+                  WebkitBackdropFilter: 'blur(20px)',
+                  cursor: 'pointer',
+                  minHeight: '160px',
+                }}
+                onClick={() => {
+                  haptic('selection')
+                  nav.push({ name: 'kata', id: kata.uuid })
+                }}
+              >
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
+                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={42} />
+                    <DifficultyBadge difficulty={kata.difficulty} pill />
                   </div>
-                </button>
+                  <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
+                    {kata.name}
+                  </strong>
+                  <p style={{ margin: '3px 0 0', fontSize: '12px', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>
+                    {kata.subtitle}
+                  </p>
+                </div>
 
-                <div className="library-kata-actions">
-                  <button
-                    type="button"
-                    className="text-btn"
-                    onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
-                  >
-                    View Routine
-                  </button>
-                  <PrimaryButton
-                    full={false}
-                    icon="play.fill"
-                    tint={tintColor(kata.tint)}
-                    onClick={() => startKata(kata)}
-                  >
-                    Start Kata
-                  </PrimaryButton>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '11px', color: 'var(--text-tertiary)' }}>
+                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <Icon name="clock" size={11} strokeWidth={2.4} />
+                    {minutes(estimatedSeconds(kata, settings.restSeconds))}
+                  </span>
+                  <span>
+                    {kata.items.length} drills
+                  </span>
                 </div>
               </div>
             ))}

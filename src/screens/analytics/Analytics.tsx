@@ -1,4 +1,4 @@
-﻿import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
+import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
@@ -10,7 +10,9 @@ import { clock, minutes, short } from '../../lib/format'
 import { FLEXIBILITY_BENCHMARKS, currentMilestone, flexibilityMeta } from '../../lib/flexibility'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
-import { logFlexibility } from '../../lib/actions'
+import { confirmAction } from '../../components/ActionSheet'
+import { toast } from '../../components/Toast'
+import { logFlexibility, resetFlexibility } from '../../lib/actions'
 import { nav } from '../../lib/nav'
 import { consistencyLabel, gaugeColor, makeSnapshot, startOfDay } from '../../lib/progression'
 import { computeAchievements } from '../../lib/achievements'
@@ -83,20 +85,14 @@ export function AnalyticsScreen() {
             <button type="button" className="card flexibility-row pressable" onClick={() => nav.push({ name: 'flexibility' })}>
         <div className="flexibility-rings" style={{ flexShrink: 0 }}>
           {FLEXIBILITY_BENCHMARKS.map((benchmark) => {
-            const best = Math.max(0, ...flexibilityRecords.filter((r) => r.benchmark === benchmark).map((r) => r.progressPercent))
-            const milestone = currentMilestone(benchmark, best)
+            const benchRecords = flexibilityRecords.filter((r) => r.benchmark === benchmark).sort((a, b) => b.recordedAt - a.recordedAt)
+            const currentPercent = benchRecords.length > 0 ? benchRecords[0].progressPercent : 0
+            const milestone = currentMilestone(benchmark, currentPercent)
             const meta = flexibilityMeta(benchmark)
             const circumference = 2 * Math.PI * 15
             
-            // Smart progress calculation towards NEXT milestone
-            let renderPercent = 0
-            if (!milestone.next) {
-              renderPercent = 1 // Maxed out
-            } else {
-              const base = milestone.percent
-              const next = milestone.next.percent
-              renderPercent = Math.max(0, Math.min(1, (best - base) / (next - base)))
-            }
+            // Fills gradually per level: Level 1 is ~1/6th, Level 6 is 100%
+            const fillFraction = Math.max(0.08, Math.min(1, milestone.level / 6))
             
             return (
               <div key={benchmark} style={{ position: 'relative', width: 40, height: 40 }}>
@@ -108,12 +104,12 @@ export function AnalyticsScreen() {
                     r="15"
                     className="flexibility-ring-fill"
                     strokeDasharray={circumference}
-                    strokeDashoffset={circumference * (1 - renderPercent)}
+                    strokeDashoffset={circumference * (1 - fillFraction)}
                     transform="rotate(-90 20 20)"
                   />
                 </svg>
-                {/* Center dot or icon indicating the current level */}
-                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '11px', fontWeight: 800, color: meta.tint }}>
+                {/* Center text indicating the current level */}
+                <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', fontWeight: 800, color: meta.tint }}>
                   {milestone.level}
                 </div>
               </div>
@@ -423,6 +419,29 @@ export function FlexibilityScreen() {
             onLog={() => nav.present({ name: 'logFlexibility', benchmark })}
           />
         ))}
+
+        <div style={{ marginTop: '16px', padding: '0 8px', textAlign: 'center' }}>
+          <button
+            type="button"
+            className="text-btn destructive"
+            style={{ fontSize: '14px', color: 'var(--ember)', background: 'transparent', border: 'none', cursor: 'pointer', padding: '10px 16px', borderRadius: '10px', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+            onClick={async () => {
+              const choice = await confirmAction({
+                title: 'Reset Flexibility Progress?',
+                message: 'This will reset all your flexibility benchmarks and check-in history back to Level 1. This action cannot be undone.',
+                actions: [{ label: 'Reset All Benchmarks', role: 'destructive' }],
+              })
+              if (choice === 0) {
+                haptic('heavy')
+                resetFlexibility()
+                toast('Flexibility progress reset to Level 1', { icon: 'arrow.clockwise' })
+              }
+            }}
+          >
+            <Icon name="arrow.clockwise" size={15} />
+            Reset Flexibility Progress
+          </button>
+        </div>
       </div>
     </Screen>
   )
@@ -433,8 +452,8 @@ function BenchmarkCard({
 }: { benchmark: FlexibilityBenchmark; records: { progressPercent: number; recordedAt: number }[]; onLog: () => void }) {
   const meta = flexibilityMeta(benchmark)
   const sorted = useMemo(() => [...records].sort((a, b) => a.recordedAt - b.recordedAt), [records])
-  const best = sorted.reduce((max, r) => Math.max(max, r.progressPercent), 0)
-  const milestone = currentMilestone(benchmark, best)
+  const latest = sorted.length > 0 ? sorted[sorted.length - 1].progressPercent : 0
+  const milestone = currentMilestone(benchmark, latest)
 
   return (
     <Card className="benchmark-card" style={{ '--tint': meta.tint } as CSSProperties}>
@@ -454,7 +473,7 @@ function BenchmarkCard({
       {/* 6-step progress milestone strip */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: '6px', margin: '8px 0' }}>
         {meta.milestones.map((m) => {
-          const reached = best >= m.percent
+          const reached = milestone.level >= m.level
           return (
             <div
               key={m.level}
@@ -514,9 +533,9 @@ function FlexibilityChart({ records, tint }: { records: { progressPercent: numbe
 
 export function LogFlexibilitySheet({ benchmark }: { benchmark: FlexibilityBenchmark }) {
   const meta = flexibilityMeta(benchmark)
-  const records = useFlexibilityRecords().filter((r) => r.benchmark === benchmark)
-  const best = records.reduce((max, r) => Math.max(max, r.progressPercent), 0)
-  const initial = currentMilestone(benchmark, best)
+  const records = useFlexibilityRecords().filter((r) => r.benchmark === benchmark).sort((a, b) => a.recordedAt - b.recordedAt)
+  const latest = records.length > 0 ? records[records.length - 1].progressPercent : 0
+  const initial = currentMilestone(benchmark, latest)
   const [selectedLevel, setSelectedLevel] = useState(initial.level)
   const activeMilestone = meta.milestones.find((m) => m.level === selectedLevel) ?? meta.milestones[0]
 
@@ -644,23 +663,26 @@ export function AchievementsScreen() {
         </div>
       </Card>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
         {achievements.map((item) => (
           <Card
             key={item.id}
             style={{
-              padding: '14px 16px',
+              padding: '14px 12px',
               display: 'flex',
+              flexDirection: 'column',
               alignItems: 'center',
-              gap: '14px',
+              textAlign: 'center',
+              gap: '8px',
               opacity: item.unlocked ? 1 : 0.65,
               border: item.unlocked ? `1px solid color-mix(in srgb, ${item.tint} 40%, transparent)` : '1px dashed var(--stroke)',
+              borderRadius: '16px',
             }}
           >
             <div
               style={{
-                width: '46px',
-                height: '46px',
+                width: '44px',
+                height: '44px',
                 borderRadius: '999px',
                 background: item.unlocked ? item.tint : 'var(--surface-raised)',
                 color: item.unlocked ? '#fff' : 'var(--text-tertiary)',
@@ -671,28 +693,24 @@ export function AchievementsScreen() {
             >
               <Icon name={item.icon} size={22} />
             </div>
-            <div style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', gap: '2px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
-                <strong style={{ fontSize: '15px' }}>{item.title}</strong>
-                {item.unlocked ? (
-                  <span style={{ fontSize: '11px', color: 'var(--jade)', fontWeight: 700 }}>
-                    ✓ Completed
-                  </span>
-                ) : item.max > 1 ? (
-                  <span className="muted small" style={{ fontSize: '11px' }}>
-                    {item.current} / {item.max}
-                  </span>
-                ) : null}
+            <strong style={{ fontSize: '13px', lineHeight: 1.2 }}>{item.title}</strong>
+            <p className="secondary small" style={{ margin: 0, fontSize: '11px', lineHeight: 1.25, flex: 1 }}>
+              {item.description}
+            </p>
+            {item.unlocked ? (
+              <span style={{ fontSize: '11px', color: 'var(--jade)', fontWeight: 700 }}>
+                ✓ Completed
+              </span>
+            ) : item.max > 1 ? (
+              <div style={{ width: '100%', marginTop: '4px' }}>
+                <span className="muted small" style={{ fontSize: '10px', display: 'block', marginBottom: '2px' }}>
+                  {item.current} / {item.max}
+                </span>
+                <ProgressBar value={item.current / item.max} tint={item.tint} height={4} />
               </div>
-              <p className="secondary small" style={{ margin: 0, fontSize: '13px', lineHeight: 1.3 }}>
-                {item.description}
-              </p>
-              {!item.unlocked && item.max > 1 && (
-                <div style={{ width: '100%', marginTop: '6px' }}>
-                  <ProgressBar value={item.current / item.max} tint={item.tint} height={4} />
-                </div>
-              )}
-            </div>
+            ) : (
+              <span className="muted small" style={{ fontSize: '10px' }}>Locked</span>
+            )}
           </Card>
         ))}
       </div>
