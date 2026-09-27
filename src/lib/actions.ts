@@ -1,7 +1,7 @@
 import { PREMADE_UUID_PREFIX, orderedItems } from '../data/content'
 import { MINIMUM_ACTIVE_SECONDS } from '../data/levels'
 import { DEFAULT_SETTINGS } from '../data/settings'
-import type { Difficulty, FlexibilityBenchmark, FlexibilityRecord, Kata, Profile, Session, Settings, WorkoutItem } from '../data/types'
+import type { Difficulty, FlexibilityBenchmark, FlexibilityRecord, Kata, Phase, Profile, Session, Settings, WorkoutItem } from '../data/types'
 import { deleteEmailAccount, type SignInResult } from './auth'
 import { freshState, getState, setState } from './store'
 
@@ -135,6 +135,26 @@ export function duplicateKata(source: Kata): string {
     restSeconds: source.restSeconds,
     items: source.items,
   })
+}
+
+export function addExerciseToKata(kataUuid: string, exerciseSlug: string, duration = 30, phase: Phase = 'main'): boolean {
+  let found = false
+  setState((s) => {
+    const kataIndex = s.katas.findIndex((k) => k.uuid === kataUuid)
+    if (kataIndex === -1) return s
+    found = true
+    const targetKata = s.katas[kataIndex]
+    const newItem: WorkoutItem = { slug: exerciseSlug, duration, phase }
+    const updatedKata: Kata = {
+      ...targetKata,
+      items: orderedItems([...targetKata.items, newItem]),
+      updatedAt: Date.now(),
+    }
+    const nextKatas = [...s.katas]
+    nextKatas[kataIndex] = updatedKata
+    return { ...s, katas: nextKatas }
+  })
+  return found
 }
 
 export function deleteKata(id: string) {

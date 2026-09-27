@@ -14,7 +14,7 @@ export interface KiaiBackup {
   state: AppState
 }
 
-const APP_VERSION = '1.5.0'
+const APP_VERSION = '1.5.1'
 
 // ─── Export ──────────────────────────────────────────────────────────────────
 

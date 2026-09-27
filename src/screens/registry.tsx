@@ -4,7 +4,7 @@ import type { Route, SheetRoute, Tab } from '../lib/nav'
 import { AnalyticsScreen, AchievementsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet } from './analytics/Analytics'
 import { HomeScreen, QuickStatsSheet } from './home/Home'
 import { EditorSheet, PickerSheet } from './katas/Editor'
-import { KataDetailScreen } from './katas/Katas'
+import { KataDetailScreen, PremadeWorkoutsScreen } from './katas/Katas'
 import { ExerciseSheet, LibraryScreen } from './library/Library'
 import { Login } from './onboarding/Login'
 import {
@@ -37,6 +37,8 @@ export function renderRoute(route: Route): ReactNode {
       return <AudioSettingsScreen />
     case 'reminders':
       return <RemindersScreen />
+    case 'premadeWorkouts':
+      return <PremadeWorkoutsScreen />
     case 'appearance':
       return <AppearanceScreen />
     case 'login':

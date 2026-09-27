@@ -3219,4 +3219,366 @@
   padding: 0 4px;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────────
+   1.51 Update: Redesigned Side-by-side Dual Anatomical Body Diagram
+   ───────────────────────────────────────────────────────────────────────────── */
+.anatomy-card {
+  position: relative;
+  overflow: hidden;
+  padding: 16px 16px 14px;
+  background: #0d1422;
+  border-radius: var(--radius-card);
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.28);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  margin-bottom: 8px;
+}
+
+:root[data-theme='light'] .anatomy-card {
+  background: #f1f5f9;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.anatomy-header {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.anatomy-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.anatomy-title {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  color: var(--text);
+  margin: 0;
+}
+
+.anatomy-badges-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.anatomy-badge-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.anatomy-badge-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+}
+
+.anatomy-pill {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  transition: all 0.2s cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+:root[data-theme='light'] .anatomy-pill {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--text-secondary);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.anatomy-pill.active {
+  background: #a78bfa;
+  color: #120e24;
+  border-color: #c4b5fd;
+  box-shadow: 0 0 14px rgba(167, 139, 250, 0.45);
+}
+
+:root[data-theme='light'] .anatomy-pill.active {
+  background: #7c3aed;
+  color: #ffffff;
+  border-color: #6d28d9;
+}
+
+.anatomy-stage {
+  position: relative;
+  width: 100%;
+  max-width: 360px;
+  margin: 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.anatomy-svg {
+  width: 100%;
+  height: auto;
+  max-height: 310px;
+  display: block;
+}
+
+.anatomy-part {
+  transition: fill 0.2s cubic-bezier(0.32, 0.72, 0, 1), filter 0.2s ease;
+  transform-origin: center;
+}
+
+.anatomy-part.neutral {
+  fill: #1e2838;
+  opacity: 0.6;
+}
+
+:root[data-theme='light'] .anatomy-part.neutral {
+  fill: #cbd5e1;
+  opacity: 0.7;
+}
+
+.anatomy-part.selectable {
+  fill: #1a2333;
+  stroke: #0d1420;
+  stroke-width: 0.75px;
+  cursor: pointer;
+}
+
+:root[data-theme='light'] .anatomy-part.selectable {
+  fill: #94a3b8;
+  stroke: #f1f5f9;
+}
+
+.anatomy-part.selectable:hover {
+  fill: #2d3b52;
+}
+
+:root[data-theme='light'] .anatomy-part.selectable:hover {
+  fill: #64748b;
+}
+
+.anatomy-part.selectable.selected {
+  fill: #a78bfa !important;
+  stroke: #c4b5fd !important;
+  filter: drop-shadow(0 0 8px rgba(167, 139, 250, 0.9));
+}
+
+:root[data-theme='light'] .anatomy-part.selectable.selected {
+  fill: #7c3aed !important;
+  stroke: #6d28d9 !important;
+  filter: drop-shadow(0 0 6px rgba(124, 58, 237, 0.7));
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   1.51 Update: Add Exercise to Kata Modal
+   ───────────────────────────────────────────────────────────────────────────── */
+.picker-modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  animation: fadeIn 0.18s ease-out;
+}
+
+.picker-modal-content {
+  width: 100%;
+  max-width: 420px;
+  max-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-raised);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-large);
+  overflow: hidden;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+.picker-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 18px;
+  border-bottom: 0.75px solid var(--stroke);
+}
+
+.picker-modal-list {
+  padding: 12px 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.picker-modal-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--stroke);
+  border-radius: var(--radius-medium);
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.picker-modal-item:hover,
+.picker-modal-item:active {
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface));
+  border-color: var(--accent);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   1.51 Update: Martial Arts Disciplines Tab
+   ───────────────────────────────────────────────────────────────────────────── */
+.library-arts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.library-art-card {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border-radius: var(--radius-card);
+  box-shadow: 0 0 0 0.75px var(--stroke);
+  border: 1px solid var(--stroke);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.library-art-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.library-art-title-block {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.library-art-name-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.library-art-name {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.library-art-origin {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-tertiary);
+  background: var(--surface-raised);
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 0.75px solid var(--stroke);
+}
+
+.library-art-tagline {
+  font-size: 13px;
+  color: var(--text-secondary);
+  font-style: italic;
+}
+
+.library-art-about {
+  font-size: 13.5px;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.library-art-focus-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.library-art-chip {
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: var(--surface-raised);
+  color: var(--text);
+  border: 0.75px solid var(--stroke);
+}
+
+.library-art-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 12px;
+  border-top: 0.75px solid var(--stroke);
+  gap: 10px;
+}
+
+.library-art-meta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
+  font-weight: 500;
+}
+
+.library-art-meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.library-art-btn {
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+}
+
+.library-art-placeholder-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 14%, var(--surface));
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+
 

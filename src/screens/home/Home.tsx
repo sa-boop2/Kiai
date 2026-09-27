@@ -197,7 +197,28 @@ export function HomeScreen() {
       {/* Your Kata's section */}
       <div className="home-katas-header">
         <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{t("Your Kata's")}</h2>
-        <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <button
+            type="button"
+            className="filter-pill pressable"
+            style={{
+              fontSize: '12px',
+              padding: '6px 12px',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              fontWeight: 600,
+            }}
+            onClick={() => {
+              haptic('selection')
+              nav.push({ name: 'premadeWorkouts' })
+            }}
+          >
+            <Icon name="books.vertical.fill" size={13} strokeWidth={2.4} />
+            <span>Premade Katas</span>
+          </button>
+          <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+        </div>
       </div>
 
       <div className="home-katas-list">
@@ -207,9 +228,22 @@ export function HomeScreen() {
             title={t("No Kata's yet")}
             description="A Kata is your own routine: pick exercises, set durations and rests. Warm-up and cool-down included."
             action={
-              <PrimaryButton icon="plus" full={false} onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })}>
-                {t('Create your first Kata')}
-              </PrimaryButton>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', alignItems: 'center', width: '100%' }}>
+                <PrimaryButton icon="plus" full={false} onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })}>
+                  {t('Create your first Kata')}
+                </PrimaryButton>
+                <button
+                  type="button"
+                  className="text-btn"
+                  onClick={() => {
+                    haptic('selection')
+                    nav.push({ name: 'premadeWorkouts' })
+                  }}
+                  style={{ fontSize: '14px', color: 'var(--accent)', fontWeight: 600 }}
+                >
+                  Or browse Premade Katas →
+                </button>
+              </div>
             }
           />
         ) : (

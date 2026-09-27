@@ -3,15 +3,15 @@ import { Icon } from '../../components/Icon'
 import { NavIconButton, Screen } from '../../components/Screen'
 import { confirmAction } from '../../components/ActionSheet'
 import { toast } from '../../components/Toast'
-import { EmptyState, KiaiMark, PrimaryButton, SecondaryButton, SymbolTile, TagChip } from '../../components/ui'
+import { DifficultyBadge, EmptyState, FilterPill, KiaiMark, PrimaryButton, SecondaryButton, SymbolTile, TagChip } from '../../components/ui'
 import { artById, estimatedSeconds, exerciseBySlug } from '../../data/content'
 import { PHASES, categoryMeta, difficultyMeta, phaseMeta, tintColor } from '../../data/meta'
-import type { Exercise } from '../../data/types'
+import type { Difficulty, Exercise } from '../../data/types'
 import { deleteKata, duplicateKata } from '../../lib/actions'
 import { minutes, relativeDay, short } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
-import { startKata, useKata } from '../../lib/launch'
+import { startKata, useKata, usePremadeKatas } from '../../lib/launch'
 import { nav } from '../../lib/nav'
 import { useSettings, useUserKatas } from '../../lib/store'
 
@@ -277,4 +277,143 @@ export function ExerciseRow({ exercise, trailing, onClick, children }: { exercis
     </button>
   )
 }
+
+export function PremadeWorkoutsScreen() {
+  const premadeKatas = usePremadeKatas()
+  const settings = useSettings()
+  const { t } = useI18n()
+  const [query, setQuery] = useState('')
+  const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>('all')
+
+  const filtered = useMemo(() => {
+    const q = query.trim().toLowerCase()
+    return premadeKatas.filter((kata) => {
+      if (q && !kata.name.toLowerCase().includes(q) && !kata.subtitle.toLowerCase().includes(q)) return false
+      if (difficultyFilter !== 'all' && kata.difficulty !== difficultyFilter) return false
+      return true
+    })
+  }, [premadeKatas, query, difficultyFilter])
+
+  return (
+    <Screen
+      title={t('Premade Katas')}
+      back
+      header={
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 var(--gutter) 4px' }}>
+          <div className="search-wrap" style={{ padding: 0 }}>
+            <label className="search-field">
+              <Icon name="magnifyingglass" size={17} strokeWidth={2.4} />
+              <input
+                type="search"
+                value={query}
+                placeholder={t('Search Katas...')}
+                onChange={(e) => setQuery(e.target.value)}
+                enterKeyHint="search"
+                autoComplete="off"
+              />
+              {query && (
+                <button
+                  type="button"
+                  className="search-clear"
+                  aria-label="Clear search"
+                  onClick={() => setQuery('')}
+                >
+                  <Icon name="xmark.circle.fill" size={17} />
+                </button>
+              )}
+            </label>
+          </div>
+
+          <div className="library-categories" style={{ padding: 0, margin: 0 }}>
+            {(['all', 'beginner', 'intermediate', 'advanced'] as const).map((diff) => (
+              <FilterPill
+                key={diff}
+                title={diff === 'all' ? 'All Levels' : diff.charAt(0).toUpperCase() + diff.slice(1)}
+                selected={difficultyFilter === diff}
+                onClick={() => setDifficultyFilter(diff)}
+              />
+            ))}
+          </div>
+        </div>
+      }
+    >
+      <div className="list-stack" style={{ paddingBottom: '24px' }}>
+        <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
+          <h2 style={{ fontSize: '18px' }}>Dojo Curated Routines</h2>
+          <span className="library-count-badge">
+            {filtered.length} {filtered.length === 1 ? 'routine' : 'routines'}
+          </span>
+        </div>
+
+        {filtered.length === 0 ? (
+          <EmptyState
+            icon={<Icon name="books.vertical.fill" size={48} />}
+            title={t('No Katas found')}
+            description={t('Try adjusting your search query or difficulty filter.')}
+            action={
+              <button
+                type="button"
+                className="btn btn-secondary"
+                onClick={() => {
+                  setDifficultyFilter('all')
+                  setQuery('')
+                }}
+              >
+                Reset Filters
+              </button>
+            }
+          />
+        ) : (
+          <div className="library-katas-list">
+            {filtered.map((kata) => (
+              <div key={kata.uuid} className="library-kata-card">
+                <button
+                  type="button"
+                  className="library-kata-top"
+                  onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
+                >
+                  <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={56} />
+                  <div className="library-kata-details">
+                    <span className="library-kata-title">{kata.name}</span>
+                    <span className="library-kata-sub">{kata.subtitle}</span>
+                    <div className="meta-row" style={{ marginTop: 2 }}>
+                      <span>
+                        <Icon name="clock" size={12} strokeWidth={2.4} />
+                        {minutes(estimatedSeconds(kata, settings.restSeconds))}
+                      </span>
+                      <span>
+                        <Icon name="list.bullet" size={12} strokeWidth={2.4} />
+                        {kata.items.length} exercises
+                      </span>
+                      <DifficultyBadge difficulty={kata.difficulty} pill />
+                    </div>
+                  </div>
+                </button>
+
+                <div className="library-kata-actions">
+                  <button
+                    type="button"
+                    className="text-btn"
+                    onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
+                  >
+                    View Routine
+                  </button>
+                  <PrimaryButton
+                    full={false}
+                    icon="play.fill"
+                    tint={tintColor(kata.tint)}
+                    onClick={() => startKata(kata)}
+                  >
+                    Start Kata
+                  </PrimaryButton>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </Screen>
+  )
+}
+
 
