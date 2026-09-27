@@ -307,7 +307,7 @@ export function LibraryScreen() {
                 {filteredExercises.map((exercise) => {
                   const meta = categoryMeta(exercise.category as BodyRegion)
                   const targetLabel = selectedMuscle ? formatMuscleTitle(selectedMuscle) : null
-                  const showTargetBadge = targetLabel && targetLabel !== meta.title
+                  const showTargetBadge = targetLabel !== null && !sameMuscleLabel(targetLabel, meta.title)
                   return (
                     <div
                       key={exercise.slug}
@@ -492,6 +492,14 @@ export function LibraryScreen() {
   )
 }
 
+/** Loosely compares two muscle display labels so "Hamstring" and "Hamstrings" (etc.) count as the same. */
+function sameMuscleLabel(a: string, b: string): boolean {
+  const normalize = (s: string) => s.toLowerCase().split(/[&,]/)[0].trim().replace(/s$/, '')
+  const na = normalize(a)
+  const nb = normalize(b)
+  return na === nb || na.startsWith(nb) || nb.startsWith(na)
+}
+
 function formatMuscleTitle(part: BodyPart): string {
   const map: Record<BodyPart, string> = {
     neck: 'Neck',
@@ -530,7 +538,7 @@ export function ArtDetailSheet({ artId }: { artId: string }) {
         }
       />
       <div className="sheet-scroll form">
-        <div className="detail-hero" style={{ '--tint': tint } as CSSProperties}>
+        <div className="detail-hero centered" style={{ '--tint': tint } as CSSProperties}>
           <div className="detail-hero-glow" aria-hidden="true" />
           <MartialArtEmblem artId={art.id} size={88} tint={tint} />
           <h2>{art.name}</h2>
@@ -566,7 +574,7 @@ export function ExerciseSheet({ slug }: { slug: string }) {
         }
       />
       <div className="sheet-scroll form">
-        <div className="detail-hero" style={{ '--tint': meta.tint } as CSSProperties}>
+        <div className="detail-hero centered" style={{ '--tint': meta.tint } as CSSProperties}>
           <div className="detail-hero-glow" aria-hidden="true" />
           <SymbolTile icon={exercise.symbol} size={88} tint={meta.tint} />
           <h2>{exercise.name}</h2>

@@ -206,32 +206,12 @@
 
 .kata-row-wrap {
   position: relative;
-  transition: transform var(--dur-snappy) var(--ease-snappy);
-  touch-action: pan-y;
 }
 
-.kata-row-wrap.dragging {
-  z-index: 10;
-  transform: scale(1.03);
-  opacity: 0.94;
-}
-
-.kata-row-wrap .drag-handle {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  color: var(--text-tertiary);
-  cursor: grab;
-  touch-action: none;
-  border-radius: 999px;
-  transition: color 150ms ease, background 150ms ease;
-}
-
-.kata-row-wrap .drag-handle:active {
-  cursor: grabbing;
-  color: var(--accent);
-  background: color-mix(in srgb, var(--accent) 12%, transparent);
+.kata-row.pressable[aria-disabled='true'] {
+  cursor: default;
+  opacity: 1;
+  transform: none;
 }
 
 .streak-pill {
@@ -618,6 +598,15 @@
   align-items: center;
   gap: 14px;
   padding: 14px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+.kata-row:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 
 .kata-row-text {
@@ -642,12 +631,18 @@
 }
 
 .detail-hero {
-  position: relative;
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding-top: 8px;
+}
+
+/* Centered, full-bleed variant used by the Exercise and Martial Art detail sheets. */
+.detail-hero.centered {
+  position: relative;
   align-items: center;
   text-align: center;
-  gap: 10px;
   padding: 20px 4px 4px;
   margin: 0 calc(var(--gutter) * -1) 4px;
 }
@@ -664,14 +659,14 @@
   z-index: -1;
 }
 
-.detail-hero h2 {
+.detail-hero.centered h2 {
   font-family: var(--font-rounded);
   font-size: 22px;
   font-weight: 700;
   margin: 2px 0 0;
 }
 
-.detail-hero p {
+.detail-hero.centered p {
   margin: 0;
   max-width: 320px;
   font-size: 14px;

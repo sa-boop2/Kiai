@@ -144,7 +144,7 @@ function SheetFrame({
         window.setTimeout(() => {
           instantExits.add(entryKey)
           nav.back()
-        }, 240)
+        }, 250)
       } else {
         sheet.style.transition = 'transform 220ms cubic-bezier(0.25, 1, 0.5, 1)'
         sheet.style.transform = ''

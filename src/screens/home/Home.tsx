@@ -13,7 +13,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { getState, useProfile, useSessions, useSettings, useUserKatas } from '../../lib/store'
 
 import { reorderKatas } from '../../lib/actions'
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 export function HomeScreen() {
   const katas = useUserKatas()
@@ -22,10 +22,7 @@ export function HomeScreen() {
   const sessions = useSessions()
   const { t, locale } = useI18n()
 
-  const [draggingId, setDraggingId] = useState<string | null>(null)
-  const listRef = useRef<HTMLDivElement>(null)
-  const katasRef = useRef(katas)
-  katasRef.current = katas
+  const [reordering, setReordering] = useState(false)
 
   const snapshot = useMemo(() => makeSnapshot(sessions, profile.createdAt), [sessions, profile.createdAt])
   const quick = useMemo(() => quickStartLabel(getState()), [sessions, katas])
@@ -33,49 +30,10 @@ export function HomeScreen() {
 
   const displayKatas = katas
 
-  const startDrag = (event: React.PointerEvent, initialIndex: number) => {
-    event.preventDefault()
-    event.stopPropagation()
-    const targetUuid = katasRef.current[initialIndex]?.uuid
-    if (!targetUuid) return
-
-    setDraggingId(targetUuid)
-    haptic('medium')
-
-    let currentIndex = initialIndex
-    let lastSwap = 0
-
-    const onMove = (e: PointerEvent) => {
-      e.preventDefault()
-      if (!listRef.current) return
-      const now = performance.now()
-      if (now - lastSwap < 70) return
-
-      const rows = Array.from(listRef.current.querySelectorAll<HTMLElement>('.kata-row-wrap'))
-      for (let i = 0; i < rows.length; i++) {
-        if (i === currentIndex) continue
-        const rect = rows[i].getBoundingClientRect()
-        if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
-          reorderKatas(currentIndex, i)
-          currentIndex = i
-          lastSwap = now
-          haptic('selection')
-          break
-        }
-      }
-    }
-
-    const onUp = () => {
-      setDraggingId(null)
-      window.removeEventListener('pointermove', onMove)
-      window.removeEventListener('pointerup', onUp)
-      window.removeEventListener('pointercancel', onUp)
-      haptic('light')
-    }
-
-    window.addEventListener('pointermove', onMove, { passive: false })
-    window.addEventListener('pointerup', onUp)
-    window.addEventListener('pointercancel', onUp)
+  const moveKata = (from: number, to: number) => {
+    if (to < 0 || to >= katas.length || from === to) return
+    haptic('selection')
+    reorderKatas(from, to)
   }
 
   // Extract rich metadata from the quick-start target
@@ -197,7 +155,21 @@ export function HomeScreen() {
       {/* Your Kata's section */}
       <div className="home-katas-header">
         <h2 style={{ margin: 0, fontSize: '20px', fontWeight: 700 }}>{t("Your Kata's")}</h2>
-        <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          {displayKatas.length > 1 && (
+            <button
+              type="button"
+              className={`reorder-toggle no-sheet-drag ${reordering ? 'active' : ''}`}
+              onClick={() => {
+                haptic('light')
+                setReordering((v) => !v)
+              }}
+            >
+              {reordering ? 'Done' : 'Reorder'}
+            </button>
+          )}
+          <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+        </div>
       </div>
 
       <div className="home-katas-list">
@@ -226,46 +198,70 @@ export function HomeScreen() {
             }
           />
         ) : (
-          <div className="list-stack" ref={listRef}>
-            {displayKatas.map((kata, index) => {
-              const isDragging = draggingId === kata.uuid
-              return (
-                <div key={kata.uuid} className={`kata-row-wrap ${isDragging ? 'dragging' : ''}`}>
-                  <button
-                    type="button"
-                    className="card kata-row pressable"
-                    onClick={() => nav.push({ name: 'kata', id: kata.uuid })}
-                  >
+          <div className="list-stack">
+            {displayKatas.map((kata, index) => (
+              <div key={kata.uuid} className="kata-row-wrap">
+                <div
+                  className="card kata-row pressable"
+                  role="button"
+                  tabIndex={reordering ? -1 : 0}
+                  aria-disabled={reordering}
+                  onClick={() => {
+                    if (!reordering) nav.push({ name: 'kata', id: kata.uuid })
+                  }}
+                  onKeyDown={(e) => {
+                    if (reordering) return
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      nav.push({ name: 'kata', id: kata.uuid })
+                    }
+                  }}
+                >
+                  {reordering ? (
+                    <div className="reorder-controls no-sheet-drag">
+                      <button
+                        type="button"
+                        aria-label={`Move ${kata.name} up`}
+                        disabled={index === 0}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          moveKata(index, index - 1)
+                        }}
+                      >
+                        <Icon name="chevron.up" size={14} strokeWidth={2.8} />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label={`Move ${kata.name} down`}
+                        disabled={index === displayKatas.length - 1}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          moveKata(index, index + 1)
+                        }}
+                      >
+                        <Icon name="chevron.down" size={14} strokeWidth={2.8} />
+                      </button>
+                    </div>
+                  ) : (
                     <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={54} />
-                    <span className="kata-row-text">
-                      <strong>{kata.name}</strong>
-                      <span className="meta-row">
-                        <span>
-                          <Icon name="clock" size={13} strokeWidth={2.4} />
-                          {minutes(estimatedSeconds(kata, settings.restSeconds))}
-                        </span>
-                        <span>
-                          <Icon name="list.bullet" size={13} strokeWidth={2.4} />
-                          {kata.items.length} exercises
-                        </span>
+                  )}
+                  <span className="kata-row-text">
+                    <strong>{kata.name}</strong>
+                    <span className="meta-row">
+                      <span>
+                        <Icon name="clock" size={13} strokeWidth={2.4} />
+                        {minutes(estimatedSeconds(kata, settings.restSeconds))}
                       </span>
-                      {kata.lastPerformedAt && <span className="kata-row-last">Last trained {relativeDay(kata.lastPerformedAt, locale)}</span>}
+                      <span>
+                        <Icon name="list.bullet" size={13} strokeWidth={2.4} />
+                        {kata.items.length} exercises
+                      </span>
                     </span>
-                    <button
-                      type="button"
-                      className="drag-handle no-sheet-drag"
-                      aria-label={`Reorder ${kata.name}`}
-                      onPointerDown={(e) => startDrag(e, index)}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      <svg viewBox="0 0 24 24" className="icon" width="18" height="18" aria-hidden="true">
-                        <path d="M5 8h14M5 12h14M5 16h14" />
-                      </svg>
-                    </button>
-                  </button>
+                    {kata.lastPerformedAt && <span className="kata-row-last">Last trained {relativeDay(kata.lastPerformedAt, locale)}</span>}
+                  </span>
                 </div>
-              )
-            })}
+              </div>
+            ))}
 
             {/* Intelligent Browse Premade Katas entry placed cleanly BELOW custom katas */}
             <button

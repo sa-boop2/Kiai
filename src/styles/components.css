@@ -1309,19 +1309,37 @@
 .reorder-controls {
   display: flex;
   flex-direction: column;
-  width: 32px;
+  width: 40px;
   flex-shrink: 0;
 }
 
 .reorder-controls button {
   display: grid;
   place-items: center;
-  height: 22px;
+  height: 27px;
   color: var(--text-secondary);
 }
 
 .reorder-controls button:disabled {
   opacity: 0.25;
+}
+
+.editor-row.dragging {
+  z-index: 10;
+  transform: scale(1.03);
+  box-shadow: 0 12px 32px -8px rgba(0, 0, 0, 0.4);
+  border-radius: 14px;
+  background: var(--surface-raised);
+}
+
+.drag-handle {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 44px;
+  color: var(--text-tertiary);
+  touch-action: none;
+  cursor: grab;
 }
 
 .editor-row-info {
@@ -1331,11 +1349,6 @@
   align-items: center;
   gap: 10px;
   text-align: left;
-}
-
-.editor-row-info:disabled {
-  cursor: default;
-  opacity: 0.85;
 }
 
 .editor-row-info > span {

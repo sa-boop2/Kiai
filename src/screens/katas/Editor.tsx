@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { SheetHeader } from '../../components/SheetHost'
 import { toast } from '../../components/Toast'
@@ -210,10 +210,13 @@ function PhaseEditor({
 }: { phase: Phase; items: DraftItem[]; onChange: (fn: (list: DraftItem[]) => DraftItem[]) => void; onAdd: () => void }) {
   const meta = PHASE[phase]
   const allExercises = useAllExercises()
-  const [reordering, setReordering] = useState(false)
+  const listRef = useRef<HTMLDivElement>(null)
+  const [dragging, setDragging] = useState<number | null>(null)
+  const itemsRef = useRef(items)
+  itemsRef.current = items
 
   const move = (from: number, to: number) => {
-    if (to < 0 || to >= items.length || from === to) return
+    if (to < 0 || to >= itemsRef.current.length || from === to) return
     haptic('selection')
     onChange((list) => {
       const next = [...list]
@@ -223,108 +226,119 @@ function PhaseEditor({
     })
   }
 
+  // Reliable window-level pointer drag reordering
+  const startDrag = (event: React.PointerEvent, initialIndex: number) => {
+    event.preventDefault()
+    event.stopPropagation()
+    const targetId = itemsRef.current[initialIndex]?.id
+    if (targetId === undefined) return
+
+    setDragging(targetId)
+    haptic('medium')
+
+    let currentIndex = initialIndex
+    let lastSwap = 0
+
+    const onMove = (e: PointerEvent) => {
+      e.preventDefault()
+      if (!listRef.current) return
+      const now = performance.now()
+      if (now - lastSwap < 70) return
+
+      const rows = Array.from(listRef.current.querySelectorAll<HTMLElement>('.editor-row'))
+      for (let i = 0; i < rows.length; i++) {
+        if (i === currentIndex) continue
+        const rect = rows[i].getBoundingClientRect()
+        if (e.clientY >= rect.top && e.clientY <= rect.bottom) {
+          move(currentIndex, i)
+          currentIndex = i
+          lastSwap = now
+          break
+        }
+      }
+    }
+
+    const onUp = () => {
+      setDragging(null)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+      window.removeEventListener('pointercancel', onUp)
+      haptic('light')
+    }
+
+    window.addEventListener('pointermove', onMove, { passive: false })
+    window.addEventListener('pointerup', onUp)
+    window.addEventListener('pointercancel', onUp)
+  }
+
   return (
     <section className="form-section">
       <h4 className="form-section-title phase-title">
         <Icon name={meta.symbol} size={14} style={{ color: meta.tint }} />
         {meta.title}
         <span className="tabular">{short(items.reduce((sum, i) => sum + i.duration, 0))}</span>
-        {items.length > 1 && (
-          <button
-            type="button"
-            className={`reorder-toggle no-sheet-drag ${reordering ? 'active' : ''}`}
-            onClick={() => {
-              haptic('light')
-              setReordering((v) => !v)
-            }}
-          >
-            {reordering ? 'Done' : 'Reorder'}
-          </button>
-        )}
       </h4>
-      <div className="card form-card">
+      <div className="card form-card" ref={listRef}>
         {items.map((item, index) => {
           const exercise = allExercises.find(e => e.slug === item.slug)
           if (!exercise) return null
           return (
-            <div key={item.id} className="editor-row">
-              {reordering ? (
-                <div className="reorder-controls no-sheet-drag">
-                  <button
-                    type="button"
-                    aria-label={`Move ${exercise.name} up`}
-                    disabled={index === 0}
-                    onClick={() => move(index, index - 1)}
-                  >
-                    <Icon name="chevron.up" size={14} strokeWidth={2.8} />
-                  </button>
-                  <button
-                    type="button"
-                    aria-label={`Move ${exercise.name} down`}
-                    disabled={index === items.length - 1}
-                    onClick={() => move(index, index + 1)}
-                  >
-                    <Icon name="chevron.down" size={14} strokeWidth={2.8} />
-                  </button>
-                </div>
-              ) : (
-                <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category).tint} size={40} />
-              )}
+            <div key={item.id} className={`editor-row ${dragging === item.id ? 'dragging' : ''}`} style={{ viewTransitionName: `row-${item.id}` }}>
               <button
                 type="button"
-                className="editor-row-info"
-                disabled={reordering}
-                onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}
+                className="drag-handle no-sheet-drag"
+                aria-label={`Reorder ${exercise.name}`}
+                onPointerDown={(e) => startDrag(e, index)}
+                onKeyDown={(e) => {
+                  if (e.key === 'ArrowUp') move(index, index - 1)
+                  if (e.key === 'ArrowDown') move(index, index + 1)
+                }}
               >
+                <svg viewBox="0 0 24 24" className="icon" width="18" height="18" aria-hidden="true">
+                  <path d="M5 8h14M5 12h14M5 16h14" />
+                </svg>
+              </button>
+              <button type="button" className="editor-row-info" onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}>
+                <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category).tint} size={40} />
                 <span>
                   <strong>{exercise.name}</strong>
                   <span className="tabular">{clock(item.duration)}</span>
                 </span>
               </button>
-              {!reordering && (
-                <>
-                  <div className="duration-edit">
-                    <input
-                      type="number"
-                      aria-label={`${exercise.name} duration in seconds`}
-                      value={item.duration || ''}
-                      min={1}
-                      max={3600}
-                      onChange={(e) => {
-                        const value = Number(e.target.value)
-                        onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
-                      }}
-                    />
-                    <span className="duration-unit">sec</span>
-                  </div>
-                  <button
-                    type="button"
-                    className="remove-btn"
-                    aria-label={`Remove ${exercise.name}`}
-                    onClick={() => {
-                      haptic('light')
-                      onChange((list) => list.filter((i) => i.id !== item.id))
-                    }}
-                  >
-                    <Icon name="xmark.circle.fill" size={20} />
-                  </button>
-                </>
-              )}
+              <div className="duration-edit">
+                <input
+                  type="number"
+                  aria-label={`${exercise.name} duration in seconds`}
+                  value={item.duration || ''}
+                  min={1}
+                  max={3600}
+                  onChange={(e) => {
+                    const value = Number(e.target.value)
+                    onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
+                  }}
+                />
+                <span className="duration-unit">sec</span>
+              </div>
+              <button
+                type="button"
+                className="remove-btn"
+                aria-label={`Remove ${exercise.name}`}
+                onClick={() => {
+                  haptic('light')
+                  onChange((list) => list.filter((i) => i.id !== item.id))
+                }}
+              >
+                <Icon name="xmark.circle.fill" size={20} />
+              </button>
             </div>
           )
         })}
-        {!reordering && (
-          <button type="button" className="add-row" style={{ color: meta.tint }} onClick={onAdd}>
-            <Icon name="plus.circle.fill" size={20} style={{ '--icon-knock': 'var(--surface)' } as React.CSSProperties} />
-            Add exercise
-          </button>
-        )}
+        <button type="button" className="add-row" style={{ color: meta.tint }} onClick={onAdd}>
+          <Icon name="plus.circle.fill" size={20} style={{ '--icon-knock': 'var(--surface)' } as React.CSSProperties} />
+          Add exercise
+        </button>
       </div>
-      {phase === 'main' && (
-        <p className="form-footer">
-          {reordering ? 'Use the arrows to move an exercise · tap Done when finished.' : 'Tap Reorder to change the order · tap an exercise for how-to.'}
-        </p>
-      )}
+      {phase === 'main' && <p className="form-footer">Drag ≡ to reorder · tap an exercise for how-to.</p>}
     </section>
   )
 }

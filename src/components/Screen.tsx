@@ -126,7 +126,7 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
         window.setTimeout(() => {
           resetTabbar()
           nav.back()
-        }, 240)
+        }, 260)
       } else {
         screen.style.transition = 'transform 240ms cubic-bezier(0.25, 1, 0.5, 1), border-radius 240ms ease, opacity 240ms ease'
         screen.style.transform = ''
