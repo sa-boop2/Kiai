@@ -77,6 +77,7 @@ function SheetFrame({
     let lastT = 0
     let velocity = 0
     let dragging = false
+    let startX = 0
     let tracking = false
     let fromGrabber = false
 
@@ -85,22 +86,28 @@ function SheetFrame({
       return !scroller || scroller.scrollTop <= 0
     }
 
-    const begin = (y: number, target: EventTarget | null) => {
+    const begin = (x: number, y: number, target: EventTarget | null) => {
       fromGrabber = Boolean((target as HTMLElement | null)?.closest?.('.sheet-grabber-zone, .sheet-header'))
       if ((target as HTMLElement | null)?.closest?.('input, textarea, select, button, [role="switch"], .no-sheet-drag') && !fromGrabber) return
       tracking = fromGrabber || scrollerAtTop(target)
       startY = lastY = y
+      startX = x
       lastT = performance.now()
       velocity = 0
       dragging = false
     }
 
-    const move = (y: number, event: Event) => {
+    const move = (x: number, y: number, event: Event) => {
       if (!tracking) return
       const dy = y - startY
+      const dx = x - startX
       if (!dragging) {
         if (dy < 6) {
-          if (dy < -4) tracking = false
+          if (dy < -6 || Math.abs(dx) > Math.abs(dy)) tracking = false
+          return
+        }
+        if (Math.abs(dx) > dy) {
+          tracking = false
           return
         }
         dragging = true
@@ -111,10 +118,11 @@ function SheetFrame({
       velocity = (y - lastY) / Math.max(1, now - lastT)
       lastY = y
       lastT = now
-      const offset = Math.max(0, dy)
+      // Downward offset or subtle upward rubber-banding
+      const offset = dy >= 0 ? dy : dy * 0.2
       const desktop = window.matchMedia('(min-width: 900px)').matches
       sheet.style.transform = desktop ? `translate3d(-50%, calc(-50% + ${offset}px), 0)` : `translate3d(0, ${offset}px, 0)`
-      if (backdropRef.current) backdropRef.current.style.opacity = String(Math.max(0, 1 - offset / (sheet.offsetHeight * 0.9)))
+      if (backdropRef.current) backdropRef.current.style.opacity = String(Math.max(0, 1 - Math.max(0, offset) / (sheet.offsetHeight * 0.85)))
     }
 
     const end = () => {
@@ -124,31 +132,35 @@ function SheetFrame({
       dragging = false
       sheet.classList.remove('dragging')
       const offset = lastY - startY
-      if (offset > Math.min(160, sheet.offsetHeight * 0.3) || velocity > 0.6) {
+      if (offset > Math.min(120, sheet.offsetHeight * 0.25) || velocity > 0.45) {
         haptic('light')
         const desktop = window.matchMedia('(min-width: 900px)').matches
-        sheet.style.transition = 'transform 260ms cubic-bezier(0.3, 0.7, 0.4, 1)'
-        sheet.style.transform = desktop ? 'translate3d(-50%, 60vh, 0)' : 'translate3d(0, 105%, 0)'
+        sheet.style.transition = 'transform 250ms cubic-bezier(0.2, 0.8, 0.25, 1)'
+        sheet.style.transform = desktop ? 'translate3d(-50%, 65vh, 0)' : 'translate3d(0, 105%, 0)'
         if (backdropRef.current) {
-          backdropRef.current.style.transition = 'opacity 260ms ease'
+          backdropRef.current.style.transition = 'opacity 240ms ease'
           backdropRef.current.style.opacity = '0'
         }
         window.setTimeout(() => {
           instantExits.add(entryKey)
           nav.back()
-        }, 250)
+        }, 240)
       } else {
+        sheet.style.transition = 'transform 220ms cubic-bezier(0.25, 1, 0.5, 1)'
         sheet.style.transform = ''
         if (backdropRef.current) backdropRef.current.style.opacity = ''
+        window.setTimeout(() => {
+          if (sheet) sheet.style.transition = ''
+        }, 230)
       }
     }
 
-    const onTouchStart = (e: TouchEvent) => begin(e.touches[0].clientY, e.target)
-    const onTouchMove = (e: TouchEvent) => move(e.touches[0].clientY, e)
+    const onTouchStart = (e: TouchEvent) => begin(e.touches[0].clientX, e.touches[0].clientY, e.target)
+    const onTouchMove = (e: TouchEvent) => move(e.touches[0].clientX, e.touches[0].clientY, e)
     const onMouseDown = (e: MouseEvent) => {
-      if (!(e.target as HTMLElement).closest('.sheet-grabber-zone')) return
-      begin(e.clientY, e.target)
-      const onMove = (ev: MouseEvent) => move(ev.clientY, ev)
+      if (!(e.target as HTMLElement).closest('.sheet-grabber-zone, .sheet-header')) return
+      begin(e.clientX, e.clientY, e.target)
+      const onMove = (ev: MouseEvent) => move(ev.clientX, ev.clientY, ev)
       const onUp = () => {
         end()
         window.removeEventListener('mousemove', onMove)

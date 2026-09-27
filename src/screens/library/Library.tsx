@@ -16,12 +16,43 @@ import {
 import { MARTIAL_ARTS } from '../../data/content'
 import { categoryMeta, equipmentMeta, tintColor } from '../../data/meta'
 import type { BodyRegion, Exercise } from '../../data/types'
+import { MartialArtEmblem } from '../../components/MartialArtEmblems'
 import { addExerciseToKata } from '../../lib/actions'
 import { toast } from '../../components/Toast'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
 import { nav } from '../../lib/nav'
 import { useAllExercises, useUserKatas } from '../../lib/store'
+
+export type SubFilterType = 'all' | 'holds' | 'dynamic' | 'quick'
+
+function getExerciseRelevance(exercise: Exercise, part: BodyPart | null): number {
+  if (!part) return 0
+  const name = exercise.name.toLowerCase()
+  const cat = (exercise.category || '').toLowerCase()
+  const p = part.toLowerCase()
+
+  // 1. Direct primary name match
+  if (name.includes(p)) return 100
+  if (p === 'hamstrings' && (name.includes('hamstring') || name.includes('pike') || name.includes('forward fold'))) return 95
+  if (p === 'quads' && (name.includes('quad') || name.includes('couch') || name.includes('lunge'))) return 95
+  if (p === 'shoulders' && (name.includes('shoulder') || name.includes('deltoid') || name.includes('dislocat'))) return 95
+  if (p === 'chest' && (name.includes('chest') || name.includes('pec') || name.includes('doorway'))) return 95
+  if (p === 'glutes' && (name.includes('glute') || name.includes('pigeon') || name.includes('figure four'))) return 95
+  if (p === 'hipflexors' && (name.includes('hip') || name.includes('lunge') || name.includes('psoas'))) return 95
+  if (p === 'calves' && (name.includes('calf') || name.includes('calves') || name.includes('downward dog') || name.includes('achilles'))) return 95
+  if (p === 'core' && (name.includes('core') || name.includes('cobra') || name.includes('twist') || name.includes('ab'))) return 95
+  if (p === 'lats' && (name.includes('lat') || name.includes('puppy') || name.includes('child'))) return 95
+  if (p === 'adductors' && (name.includes('frog') || name.includes('groin') || name.includes('butterfly') || name.includes('straddle') || name.includes('adductor'))) return 95
+
+  // 2. Direct category match
+  if (cat === p) return 80
+
+  // 3. Targets array match
+  if (exercise.targets && exercise.targets.some((t) => t.toLowerCase().includes(p))) return 70
+
+  return 50
+}
 
 function matchesBodyPart(exercise: Exercise, part: BodyPart): boolean {
   const cat = (exercise.category || '').toLowerCase()
@@ -78,15 +109,18 @@ export function LibraryScreen() {
   const { t } = useI18n()
   const allExercises = useAllExercises()
 
+  const userKatas = useUserKatas()
   const [activeTab, setActiveTab] = useState<'exercises' | 'martialArts'>('exercises')
   const [query, setQuery] = useState('')
   const [selectedMuscle, setSelectedMuscle] = useState<BodyPart | null>(null)
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null)
+  const [subFilter, setSubFilter] = useState<SubFilterType>('all')
+  const [pickerExercise, setPickerExercise] = useState<Exercise | null>(null)
 
-  // Filter exercises
-  const filteredExercises = useMemo(() => {
+  // Filter and intelligently order exercises
+  const { filteredExercises, allCount } = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return allExercises.filter((ex) => {
+    const baseList = allExercises.filter((ex) => {
       if (q) {
         const matchesQuery =
           ex.name.toLowerCase().includes(q) ||
@@ -102,7 +136,50 @@ export function LibraryScreen() {
       }
       return true
     })
-  }, [allExercises, query, selectedMuscle, selectedCategory])
+
+    const count = baseList.length
+
+    // Sub-filter
+    const subFiltered = baseList.filter((ex) => {
+      if (subFilter === 'all') return true
+      if (subFilter === 'quick') return (ex.duration || 30) < 45
+      if (subFilter === 'holds') {
+        const s = (ex.name + ' ' + ex.summary).toLowerCase()
+        return (
+          (ex.duration || 30) >= 45 ||
+          s.includes('hold') ||
+          s.includes('stretch') ||
+          s.includes('static') ||
+          s.includes('pose')
+        )
+      }
+      if (subFilter === 'dynamic') {
+        const s = (ex.name + ' ' + ex.summary).toLowerCase()
+        return (
+          s.includes('dynamic') ||
+          s.includes('mobility') ||
+          s.includes('pulse') ||
+          s.includes('swing') ||
+          s.includes('rotation') ||
+          s.includes('circle') ||
+          s.includes('flow') ||
+          (ex.duration || 30) <= 30
+        )
+      }
+      return true
+    })
+
+    // Intelligent Sorting:
+    // Direct muscle target matches first, then direct name matches, then duration
+    const sorted = [...subFiltered].sort((a, b) => {
+      const scoreA = getExerciseRelevance(a, selectedMuscle)
+      const scoreB = getExerciseRelevance(b, selectedMuscle)
+      if (scoreA !== scoreB) return scoreB - scoreA
+      return (a.duration || 30) - (b.duration || 30)
+    })
+
+    return { filteredExercises: sorted, allCount: count }
+  }, [allExercises, query, selectedMuscle, selectedCategory, subFilter])
 
   // Filter martial arts
   const filteredArts = useMemo(() => {
@@ -206,6 +283,50 @@ export function LibraryScreen() {
               </span>
             </div>
 
+            {/* Quick Sub-filters: Deep Holds, Dynamic, Quick */}
+            <div className="library-subfilters">
+              <button
+                type="button"
+                className={`library-subfilter-btn ${subFilter === 'all' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('light')
+                  setSubFilter('all')
+                }}
+              >
+                All ({allCount})
+              </button>
+              <button
+                type="button"
+                className={`library-subfilter-btn ${subFilter === 'holds' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('light')
+                  setSubFilter('holds')
+                }}
+              >
+                🧘 Deep Holds
+              </button>
+              <button
+                type="button"
+                className={`library-subfilter-btn ${subFilter === 'dynamic' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('light')
+                  setSubFilter('dynamic')
+                }}
+              >
+                ⚡ Dynamic
+              </button>
+              <button
+                type="button"
+                className={`library-subfilter-btn ${subFilter === 'quick' ? 'active' : ''}`}
+                onClick={() => {
+                  haptic('light')
+                  setSubFilter('quick')
+                }}
+              >
+                ⏱ Quick (&lt;45s)
+              </button>
+            </div>
+
             {/* Exercise List */}
             {filteredExercises.length === 0 ? (
               <EmptyState
@@ -219,6 +340,7 @@ export function LibraryScreen() {
                     onClick={() => {
                       setSelectedMuscle(null)
                       setSelectedCategory(null)
+                      setSubFilter('all')
                       setQuery('')
                     }}
                   >
@@ -231,9 +353,8 @@ export function LibraryScreen() {
                 {filteredExercises.map((exercise) => {
                   const meta = categoryMeta(exercise.category as BodyRegion)
                   return (
-                    <button
+                    <div
                       key={exercise.slug}
-                      type="button"
                       className="library-exercise-card"
                       onClick={() => {
                         haptic('selection')
@@ -245,6 +366,11 @@ export function LibraryScreen() {
                         <span className="library-exercise-name">{exercise.name}</span>
                         <span className="library-exercise-summary">{exercise.summary}</span>
                         <div className="library-exercise-meta">
+                          {selectedMuscle && (
+                            <span className="library-target-badge">
+                              <Icon name="target" size={10} strokeWidth={2.4} /> {formatMuscleTitle(selectedMuscle)}
+                            </span>
+                          )}
                           <TagChip text={meta.title} tint={meta.tint} />
                           <span>
                             <Icon name="clock" size={11} strokeWidth={2.4} /> {exercise.duration}s
@@ -254,17 +380,34 @@ export function LibraryScreen() {
                               <Icon name="arrow.left.arrow.right" size={11} strokeWidth={2.4} /> Both sides
                             </span>
                           )}
+                          <span>{exercise.duration >= 45 ? '🧘 Hold' : '⚡ Dynamic'}</span>
                         </div>
                       </div>
+
+                      {/* Quick Add to Kata Button */}
+                      <button
+                        type="button"
+                        className="library-quick-add-btn"
+                        title="Add to Kata"
+                        aria-label={`Add ${exercise.name} to Kata`}
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          haptic('selection')
+                          setPickerExercise(exercise)
+                        }}
+                      >
+                        <Icon name="plus" size={15} strokeWidth={2.4} />
+                      </button>
+
                       <Icon name="chevron.right" size={14} className="muted" />
-                    </button>
+                    </div>
                   )
                 })}
               </div>
             )}
           </>
         ) : (
-          /* Martial Arts Disciplines View */
+          /* Martial Arts Disciplines View: 2-Column Liquid Glass Grid */
           <>
             <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
               <h2 style={{ fontSize: '18px' }}>Martial Arts Disciplines</h2>
@@ -294,49 +437,22 @@ export function LibraryScreen() {
             ) : (
               <div className="library-arts-grid">
                 {filteredArts.map((art) => (
-                  <div key={art.id} className="library-art-card">
-                    <div className="library-art-header">
-                      <SymbolTile icon={art.symbol} tint={tintColor(art.tint)} size={54} />
-                      <div className="library-art-title-block">
-                        <div className="library-art-name-row">
-                          <span className="library-art-name">{art.name}</span>
-                          <span className="library-art-origin">{art.origin}</span>
-                        </div>
-                        <span className="library-art-tagline">{art.tagline}</span>
-                      </div>
+                  <div
+                    key={art.id}
+                    className="library-art-card pressable"
+                    onClick={() => {
+                      haptic('selection')
+                      nav.present({ name: 'artLearnMore', artId: art.id })
+                    }}
+                  >
+                    <div className="library-art-emblem-wrap">
+                      <MartialArtEmblem artId={art.id} size={50} tint={tintColor(art.tint)} />
                     </div>
-
-                    <p className="library-art-about">{art.about}</p>
-
-                    <div className="library-art-focus-row">
-                      {art.focusAreas.map((focus) => (
-                        <span key={focus} className="library-art-chip">
-                          {focus}
-                        </span>
-                      ))}
-                    </div>
-
-                    <div className="library-art-footer">
-                      <div className="library-art-meta">
-                        <span>
-                          <Icon name="figure.walk" size={13} strokeWidth={2.4} /> {art.stretches?.length || 5} Stretches
-                        </span>
-                        <span>
-                          <Icon name="bolt.fill" size={13} strokeWidth={2.4} /> {art.drills?.length || 3} Drills
-                        </span>
-                      </div>
-
-                      <button
-                        type="button"
-                        className="btn btn-secondary library-art-btn"
-                        onClick={() => {
-                          haptic('selection')
-                          nav.present({ name: 'artLearnMore', artId: art.id })
-                        }}
-                      >
-                        View Drills & Mobility
-                      </button>
-                    </div>
+                    <span className="library-art-name">{art.name}</span>
+                    <span className="library-art-origin">{art.origin}</span>
+                    <span className="library-art-cta">
+                      Explore <Icon name="chevron.right" size={11} strokeWidth={2.6} />
+                    </span>
                   </div>
                 ))}
               </div>
@@ -344,6 +460,77 @@ export function LibraryScreen() {
           </>
         )}
       </div>
+
+      {/* Quick Add to Kata Picker Modal from Library */}
+      {pickerExercise && (
+        <div className="picker-modal-overlay" onClick={() => setPickerExercise(null)}>
+          <div className="picker-modal-content" onClick={(e) => e.stopPropagation()}>
+            <div className="picker-modal-header">
+              <div>
+                <h3 style={{ margin: 0, fontSize: '17px', fontWeight: 700 }}>Add to Kata</h3>
+                <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  Choose a routine for {pickerExercise.name}
+                </p>
+              </div>
+              <button
+                type="button"
+                className="search-clear"
+                style={{ width: 28, height: 28 }}
+                onClick={() => setPickerExercise(null)}
+                aria-label="Close"
+              >
+                <Icon name="xmark" size={16} />
+              </button>
+            </div>
+
+            <div className="picker-modal-list">
+              {userKatas.length === 0 ? (
+                <div style={{ textAlign: 'center', padding: '16px 8px' }}>
+                  <p style={{ fontSize: '14px', color: 'var(--text-secondary)', marginBottom: '14px' }}>
+                    You don't have any custom katas yet.
+                  </p>
+                  <PrimaryButton
+                    icon="plus"
+                    onClick={() => {
+                      setPickerExercise(null)
+                      nav.present({ name: 'editor', mode: { kind: 'create' } })
+                    }}
+                  >
+                    Create New Kata
+                  </PrimaryButton>
+                </div>
+              ) : (
+                userKatas.map((kata) => (
+                  <button
+                    key={kata.uuid}
+                    type="button"
+                    className="picker-modal-item"
+                    onClick={() => {
+                      const ok = addExerciseToKata(kata.uuid, pickerExercise.slug, pickerExercise.duration || 30)
+                      if (ok) {
+                        haptic('success')
+                        toast(`Added ${pickerExercise.name} to ${kata.name}`, { icon: 'checkmark.circle.fill' })
+                        setPickerExercise(null)
+                      }
+                    }}
+                  >
+                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={40} />
+                    <div style={{ textAlign: 'left', flex: 1, minWidth: 0 }}>
+                      <div style={{ fontWeight: 600, fontSize: '15px', color: 'var(--text)' }}>
+                        {kata.name}
+                      </div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                        {kata.items.length} exercises
+                      </div>
+                    </div>
+                    <Icon name="plus" size={16} className="muted" />
+                  </button>
+                ))
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </Screen>
   )
 }
@@ -387,7 +574,7 @@ export function ArtDetailSheet({ artId }: { artId: string }) {
       />
       <div className="sheet-scroll form">
         <div className="detail-hero">
-          <SymbolTile icon={art.symbol} tint={tintColor(art.tint)} size={72} />
+          <MartialArtEmblem artId={art.id} size={72} tint={tintColor(art.tint)} />
           <h2>{art.name}</h2>
           <p style={{ margin: '4px 0', fontSize: '13.5px', color: 'var(--text-secondary)' }}>
             {art.origin} · {art.tagline}

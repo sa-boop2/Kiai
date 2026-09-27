@@ -1,4 +1,4 @@
-import { type CSSProperties, type ReactNode, useId } from 'react'
+import { type CSSProperties, type ReactNode, useId, useRef } from 'react'
 import { difficultyMeta, tintColor } from '../data/meta'
 import type { Rank } from '../data/levels'
 import { haptic } from '../lib/haptics'
@@ -364,14 +364,96 @@ export function FilterPill({ title, icon, selected, onClick }: { title: string; 
   )
 }
 
-/** iOS segmented control with a sliding glass thumb. */
+/** iOS segmented control with a sliding glass thumb and fluid drag-selection. */
 export function Segmented<T extends string>({
   value, options, onChange, ariaLabel,
 }: { value: T; options: { value: T; title: string }[]; onChange: (value: T) => void; ariaLabel: string }) {
   const index = Math.max(0, options.findIndex((o) => o.value === value))
+  const barRef = useRef<HTMLDivElement>(null)
+  const thumbRef = useRef<HTMLSpanElement>(null)
+  const drag = useRef<{ id: number; moved: boolean; startX: number; index: number } | null>(null)
+
+  const select = (next: T) => {
+    if (next !== value) haptic('selection')
+    onChange(next)
+  }
+
+  const indexAt = (event: React.PointerEvent) => {
+    const bar = barRef.current
+    if (!bar) return 0
+    const buttons = bar.querySelectorAll<HTMLElement>('button[role="radio"]')
+    let best = 0
+    let bestDistance = Number.POSITIVE_INFINITY
+    Array.from(buttons).forEach((btn: HTMLElement, i: number) => {
+      const rect = btn.getBoundingClientRect()
+      const center = rect.left + rect.width / 2
+      const distance = Math.abs(event.clientX - center)
+      if (distance < bestDistance) {
+        bestDistance = distance
+        best = i
+      }
+    })
+    return best
+  }
+
+  const onPointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return
+    drag.current = { id: e.pointerId, moved: false, startX: e.clientX, index }
+    barRef.current?.classList.add('pressing')
+  }
+
+  const onPointerMove = (e: React.PointerEvent) => {
+    const d = drag.current
+    if (!d || d.id !== e.pointerId) return
+    const distance = e.clientX - d.startX
+    if (!d.moved && Math.abs(distance) < 6) return
+    if (!d.moved) {
+      d.moved = true
+      barRef.current?.setPointerCapture(e.pointerId)
+      barRef.current?.classList.add('dragging')
+    }
+    const bar = barRef.current?.getBoundingClientRect()
+    const thumb = thumbRef.current
+    if (bar && thumb) {
+      const pad = 2
+      const thumbWidth = thumb.offsetWidth
+      const maxOffset = bar.width - 2 * pad - thumbWidth
+      const offset = Math.min(Math.max(e.clientX - bar.left - pad - thumbWidth / 2, 0), maxOffset)
+      thumb.style.transform = `translate3d(${offset}px, 0, 0)`
+    }
+    const hovered = indexAt(e)
+    if (hovered !== d.index) {
+      d.index = hovered
+      haptic('selection')
+    }
+  }
+
+  const finish = (e: React.PointerEvent) => {
+    const d = drag.current
+    drag.current = null
+    const bar = barRef.current
+    bar?.classList.remove('pressing', 'dragging')
+    if (thumbRef.current) thumbRef.current.style.transform = ''
+    if (!d || d.id !== e.pointerId) return
+    if (d.moved) {
+      const targetOption = options[indexAt(e)]
+      if (targetOption) select(targetOption.value)
+    }
+  }
+
   return (
-    <div className="segmented" role="radiogroup" aria-label={ariaLabel} style={{ '--count': options.length, '--index': index } as CSSProperties}>
-      <span className="segmented-thumb" aria-hidden="true" />
+    <div
+      ref={barRef}
+      className="segmented"
+      role="radiogroup"
+      aria-label={ariaLabel}
+      style={{ '--count': options.length, '--index': index } as CSSProperties}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={finish}
+      onPointerCancel={finish}
+    >
+      <span ref={thumbRef} className="segmented-thumb" aria-hidden="true" />
       {options.map((option) => (
         <button
           key={option.value}
@@ -380,8 +462,7 @@ export function Segmented<T extends string>({
           aria-checked={option.value === value}
           className={option.value === value ? 'active' : ''}
           onClick={() => {
-            if (option.value !== value) haptic('selection')
-            onChange(option.value)
+            select(option.value)
           }}
         >
           {option.title}
