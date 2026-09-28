@@ -20,7 +20,7 @@ import { nav } from '../../lib/nav'
 import { useProfile, useUserKatas } from '../../lib/store'
 import { toast } from '../../components/Toast'
 
-export function MartialArtsScreen() {
+export function MartialArtsScreen({ back = false }: { back?: boolean }) {
   const { t } = useI18n()
   const profile = useProfile()
   const userKatas = useUserKatas()
@@ -134,6 +134,7 @@ export function MartialArtsScreen() {
     <Screen
       title={browseMode ? t('Martial Arts') : `${currentDojo.flag} ${currentDojo.name}`}
       largeTitle
+      back={back}
       header={
         <div style={{ padding: '0 var(--gutter) 4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {browseMode ? (
