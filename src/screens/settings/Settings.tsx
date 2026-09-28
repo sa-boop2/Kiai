@@ -27,7 +27,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.1.2'
+const VERSION = '2.3'
 
 export function SettingsScreen() {
   const settings = useSettings()
@@ -866,6 +866,7 @@ export function FaqScreen() {
     </Screen>
   )
 }
+
 
 
 
