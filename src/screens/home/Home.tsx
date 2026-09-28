@@ -74,7 +74,7 @@ export function HomeScreen() {
       {/* Header */}
       <div className="home-header">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <KiaiLogo size={28} />
+          <KiaiLogo size={33} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
@@ -89,7 +89,6 @@ export function HomeScreen() {
             <EmberBadge lit={snapshot.trainedToday} size={18} />
             <span style={{ fontWeight: 600 }}>{snapshot.currentStreak}</span>
           </button>
-          <NavIconButton icon="figure.martial.arts" label="Martial Arts" onClick={() => nav.push({ name: 'martialArts' })} />
           <NavIconButton icon="gearshape.fill" label="Settings" onClick={() => nav.push({ name: 'settings' })} />
         </div>
       </div>

@@ -23,7 +23,7 @@ import { nav } from '../../lib/nav'
 import { useAllExercises, useUserKatas, useSettings, useFavoriteExercises, useExerciseNote } from '../../lib/store'
 import { MiniMuscleBadge, exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { usePremadeKatas } from '../../lib/launch'
-import { FilterPill, DifficultyBadge } from '../../components/ui'
+import { FilterPill, DifficultyBadge, NativeSelect } from '../../components/ui'
 import { estimatedSeconds } from '../../data/content'
 import { minutes } from '../../lib/format'
 
@@ -38,6 +38,7 @@ export function LibraryScreen() {
   const [activeTab, setActiveTab] = useState<'exercises' | 'premadeKatas'>('exercises')
   const [query, setQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>('all')
+  const [premadeSort, setPremadeSort] = useState<'default' | 'duration-asc' | 'duration-desc' | 'difficulty' | 'name'>('default')
   const [pickerExercise, setPickerExercise] = useState<Exercise | null>(null)
   // Filter exercises for active search
   const filteredExercises = useMemo(() => {
@@ -52,20 +53,65 @@ export function LibraryScreen() {
     )
   }, [allExercises, query])
 
-  // Filter premade katas
+  // Filter and sort premade katas
   const filteredPremade = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return premadeKatas.filter((kata) => {
-      if (q && !((kata.name || "").toLowerCase().includes(q)) && !((kata.subtitle || "").toLowerCase().includes(q))) return false
+    const list = premadeKatas.filter((kata) => {
+      if (q && !((kata.name || '').toLowerCase().includes(q)) && !((kata.subtitle || '').toLowerCase().includes(q))) return false
       if (difficultyFilter !== 'all' && kata.difficulty !== difficultyFilter) return false
       return true
     })
-  }, [premadeKatas, query, difficultyFilter])
+    const diffRank: Record<Difficulty, number> = { beginner: 1, intermediate: 2, advanced: 3 }
+    if (premadeSort === 'duration-asc') {
+      return [...list].sort((a, b) => estimatedSeconds(a, settings.restSeconds) - estimatedSeconds(b, settings.restSeconds))
+    }
+    if (premadeSort === 'duration-desc') {
+      return [...list].sort((a, b) => estimatedSeconds(b, settings.restSeconds) - estimatedSeconds(a, settings.restSeconds))
+    }
+    if (premadeSort === 'difficulty') {
+      return [...list].sort((a, b) => (diffRank[a.difficulty ?? 'beginner'] || 1) - (diffRank[b.difficulty ?? 'beginner'] || 1))
+    }
+    if (premadeSort === 'name') {
+      return [...list].sort((a, b) => a.name.localeCompare(b.name))
+    }
+    return list
+  }, [premadeKatas, query, difficultyFilter, premadeSort, settings.restSeconds])
 
   return (
     <Screen
       title={t('Library')}
       largeTitle
+      trailing={
+        <button
+          type="button"
+          className="pressable"
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            gap: '2px',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '2px 4px',
+          }}
+          onClick={() => {
+            haptic('light')
+            nav.push({ name: 'martialArts' })
+          }}
+          aria-label="Martial Arts Disciplines"
+        >
+          <div
+            className="glass glass-icon-btn"
+            style={{ width: 34, height: 34, borderRadius: '50%' }}
+          >
+            <Icon name="figure.martial.arts" size={18} strokeWidth={2.4} />
+          </div>
+          <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '-0.01em', lineHeight: 1 }}>
+            {t('Martial Arts')}
+          </span>
+        </button>
+      }
       header={
         <div className="library-header-controls">
           {/* iOS Segmented Control */}
@@ -304,11 +350,25 @@ export function LibraryScreen() {
           </>
         ) : (
           <>
-            <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
-              <h2 style={{ fontSize: '18px' }}>Dojo Curated Routines</h2>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px', margin: '6px 0 2px' }}>
               <span className="library-count-badge">
                 {filteredPremade.length} {filteredPremade.length === 1 ? 'routine' : 'routines'}
               </span>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Icon name="arrow.up.arrow.down" size={13} style={{ color: 'var(--text-secondary)' }} />
+                <NativeSelect<string>
+                  label={t('Sort')}
+                  value={premadeSort}
+                  options={[
+                    { value: 'default', title: t('Curated') },
+                    { value: 'duration-asc', title: t('Shortest First') },
+                    { value: 'duration-desc', title: t('Longest First') },
+                    { value: 'difficulty', title: t('By Level') },
+                    { value: 'name', title: t('Alphabetical') },
+                  ]}
+                  onChange={(val) => setPremadeSort(val as any)}
+                />
+              </div>
             </div>
 
             {filteredPremade.length === 0 ? (

@@ -4,7 +4,7 @@ import { NavIconButton, Screen } from '../../components/Screen'
 import { exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { confirmAction } from '../../components/ActionSheet'
 import { toast } from '../../components/Toast'
-import { DifficultyBadge, EmptyState, FilterPill, KiaiMark, PrimaryButton, SecondaryButton, SymbolTile, TagChip } from '../../components/ui'
+import { DifficultyBadge, EmptyState, FilterPill, KiaiMark, NativeSelect, PrimaryButton, SecondaryButton, SymbolTile, TagChip } from '../../components/ui'
 import { artById, estimatedSeconds, exerciseBySlug } from '../../data/content'
 import { PHASES, categoryMeta, difficultyMeta, phaseMeta, tintColor } from '../../data/meta'
 import type { Difficulty, Exercise } from '../../data/types'
@@ -288,15 +288,30 @@ export function PremadeWorkoutsScreen() {
   const { t } = useI18n()
   const [query, setQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>('all')
+  const [sortOrder, setSortOrder] = useState<'default' | 'duration-asc' | 'duration-desc' | 'difficulty' | 'name'>('default')
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase()
-    return premadeKatas.filter((kata) => {
+    const list = premadeKatas.filter((kata) => {
       if (q && !kata.name.toLowerCase().includes(q) && !kata.subtitle.toLowerCase().includes(q)) return false
       if (difficultyFilter !== 'all' && kata.difficulty !== difficultyFilter) return false
       return true
     })
-  }, [premadeKatas, query, difficultyFilter])
+    const diffRank: Record<Difficulty, number> = { beginner: 1, intermediate: 2, advanced: 3 }
+    if (sortOrder === 'duration-asc') {
+      return [...list].sort((a, b) => estimatedSeconds(a, settings.restSeconds) - estimatedSeconds(b, settings.restSeconds))
+    }
+    if (sortOrder === 'duration-desc') {
+      return [...list].sort((a, b) => estimatedSeconds(b, settings.restSeconds) - estimatedSeconds(a, settings.restSeconds))
+    }
+    if (sortOrder === 'difficulty') {
+      return [...list].sort((a, b) => (diffRank[a.difficulty ?? 'beginner'] || 1) - (diffRank[b.difficulty ?? 'beginner'] || 1))
+    }
+    if (sortOrder === 'name') {
+      return [...list].sort((a, b) => a.name.localeCompare(b.name))
+    }
+    return list
+  }, [premadeKatas, query, difficultyFilter, sortOrder, settings.restSeconds])
 
   return (
     <Screen
@@ -342,11 +357,25 @@ export function PremadeWorkoutsScreen() {
       }
     >
       <div className="list-stack" style={{ paddingBottom: '24px' }}>
-        <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
-          <h2 style={{ fontSize: '18px' }}>{t('Dojo Curated Routines')}</h2>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px', margin: '6px 0 2px' }}>
           <span className="library-count-badge">
             {t('%lld routines', filtered.length)}
           </span>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <Icon name="arrow.up.arrow.down" size={13} style={{ color: 'var(--text-secondary)' }} />
+            <NativeSelect<string>
+              label={t('Sort')}
+              value={sortOrder}
+              options={[
+                { value: 'default', title: t('Curated') },
+                { value: 'duration-asc', title: t('Shortest First') },
+                { value: 'duration-desc', title: t('Longest First') },
+                { value: 'difficulty', title: t('By Level') },
+                { value: 'name', title: t('Alphabetical') },
+              ]}
+              onChange={(val) => setSortOrder(val as any)}
+            />
+          </div>
         </div>
 
         {filtered.length === 0 ? (

@@ -193,6 +193,19 @@
 
 /* ── Katas list section ───────────────────────────────────────────────────────────────────── */
 
+
+.home-katas-header .reorder-toggle {
+  padding: 6px 14px;
+  font-size: 13.5px;
+  font-weight: 700;
+}
+
+.home-katas-header .navbar-action {
+  width: 44px;
+  height: 44px;
+  font-size: 19px;
+}
+
 .home-katas-header {
   display: flex;
   justify-content: space-between;
@@ -203,9 +216,9 @@
 .home-section-title {
   margin: 0;
   font-family: var(--font-rounded);
-  font-size: 24px;
+  font-size: 27px;
   font-weight: 800;
-  letter-spacing: -0.3px;
+  letter-spacing: -0.4px;
   color: var(--text);
 }
 
@@ -618,8 +631,9 @@
   user-select: none;
   -webkit-user-select: none;
   touch-action: manipulation;
-  border: 1px solid color-mix(in srgb, var(--tint, var(--accent)) 14%, var(--stroke));
-  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease;
+  border: 1.5px solid color-mix(in srgb, var(--tint, var(--accent)) 32%, var(--stroke));
+  box-shadow: 0 4px 16px -4px color-mix(in srgb, var(--tint, var(--accent)) 16%, transparent);
+  transition: transform 0.18s cubic-bezier(0.2, 0.8, 0.2, 1), border-color 0.18s ease, box-shadow 0.18s ease;
 }
 
 .kata-row::before {

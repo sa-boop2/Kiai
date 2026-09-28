@@ -507,5 +507,351 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "cooldown"
       }
     ]
+  },
+  {
+    "key": "strikers-high-kick-protocol",
+    "name": "Striker's High Kick Protocol",
+    "subtitle": "Hamstring and adductor opening for clean head kicks.",
+    "symbol": "figure.kickboxing",
+    "tint": "crimson",
+    "art": "taekwondo",
+    "difficulty": "advanced",
+    "items": [
+      {
+        "slug": "leg-swings-forward-backward",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "leg-swings-side-to-side",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "hip-circles",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "kneeling-adductor-stretch-kneeling-box-split",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "couch-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "elevated-hamstring-stretch-heel-on-box",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "frog-stretch",
+        "duration": 90,
+        "phase": "main"
+      },
+      {
+        "slug": "wide-leg-seated-straddle-forward-fold",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "child-s-pose-lat-dominant",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
+        "phase": "cooldown"
+      }
+    ]
+  },
+  {
+    "key": "grapplers-neck-spine-armor",
+    "name": "Grappler's Neck & Spine Armor",
+    "subtitle": "Thoracic mobilization and neck resilience for mat combat.",
+    "symbol": "shield.lefthalf.filled",
+    "tint": "indigo",
+    "art": "bjj",
+    "difficulty": "intermediate",
+    "items": [
+      {
+        "slug": "neck-circles-controlled-neck-rotations",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "cat-cow-spine-mobilization",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "chin-tuck",
+        "duration": 45,
+        "phase": "main"
+      },
+      {
+        "slug": "upper-trap-stretch",
+        "duration": 45,
+        "phase": "main"
+      },
+      {
+        "slug": "thoracic-spine-rotation-open-book-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "thread-the-needle-shoulder-upper-back",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "supine-lumbar-spinal-twist",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "child-s-pose-lower-back-emphasis",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
+        "phase": "cooldown"
+      }
+    ]
+  },
+  {
+    "key": "boxers-thoracic-shoulder-release",
+    "name": "Boxer's Thoracic & Shoulder Release",
+    "subtitle": "Pectoral, rotator cuff and lat decompression after punching.",
+    "symbol": "figure.boxing",
+    "tint": "ember",
+    "art": "boxing",
+    "difficulty": "beginner",
+    "items": [
+      {
+        "slug": "arm-circles",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "torso-twists",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "doorway-pec-front-shoulder-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "cross-body-shoulder-stretch",
+        "duration": 45,
+        "phase": "main"
+      },
+      {
+        "slug": "sleeper-stretch",
+        "duration": 45,
+        "phase": "main"
+      },
+      {
+        "slug": "wall-slide-shoulder-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "overhead-chest-and-lat-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "wrist-extensor-stretch",
+        "duration": 45,
+        "phase": "main"
+      },
+      {
+        "slug": "childs-pose",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
+        "phase": "cooldown"
+      }
+    ]
+  },
+  {
+    "key": "deep-squat-ankle-mobility",
+    "name": "Deep Squat & Ankle Mobility",
+    "subtitle": "Dorsiflexion and deep hip capsule depth for low stances.",
+    "symbol": "figure.martial.arts",
+    "tint": "jade",
+    "art": "karate",
+    "difficulty": "intermediate",
+    "items": [
+      {
+        "slug": "ankle-rotations",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "hip-circles",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "downward-dog-calf-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "standing-soleus-stretch-bent-back-knee",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "deep-squat-mobility-hold",
+        "duration": 90,
+        "phase": "main"
+      },
+      {
+        "slug": "side-lunge-cossack-squat-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "kneeling-toe-point-stretch-sit-back-on-toes",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "single-knee-to-chest-stretch",
+        "duration": 45,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "childs-pose",
+        "duration": 60,
+        "phase": "cooldown"
+      }
+    ]
+  },
+  {
+    "key": "wrestlers-bridge-hip-explosiveness",
+    "name": "Wrestler's Hip & Extension Drive",
+    "subtitle": "Hip flexor lengthening and posterior chain drive for takedowns.",
+    "symbol": "figure.wrestling",
+    "tint": "gold",
+    "art": "wrestling",
+    "difficulty": "advanced",
+    "items": [
+      {
+        "slug": "jumping-jacks",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "walking-lunges-twist",
+        "duration": 60,
+        "phase": "warmup"
+      },
+      {
+        "slug": "lunge-hip-flexor-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "cobra-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "supine-figure-four-glute-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "world-s-greatest-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "pigeon-pose",
+        "duration": 90,
+        "phase": "main"
+      },
+      {
+        "slug": "reclining-spinal-twist",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
+        "phase": "cooldown"
+      }
+    ]
+  },
+  {
+    "key": "zen-post-dojo-restorative",
+    "name": "Zen Post-Dojo Restorative Flow",
+    "subtitle": "Full nervous system reset and fascia release after intense training.",
+    "symbol": "sparkles",
+    "tint": "amethyst",
+    "art": "aikido",
+    "difficulty": "beginner",
+    "items": [
+      {
+        "slug": "neck-rolls",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "shoulder-rolls",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "cat-cow-lumbar-thoracic",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "child-s-pose-lower-back-emphasis",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "butterfly-stretch-seated-soles-together",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "seated-forward-bend",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "supine-spinal-twist",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "double-knee-to-chest-stretch",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 90,
+        "phase": "cooldown"
+      }
+    ]
   }
 ]

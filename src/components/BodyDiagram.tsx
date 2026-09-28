@@ -35,7 +35,7 @@ const MUSCLE_TITLES: Record<BodyPart, string> = {
   lowerBack: 'Lower Back',
   lats: 'Lats & Upper Back',
   glutes: 'Glutes',
-  hipFlexors: 'Abductors & Hips',
+  hipFlexors: 'Hip Flexors & Hips',
   adductors: 'Adductors & Groin',
   hamstrings: 'Hamstrings',
   quads: 'Quadriceps',
@@ -243,12 +243,6 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                   onClick={() => clickPart('adductors')}
                 />
 
-                {/* Abductors / Outer Thighs */}
-                <path
-                  d="M146 300 C138 325 138 365 146 410 L151 408 C144 365 144 325 151 300 Z M234 300 C242 325 242 365 234 410 L229 408 C236 365 236 325 229 300 Z"
-                  className={`anatomy-part selectable ${isSel('hipFlexors') ? 'selected' : ''}`}
-                  onClick={() => clickPart('hipFlexors')}
-                />
 
                 {/* Quadriceps (Vastus Lateralis, Rectus Femoris, Vastus Medialis Teardrop) */}
                 <path
@@ -344,28 +338,13 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <text x="14" y="294" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Obliques</text>
               </g>
 
-              {/* Right 4.5: Abductors */}
-              <path
-                d="M366 360 L248 360 L238 335"
-                fill="none"
-                className={`anatomy-dashed ${isSel('hipFlexors') ? 'active' : ''}`}
-              />
-              <g className="anatomy-pin-target" onClick={() => clickPart('hipFlexors')}>
-                <circle cx="238" cy="335" r="22" fill="transparent" />
-                {isSel('hipFlexors') && <circle cx="238" cy="335" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="238" cy="335" r="7" className={`anatomy-pin-dot ${isSel('hipFlexors') ? 'selected' : ''}`} />
-              </g>
-              <g className="anatomy-label-target" onClick={() => clickPart('hipFlexors')}>
-                <rect x="275" y="340" width="97" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="366" y="364" textAnchor="end" className={`anatomy-callout-text ${isSel('hipFlexors') ? 'selected' : ''}`}>Abductors</text>
-              </g>
 
-              {/* Left 5: Quads */}
-              <line x1="56" y1="365" x2="155" y2="365" className={`anatomy-dashed ${isSel('quads') ? 'active' : ''}`} />
+              {/* Left 5: Quads — pinned on the inner edge of the quad (vastus medialis teardrop) */}
+              <line x1="56" y1="365" x2="168" y2="365" className={`anatomy-dashed ${isSel('quads') ? 'active' : ''}`} />
               <g className="anatomy-pin-target" onClick={() => clickPart('quads')}>
-                <circle cx="155" cy="365" r="22" fill="transparent" />
-                {isSel('quads') && <circle cx="155" cy="365" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="155" cy="365" r="7" className={`anatomy-pin-dot ${isSel('quads') ? 'selected' : ''}`} />
+                <circle cx="168" cy="365" r="22" fill="transparent" />
+                {isSel('quads') && <circle cx="168" cy="365" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="168" cy="365" r="7" className={`anatomy-pin-dot ${isSel('quads') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('quads')}>
                 <rect x="8" y="345" width="56" height="38" rx="10" className="anatomy-label-plate" />
