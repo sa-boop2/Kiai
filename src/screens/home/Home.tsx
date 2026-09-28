@@ -103,17 +103,12 @@ export function HomeScreen() {
             <Icon name="flame.fill" size={100} />
           </span>
 
-          {/* Top row: eyebrow + last trained */}
+          {/* Top row: eyebrow */}
           <div className="home-hero-top">
             <span className="home-hero-eyebrow">
               <Icon name={quick.isRepeat ? 'arrow.clockwise' : 'sparkles'} size={12} strokeWidth={2.4} />
               {t(quick.isRepeat ? 'Repeat last workout' : 'Recommended')}
             </span>
-            {heroMeta?.lastPerformedAt && new Date(heroMeta.lastPerformedAt).toDateString() !== new Date().toDateString() && (
-              <span className="home-hero-last">
-                {relativeDay(heroMeta.lastPerformedAt, locale)}
-              </span>
-            )}
           </div>
 
           {/* Title */}

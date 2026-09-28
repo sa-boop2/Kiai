@@ -84,15 +84,13 @@ export function PaywallScreen() {
           <h1
             style={{
               margin: '0 0 6px',
-              fontSize: '32px',
+              fontSize: '34px',
               fontWeight: 800,
               letterSpacing: '-0.02em',
-              background: 'linear-gradient(135deg, #ffffff 40%, var(--gold) 100%)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
+              color: 'var(--text)',
             }}
           >
-            Kiai+
+            Kiai<span style={{ color: 'var(--gold)', marginLeft: '2px' }}>+</span>
           </h1>
           <p style={{ margin: 0, fontSize: '15px', color: 'var(--text-secondary)', lineHeight: 1.4, padding: '0 8px' }}>
             {isPremium

@@ -27,7 +27,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.4'
+const VERSION = '2.5'
 
 export function SettingsScreen() {
   const settings = useSettings()
@@ -469,9 +469,9 @@ function ProfileCard() {
             setPickerOpen(true)
           }}
         >
-          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={76} />
+          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={54} />
           <span className="avatar-camera">
-            <Icon name="camera.fill" size={13} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
+            <Icon name="camera.fill" size={11} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); setPickerOpen(false) }} />
@@ -491,6 +491,7 @@ function ProfileCard() {
                 value={draftName}
                 autoFocus
                 maxLength={40}
+                style={{ fontSize: '18px', padding: '2px 8px' }}
                 onChange={(e) => setDraftName(e.target.value)}
                 onBlur={() => {
                   if (draftName.trim()) updateProfile({ name: draftName.trim() })
@@ -502,13 +503,14 @@ function ProfileCard() {
             <button
               type="button"
               className="name-display pressable"
+              style={{ fontSize: '18px', gap: '6px' }}
               onClick={() => {
                 setDraftName(profile.name)
                 setEditing(true)
               }}
             >
-              <span>{displayName(profile.name)}</span>
-              <Icon name="pencil" size={14} strokeWidth={2.4} />
+              <span style={{ fontWeight: 700 }}>{displayName(profile.name)}</span>
+              <Icon name="pencil" size={13} strokeWidth={2.4} />
             </button>
           )}
           <NativeSelect<string>
@@ -519,87 +521,65 @@ function ProfileCard() {
           />
         </div>
       </div>
-      {/* iOS 26 Liquid Glass Level & Streak Highlight */}
+
+      {/* iOS 26 Integrated Minimalist Subelements */}
       <div
         style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 1fr',
-          gap: '10px',
-          margin: '14px 0 10px',
-          width: '100%',
-          boxSizing: 'border-box',
+          background: 'rgba(255, 255, 255, 0.04)',
+          borderRadius: '14px',
+          padding: '8px 12px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '8px',
+          margin: '2px 0',
         }}
       >
-        <div
-          style={{
-            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))',
-            border: '1px solid rgba(255, 255, 255, 0.12)',
-            borderRadius: '16px',
-            padding: '12px 14px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
-          }}
-        >
-          <RankEmblem rank={snapshot.rank} size={28} />
-          <div style={{ textAlign: 'left', minWidth: 0 }}>
-            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-secondary)', display: 'block', fontWeight: 600 }}>
-              Rank Level
-            </span>
-            <strong style={{ fontSize: '15px', color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <RankEmblem rank={snapshot.rank} size={22} />
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.2 }}>
               {t('Level %lld', snapshot.rank.level)}
-            </strong>
+            </span>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              {snapshot.rank.title}
+            </span>
           </div>
         </div>
 
-        <div
-          style={{
-            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.05))',
-            border: '1px solid rgba(239, 68, 68, 0.25)',
-            borderRadius: '16px',
-            padding: '12px 14px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '10px',
-            backdropFilter: 'blur(20px)',
-            WebkitBackdropFilter: 'blur(20px)',
-            boxShadow: '0 4px 16px rgba(239, 68, 68, 0.12)',
-          }}
-        >
+        <div style={{ width: '1px', height: '22px', background: 'rgba(255, 255, 255, 0.1)' }} />
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <div
             style={{
-              width: 32,
-              height: 32,
-              borderRadius: 10,
-              background: 'rgba(239, 68, 68, 0.2)',
+              width: 24,
+              height: 24,
+              borderRadius: 8,
+              background: 'rgba(239, 68, 68, 0.18)',
               color: 'var(--ember)',
               display: 'grid',
               placeItems: 'center',
-              flexShrink: 0,
             }}
           >
-            <Icon name="flame.fill" size={18} />
+            <Icon name="flame.fill" size={14} />
           </div>
-          <div style={{ textAlign: 'left', minWidth: 0 }}>
-            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ember)', display: 'block', fontWeight: 700 }}>
+          <div style={{ textAlign: 'left' }}>
+            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.2 }}>
+              {snapshot.currentStreak} {snapshot.currentStreak === 1 ? 'day' : 'days'}
+            </span>
+            <span style={{ fontSize: '11px', color: 'var(--ember)', fontWeight: 600 }}>
               Streak
             </span>
-            <strong style={{ fontSize: '16px', color: 'var(--text)', display: 'block' }}>
-              {snapshot.currentStreak} {snapshot.currentStreak === 1 ? 'day' : 'days'}
-            </strong>
           </div>
         </div>
       </div>
 
-      <div style={{ margin: '6px 0 2px' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '12px' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>{snapshot.rank.title}</span>
-          <span style={{ color: 'var(--text-tertiary)' }}>{Math.round(snapshot.rankProgress * 100)}% to {next?.title ?? 'Max'}</span>
+      <div style={{ margin: '2px 0 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', fontSize: '11px' }}>
+          <span style={{ color: 'var(--text-secondary)' }}>Rank progress</span>
+          <span style={{ color: 'var(--text-tertiary)' }}>{Math.round(snapshot.rankProgress * 100)}%</span>
         </div>
-        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={8} label="Rank progress" />
+        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={5} label="Rank progress" />
       </div>
       {artById(profile.primaryArt) === undefined && <span className="sr-only">No primary art</span>}
 

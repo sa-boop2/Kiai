@@ -281,7 +281,6 @@ export function LibraryScreen() {
                                 </span>
                               </div>
                             </div>
-                            <MiniMuscleBadge exercise={ex} size={36} />
                             <button
                               type="button"
                               className="library-quick-add-btn"

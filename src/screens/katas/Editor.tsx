@@ -442,7 +442,23 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
 
           <button
             type="button"
-            className="navbar-action tinted"
+            className="pressable"
+            style={{
+              width: '100%',
+              margin: '10px 0 6px',
+              padding: '10px 14px',
+              borderRadius: '16px',
+              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+              border: '1px dashed color-mix(in srgb, var(--accent) 45%, transparent)',
+              color: 'var(--accent)',
+              fontSize: '14px',
+              fontWeight: 600,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px',
+              backdropFilter: 'blur(16px)',
+            }}
             onClick={() =>
               nav.present({
                 name: 'customExercise',
@@ -453,7 +469,8 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
               })
             }
           >
-            + Create Custom Exercise
+            <Icon name="plus" size={15} strokeWidth={2.4} />
+            <span>Create Custom Exercise</span>
           </button>
         </div>
 
