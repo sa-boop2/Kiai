@@ -21,7 +21,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.neck.flexion"
   },
   {
     "slug": "basic-neck-extension-stretch",
@@ -43,7 +43,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.neck.extension"
   },
   {
     "slug": "lateral-neck-stretch-side-bend",
@@ -65,7 +65,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.neck.lateral"
   },
   {
     "slug": "upper-trap-stretch",
@@ -87,7 +87,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.upper.trap"
   },
   {
     "slug": "levator-scapulae-stretch",
@@ -109,7 +109,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.levator.scapulae"
   },
   {
     "slug": "neck-circles-controlled-neck-rotations",
@@ -131,7 +131,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.neck.rotation"
   },
   {
     "slug": "chin-tuck",
@@ -153,7 +153,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.chin.tuck"
   },
   {
     "slug": "cross-body-shoulder-stretch",
@@ -175,7 +175,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.shoulder.cross"
   },
   {
     "slug": "overhead-triceps-and-shoulder-stretch",
@@ -197,7 +197,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.triceps.overhead"
   },
   {
     "slug": "sleeper-stretch",
@@ -219,7 +219,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.sleeper"
   },
   {
     "slug": "doorway-shoulder-external-rotation-stretch",
@@ -241,7 +241,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.mind.and.body"
+    "symbol": "figure.doorway.pec"
   },
   {
     "slug": "doorway-pec-front-shoulder-stretch",
@@ -263,7 +263,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.doorway.pec"
   },
   {
     "slug": "shoulder-dislocates-with-stick-or-band",
@@ -287,7 +287,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.shoulder.dislocate"
   },
   {
     "slug": "wall-slide-shoulder-stretch",
@@ -311,7 +311,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.wall.slide"
   },
   {
     "slug": "thread-the-needle-stretch",
@@ -333,7 +333,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.thread.needle"
   },
   {
     "slug": "standing-chest-stretch-against-wall",
@@ -357,7 +357,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.biceps.wall"
   },
   {
     "slug": "doorway-pec-stretch-single-arm",
@@ -379,7 +379,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.doorway.pec"
   },
   {
     "slug": "doorway-pec-stretch-double-arm",
@@ -401,7 +401,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.doorway.pec"
   },
   {
     "slug": "behind-back-clasped-hands-chest-stretch",
@@ -423,7 +423,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.chest.clasp"
   },
   {
     "slug": "overhead-chest-and-lat-stretch",
@@ -445,7 +445,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.lat.reach"
   },
   {
     "slug": "child-s-pose-lat-dominant",
@@ -467,7 +467,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.childs.pose"
+    "symbol": "figure.childs.lat"
   },
   {
     "slug": "side-bending-lat-stretch",
@@ -489,7 +489,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.side.bend"
   },
   {
     "slug": "cat-cow-spine-mobilization",
@@ -511,7 +511,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.childs.pose"
+    "symbol": "figure.cat.cow"
   },
   {
     "slug": "seated-thoracic-extension-over-chair-back",
@@ -535,7 +535,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.cobra"
   },
   {
     "slug": "thoracic-spine-rotation-open-book-stretch",
@@ -557,7 +557,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.childs.pose"
+    "symbol": "figure.thoracic.twist"
   },
   {
     "slug": "upper-back-stretch-arms-reaching-forward",
@@ -579,7 +579,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.scapular.spread"
   },
   {
     "slug": "kneeling-bench-prayer-stretch",
@@ -603,7 +603,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.prayer.bench"
   },
   {
     "slug": "thread-the-needle-shoulder-upper-back",
@@ -625,7 +625,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.thread.needle"
   },
   {
     "slug": "scapular-retraction-stretch-arms-forward-shoulder-blades-spread",
@@ -647,7 +647,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.scapular.spread"
   },
   {
     "slug": "biceps-wall-stretch-arm-extended-behind",
@@ -671,7 +671,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.biceps.wall"
   },
   {
     "slug": "triceps-overhead-stretch",
@@ -693,7 +693,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.triceps.overhead"
   },
   {
     "slug": "cross-body-triceps-posterior-arm-stretch",
@@ -715,7 +715,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.shoulder.cross"
   },
   {
     "slug": "wrist-flexor-stretch",
@@ -737,7 +737,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.wrist.flex"
   },
   {
     "slug": "wrist-extensor-stretch",
@@ -759,7 +759,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.wrist.extend"
   },
   {
     "slug": "forearm-pronation-supination-stretch",
@@ -781,7 +781,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.forearm.twist"
   },
   {
     "slug": "cobra-stretch",
@@ -803,7 +803,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.cobra"
   },
   {
     "slug": "sphinx-stretch",
@@ -825,7 +825,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.sphinx"
   },
   {
     "slug": "side-lying-oblique-stretch",
@@ -847,7 +847,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.side.bend"
   },
   {
     "slug": "standing-side-bend-stretch",
@@ -869,7 +869,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.side.bend"
   },
   {
     "slug": "supine-spinal-twist",
@@ -891,7 +891,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.mind.and.body"
+    "symbol": "figure.supine.twist"
   },
   {
     "slug": "seated-side-bend-stretch",
@@ -913,7 +913,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.side.bend"
   },
   {
     "slug": "single-knee-to-chest-stretch",
@@ -935,7 +935,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.knee.chest"
   },
   {
     "slug": "double-knee-to-chest-stretch",
@@ -957,7 +957,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.double.knee.chest"
   },
   {
     "slug": "supine-lumbar-spinal-twist",
@@ -979,7 +979,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.mind.and.body"
+    "symbol": "figure.supine.twist"
   },
   {
     "slug": "child-s-pose-lower-back-emphasis",
@@ -1001,7 +1001,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.childs.pose"
+    "symbol": "figure.childs.lat"
   },
   {
     "slug": "pelvic-tilt-stretch-supine",
@@ -1023,7 +1023,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.supine.twist"
   },
   {
     "slug": "cat-cow-lumbar-thoracic",
@@ -1045,7 +1045,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.childs.pose"
+    "symbol": "figure.cat.cow"
   },
   {
     "slug": "supine-figure-four-glute-stretch",
@@ -1067,7 +1067,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.pigeon"
+    "symbol": "figure.figure.four"
   },
   {
     "slug": "seated-figure-four-pretzel-stretch",
@@ -1089,7 +1089,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.figure.four"
   },
   {
     "slug": "pigeon-pose",
@@ -1155,7 +1155,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.pigeon"
+    "symbol": "figure.figure.four"
   },
   {
     "slug": "half-kneeling-hip-flexor-stretch",
@@ -1177,7 +1177,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.lunge"
+    "symbol": "figure.lunge.hip"
   },
   {
     "slug": "lunge-hip-flexor-stretch",
@@ -1199,7 +1199,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.lunge"
+    "symbol": "figure.lunge.hip"
   },
   {
     "slug": "couch-stretch",
@@ -1223,7 +1223,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.couch"
   },
   {
     "slug": "standing-hip-flexor-stretch",
@@ -1245,7 +1245,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.lunge"
+    "symbol": "figure.lunge.hip"
   },
   {
     "slug": "frog-stretch",
@@ -1267,7 +1267,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.split"
+    "symbol": "figure.frog"
   },
   {
     "slug": "butterfly-stretch-seated-soles-together",
@@ -1289,7 +1289,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.split"
+    "symbol": "figure.butterfly"
   },
   {
     "slug": "side-lunge-cossack-squat-stretch",
@@ -1311,7 +1311,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.lunge"
+    "symbol": "figure.cossack"
   },
   {
     "slug": "wide-leg-seated-straddle-forward-fold",
@@ -1333,7 +1333,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.split"
+    "symbol": "figure.pancake"
   },
   {
     "slug": "kneeling-adductor-stretch-kneeling-box-split",
@@ -1357,7 +1357,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.split"
+    "symbol": "figure.box.split"
   },
   {
     "slug": "standing-hamstring-stretch-one-foot-forward",
@@ -1379,7 +1379,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.standing"
   },
   {
     "slug": "elevated-hamstring-stretch-heel-on-box",
@@ -1403,7 +1403,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.standing"
   },
   {
     "slug": "seated-forward-fold-both-legs-extended",
@@ -1425,7 +1425,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.seated"
   },
   {
     "slug": "single-leg-seated-hamstring-stretch",
@@ -1447,7 +1447,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.seated"
   },
   {
     "slug": "wall-hamstring-stretch-leg-up-wall",
@@ -1471,7 +1471,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.wall"
   },
   {
     "slug": "supine-band-towel-hamstring-stretch",
@@ -1495,7 +1495,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.wall"
   },
   {
     "slug": "good-morning-style-hamstring-stretch-bodyweight-hinge",
@@ -1517,7 +1517,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.good.morning"
   },
   {
     "slug": "standing-quad-stretch-heel-to-glute",
@@ -1539,7 +1539,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.pigeon"
+    "symbol": "figure.quad.standing"
   },
   {
     "slug": "side-lying-quad-stretch",
@@ -1561,7 +1561,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.quad.prone"
   },
   {
     "slug": "prone-quad-stretch",
@@ -1583,7 +1583,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.quad.prone"
   },
   {
     "slug": "lunge-with-quad-reach-stretch",
@@ -1605,7 +1605,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.lunge"
+    "symbol": "figure.lunge.quad"
   },
   {
     "slug": "standing-gastrocnemius-stretch-straight-back-leg",
@@ -1627,7 +1627,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.step.training"
+    "symbol": "figure.calf.wall"
   },
   {
     "slug": "standing-soleus-stretch-bent-back-knee",
@@ -1649,7 +1649,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.step.training"
+    "symbol": "figure.soleus.wall"
   },
   {
     "slug": "step-calf-stretch-heel-off-edge",
@@ -1671,7 +1671,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.step.training"
+    "symbol": "figure.step.calf"
   },
   {
     "slug": "downward-dog-calf-stretch",
@@ -1693,7 +1693,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.step.training"
+    "symbol": "figure.downward.dog"
   },
   {
     "slug": "standing-shin-stretch-top-of-foot-on-floor-behind",
@@ -1715,7 +1715,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.balance"
+    "symbol": "figure.shin.kneel"
   },
   {
     "slug": "kneeling-toe-point-stretch-sit-back-on-toes",
@@ -1737,7 +1737,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.shin.kneel"
   },
   {
     "slug": "anterior-tibialis-wall-stretch",
@@ -1761,7 +1761,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.step.training"
+    "symbol": "figure.shin.kneel"
   },
   {
     "slug": "ankle-circles",
@@ -1783,7 +1783,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.balance"
+    "symbol": "figure.ankle.circles"
   },
   {
     "slug": "ankle-alphabet",
@@ -1805,7 +1805,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.balance"
+    "symbol": "figure.ankle.circles"
   },
   {
     "slug": "plantar-fascia-stretch",
@@ -1827,7 +1827,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.plantar"
   },
   {
     "slug": "toe-flexor-stretch-sit-back-on-toes",
@@ -1849,7 +1849,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.shin.kneel"
   },
   {
     "slug": "standing-full-body-overhead-stretch",
@@ -1871,7 +1871,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.lat.reach"
   },
   {
     "slug": "deep-squat-mobility-hold",
@@ -1893,7 +1893,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.deep.squat"
   },
   {
     "slug": "downward-dog",
@@ -1915,7 +1915,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.downward.dog"
   },
   {
     "slug": "lunge-with-thoracic-rotation",
@@ -1937,7 +1937,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.lunge"
+    "symbol": "figure.worlds.greatest"
   },
   {
     "slug": "triangle-pose",
@@ -1959,7 +1959,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.triangle"
   },
   {
     "slug": "standing-side-bend-with-overhead-reach",
@@ -1981,7 +1981,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.side.bend"
   },
   {
     "slug": "world-s-greatest-stretch",
@@ -2003,7 +2003,7 @@ export const EXERCISES: Exercise[] = [
     "targets": [],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.worlds.greatest"
   },
   {
     "slug": "leg-swings-forward-backward",
@@ -2027,7 +2027,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.kickboxing"
+    "symbol": "figure.leg.swings"
   },
   {
     "slug": "leg-swings-side-to-side",
@@ -2051,7 +2051,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.split"
+    "symbol": "figure.leg.swings"
   },
   {
     "slug": "arm-circles",
@@ -2074,7 +2074,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.shoulder.dislocate"
   },
   {
     "slug": "torso-twists",
@@ -2097,7 +2097,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "figure.mind.and.body"
+    "symbol": "figure.thoracic.twist"
   },
   {
     "slug": "hip-circles",
@@ -2120,7 +2120,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "flame.fill"
+    "symbol": "figure.lunge.hip"
   },
   {
     "slug": "high-knees",
@@ -2144,7 +2144,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.lunge.hip"
   },
   {
     "slug": "butt-kicks",
@@ -2167,7 +2167,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "figure.kickboxing"
+    "symbol": "figure.quad.standing"
   },
   {
     "slug": "jumping-jacks",
@@ -2191,7 +2191,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "flame.fill"
+    "symbol": "figure.jumping.jacks"
   },
   {
     "slug": "ankle-rotations",
@@ -2214,7 +2214,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": true,
-    "symbol": "figure.balance"
+    "symbol": "figure.ankle.circles"
   },
   {
     "slug": "neck-rolls",
@@ -2236,7 +2236,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.neck"
+    "symbol": "figure.neck.rotation"
   },
   {
     "slug": "shoulder-rolls",
@@ -2259,7 +2259,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 30,
     "bilateral": false,
-    "symbol": "figure.arms.open"
+    "symbol": "figure.shoulder.cross"
   },
   {
     "slug": "walking-lunges-twist",
@@ -2283,7 +2283,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.lunge"
+    "symbol": "figure.worlds.greatest"
   },
   {
     "slug": "childs-pose",
@@ -2309,7 +2309,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "figure.childs.pose"
+    "symbol": "figure.childs.lat"
   },
   {
     "slug": "downward-dog-to-cobra",
@@ -2336,7 +2336,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 60,
     "bilateral": false,
-    "symbol": "figure.flexibility"
+    "symbol": "figure.cobra"
   },
   {
     "slug": "seated-forward-bend",
@@ -2362,7 +2362,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 45,
     "bilateral": false,
-    "symbol": "figure.forward.fold"
+    "symbol": "figure.hamstring.seated"
   },
   {
     "slug": "reclining-spinal-twist",
@@ -2388,7 +2388,7 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 60,
     "bilateral": true,
-    "symbol": "figure.mind.and.body"
+    "symbol": "figure.supine.twist"
   },
   {
     "slug": "deep-diaphragmatic-breathing",
@@ -2410,6 +2410,6 @@ export const EXERCISES: Exercise[] = [
     ],
     "duration": 60,
     "bilateral": false,
-    "symbol": "figure.mind.and.body"
+    "symbol": "figure.breathing"
   }
 ]

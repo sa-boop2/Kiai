@@ -4,7 +4,7 @@ export type Difficulty = 'beginner' | 'intermediate' | 'advanced'
 export type BodyRegion = 'neck' | 'shoulders' | 'chest' | 'lats' | 'arms' | 'core' | 'lowerBack' | 'glutes' | 'hipFlexors' | 'adductors' | 'hamstrings' | 'quads' | 'calves' | 'shins' | 'feet' | 'fullBody'
 export type Equipment = 'none' | 'mat' | 'wall' | 'strap' | 'chair' | 'yogaBlocks' | 'resistanceBand' | 'foamRoller' | 'heavyBag' | 'partner'
 export type Phase = 'warmup' | 'main' | 'cooldown'
-export type Tint = 'ember' | 'crimson' | 'jade' | 'gold' | 'indigo' | 'sakura' | 'slate'
+export type Tint = 'ember' | 'crimson' | 'jade' | 'gold' | 'indigo' | 'sakura' | 'slate' | 'amethyst'
 export type QuoteKind = 'motivation' | 'fact' | 'wisdom'
 
 export interface Exercise {

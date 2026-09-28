@@ -10,6 +10,7 @@ export const TINT_VAR: Record<Tint, string> = {
   indigo: 'var(--indigo)',
   sakura: 'var(--sakura)',
   slate: 'var(--slate)',
+  amethyst: 'var(--amethyst)',
 }
 
 export const TINTS = Object.keys(TINT_VAR) as Tint[]
@@ -23,6 +24,7 @@ export const TINT_TITLE: Record<Tint, string> = {
   indigo: 'Indigo',
   sakura: 'Sakura',
   slate: 'Slate',
+  amethyst: 'Amethyst',
 }
 
 export function tintTitle(tint: string | null | undefined): string {

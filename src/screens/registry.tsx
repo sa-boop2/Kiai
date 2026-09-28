@@ -1,3 +1,4 @@
+import { MartialArtsScreen } from './martialArts/MartialArtsScreen'
 import type { ReactNode } from 'react'
 import { SheetHeader } from '../components/SheetHost'
 import type { Route, SheetRoute, Tab } from '../lib/nav'
@@ -20,6 +21,8 @@ export function renderRoot(tab: Tab): ReactNode {
   switch (tab) {
     case 'home':
       return <HomeScreen />
+    case 'martialArts':
+      return <MartialArtsScreen />
     case 'library':
       return <LibraryScreen />
         case 'analytics':

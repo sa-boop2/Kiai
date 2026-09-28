@@ -16,6 +16,7 @@
   --indigo: #4f5bd5;
   --sakura: #d6517d;
   --slate: #5b6472;
+  --amethyst: #9333ea;
   --ember-deep: #c23a1b;
 
   /* 1.15: the user's chosen accent colour (Settings → Appearance). Defaults to ember and is
@@ -119,6 +120,7 @@
   --indigo: #8a94ff;
   --sakura: #ff7ea8;
   --slate: #a3acba;
+  --amethyst: #c084fc;
   --ember-deep: #d9481f;
 
   --background: #0a0a0b;
