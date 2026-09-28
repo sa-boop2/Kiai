@@ -4874,52 +4874,34 @@
 .premade-kata-card {
   position: relative;
   overflow: hidden;
-  isolation: isolate;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 15px 14px 13px;
-  border-radius: 20px;
+  padding: 14px 13px 12px;
+  border-radius: 18px;
   text-align: left;
-  min-height: 132px;
+  min-height: 126px;
   cursor: pointer;
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--tint, var(--accent)) 22%, var(--surface)) 0%,
-    color-mix(in srgb, var(--tint, var(--accent)) 8%, var(--surface)) 100%
-  );
-  border: 1.5px solid color-mix(in srgb, var(--tint, var(--accent)) 28%, var(--separator));
-  box-shadow:
-    0 10px 24px -10px color-mix(in srgb, var(--tint, var(--accent)) 28%, transparent),
-    inset 0 1px 1.5px 0 rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(24px) saturate(180%);
-  -webkit-backdrop-filter: blur(24px) saturate(180%);
-  transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 200ms ease, border-color 200ms ease;
+  background: var(--surface-raised);
+  border: 1px solid var(--separator);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  transition: transform 180ms cubic-bezier(0.16, 1, 0.3, 1), border-color 180ms ease, box-shadow 180ms ease;
 }
 
 :root[data-theme='dark'] .premade-kata-card {
-  background: linear-gradient(
-    135deg,
-    color-mix(in srgb, var(--tint, var(--accent)) 26%, #16171d) 0%,
-    color-mix(in srgb, var(--tint, var(--accent)) 9%, #0c0d11) 100%
-  );
-  border: 1.5px solid color-mix(in srgb, var(--tint, var(--accent)) 32%, rgba(255, 255, 255, 0.12));
-  box-shadow:
-    0 12px 30px -10px color-mix(in srgb, var(--tint, var(--accent)) 38%, rgba(0, 0, 0, 0.6)),
-    inset 0 1px 1px 0 rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.22);
 }
 
-.premade-kata-card::before {
-  content: '';
-  position: absolute;
-  top: -20px;
-  right: -20px;
-  width: 90px;
-  height: 90px;
-  border-radius: 50%;
-  background: radial-gradient(circle, color-mix(in srgb, var(--tint, var(--accent)) 35%, transparent) 0%, transparent 70%);
-  pointer-events: none;
-  z-index: -1;
+.premade-kata-card:hover {
+  border-color: color-mix(in srgb, var(--tint, var(--accent)) 30%, var(--separator));
+}
+
+.premade-kata-card:active {
+  transform: scale(0.98);
 }
 
 .premade-kata-card-meta {
