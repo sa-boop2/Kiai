@@ -624,34 +624,52 @@ export function MartialArtsScreen() {
                       </div>
                     )}
 
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '8px', marginTop: '2px' }}>
-                      <PrimaryButton
-                        icon="play.fill"
-                        onClick={() => handlePlayRoutine(goal)}
-                      >
-                        Play ({minutes(goal.duration)})
-                      </PrimaryButton>
+                    <div style={{ display: 'flex', gap: '8px', marginTop: '8px' }}>
                       <button
                         type="button"
                         className="pressable"
                         style={{
-                          padding: '0 14px',
-                          borderRadius: '14px',
-                          background: 'color-mix(in srgb, var(--text) 6%, transparent)',
-                          border: '1px solid var(--separator)',
-                          color: 'var(--text)',
-                          fontSize: '13px',
-                          fontWeight: 600,
+                          flex: 1,
                           display: 'flex',
                           alignItems: 'center',
+                          justifyContent: 'center',
                           gap: '6px',
+                          padding: '9px 14px',
+                          borderRadius: '12px',
+                          background: currentDojo.accent,
+                          color: '#000',
+                          fontSize: '13px',
+                          fontWeight: 700,
+                          border: 'none',
+                          cursor: 'pointer',
+                          boxShadow: `0 4px 12px color-mix(in srgb, ${currentDojo.accent} 30%, transparent)`,
+                        }}
+                        onClick={() => handlePlayRoutine(goal)}
+                      >
+                        <Icon name="play.fill" size={11} />
+                        Play · {minutes(goal.duration)}
+                      </button>
+                      <button
+                        type="button"
+                        className="pressable"
+                        style={{
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '5px',
+                          padding: '9px 12px',
+                          borderRadius: '12px',
+                          background: 'color-mix(in srgb, var(--text) 7%, transparent)',
+                          border: '1px solid var(--separator)',
+                          color: 'var(--text-secondary)',
+                          fontSize: '12px',
+                          fontWeight: 600,
                           cursor: 'pointer',
                         }}
                         title="Clone to My Katas"
                         onClick={() => handleCloneRoutine(goal)}
                       >
-                        <Icon name="plus" size={15} strokeWidth={2.4} />
-                        <span>Save</span>
+                        <Icon name="plus" size={13} strokeWidth={2.4} />
+                        Save
                       </button>
                     </div>
                   </div>
@@ -829,14 +847,30 @@ export function MartialArtsScreen() {
                     ))}
                   </div>
 
-                  {/* Playable Drill Button */}
-                  <div style={{ marginTop: '4px' }}>
-                    <PrimaryButton
-                      icon="play.fill"
+                  {/* Playable Drill Button — compact inline */}
+                  <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '4px' }}>
+                    <button
+                      type="button"
+                      className="pressable"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        padding: '7px 14px',
+                        borderRadius: '12px',
+                        background: currentDojo.accent,
+                        color: '#000',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        border: 'none',
+                        cursor: 'pointer',
+                        boxShadow: `0 4px 12px color-mix(in srgb, ${currentDojo.accent} 35%, transparent)`,
+                      }}
                       onClick={() => handlePlayDrill(drill)}
                     >
-                      Start Drill ({drill.duration}s)
-                    </PrimaryButton>
+                      <Icon name="play.fill" size={10} />
+                      Start · {drill.duration}s
+                    </button>
                   </div>
                 </div>
               ))}

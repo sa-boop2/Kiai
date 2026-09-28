@@ -1308,20 +1308,25 @@
 }
 
 .editor-row {
-  display: flex;
+  display: grid;
+  /* drag | info | controls | remove */
+  grid-template-columns: 30px 1fr auto 28px;
   align-items: center;
-  gap: 8px;
-  padding: 8px 10px 8px 4px;
+  gap: 6px;
+  padding: 7px 8px 7px 2px;
   position: relative;
   background: var(--surface);
   transition: box-shadow 200ms ease, transform 200ms ease;
+  min-width: 0;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .editor-row + .editor-row::before {
   content: '';
   position: absolute;
   top: 0;
-  left: 88px;
+  left: 36px;
   right: 0;
   border-top: 0.5px solid var(--separator);
 }
@@ -1370,11 +1375,12 @@
 .drag-handle {
   display: grid;
   place-items: center;
-  width: 32px;
-  height: 44px;
+  width: 28px;
+  height: 40px;
   color: var(--text-tertiary);
   touch-action: none;
   cursor: grab;
+  flex-shrink: 0;
 }
 
 .editor-row-info {
@@ -1382,8 +1388,9 @@
   min-width: 0;
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   text-align: left;
+  overflow: hidden;
 }
 
 .editor-row-info > span {
@@ -1393,11 +1400,12 @@
 }
 
 .editor-row-info strong {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  display: block;
 }
 
 .editor-row-info .tabular {
@@ -1410,8 +1418,9 @@
   color: var(--text-tertiary);
   display: grid;
   place-items: center;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
   --icon-knock: var(--surface);
 }
 

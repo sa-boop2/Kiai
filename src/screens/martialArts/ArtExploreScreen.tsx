@@ -611,15 +611,30 @@ export function ArtExploreScreen({ artId }: { artId: string }) {
                 </div>
 
                 <div style={{ marginTop: '4px' }}>
-                  <PrimaryButton
-                    icon="play.fill"
-                    onClick={() => {
-                      haptic('success')
-                      startDojoDrill(drill, dojo.name, dojo.artId)
-                    }}
-                  >
-                    Start Drill ({drill.duration}s)
-                  </PrimaryButton>
+                  <button
+                      type="button"
+                      className="pressable"
+                      style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '5px',
+                        padding: '7px 14px',
+                        borderRadius: '12px',
+                        background: dojo.accent,
+                        color: '#000',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        border: 'none',
+                        cursor: 'pointer',
+                      }}
+                      onClick={() => {
+                        haptic('success')
+                        startDojoDrill(drill, dojo.name, dojo.artId)
+                      }}
+                    >
+                      <Icon name="play.fill" size={10} />
+                      Start Drill
+                    </button>
                 </div>
               </div>
             ))}

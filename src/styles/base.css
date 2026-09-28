@@ -242,6 +242,8 @@ img {
   will-change: transform;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
+  contain: layout style;
+  isolation: isolate;
 }
 
 .stack-layer::after {
@@ -268,7 +270,7 @@ img {
 }
 
 .stack-layer[data-covered='true'] {
-  transform: translate3d(-28%, 0, 0);
+  transform: translate3d(-22%, 0, 0);
   pointer-events: none;
 }
 
