@@ -359,7 +359,7 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
               </g>
 
 
-              {/* Left 5: Quads — pinned directly on the inner head (vastus medialis teardrop) */}
+              {/* Left 5: Quads — pinned on the inner part of the quads (vastus medialis) */}
               <line x1="56" y1="380" x2="168" y2="380" className={`anatomy-dashed ${isSel('quads') ? 'active' : ''}`} />
               <g className="anatomy-pin-target" onClick={() => clickPart('quads')}>
                 <circle cx="168" cy="380" r="22" fill="transparent" />
@@ -395,23 +395,7 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <text x="366" y="249" textAnchor="end" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Abs</text>
               </g>
 
-              {/* Right 4: Adductors — clean direct line to inner thigh adductor, zero line intersection */}
-              <line
-                x1="275"
-                y1="312"
-                x2="198"
-                y2="312"
-                className={`anatomy-dashed ${isSel('adductors') ? 'active' : ''}`}
-              />
-              <g className="anatomy-pin-target" onClick={() => clickPart('adductors')}>
-                <circle cx="198" cy="312" r="22" fill="transparent" />
-                {isSel('adductors') && <circle cx="198" cy="312" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="198" cy="312" r="7" className={`anatomy-pin-dot ${isSel('adductors') ? 'selected' : ''}`} />
-              </g>
-              <g className="anatomy-label-target" onClick={() => clickPart('adductors')}>
-                <rect x="275" y="293" width="97" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="366" y="317" textAnchor="end" className={`anatomy-callout-text ${isSel('adductors') ? 'selected' : ''}`}>Adductors</text>
-              </g>
+
             </svg>
           ) : (
             /* BACK VIEW SVG */

@@ -1,4 +1,5 @@
 import { type ReactNode, useMemo, useRef, useState } from 'react'
+import { createPortal } from 'react-dom'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { toast } from '../../components/Toast'
@@ -27,7 +28,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.7.6'
+const VERSION = '2.7.7'
 
 export function SettingsScreen({ back = false }: { back?: boolean }) {
   const settings = useSettings()
@@ -628,7 +629,7 @@ function ProfileCard() {
       </div>
       {artById(profile.primaryArt) === undefined && <span className="sr-only">No primary art</span>}
 
-      {pickerOpen && (
+      {pickerOpen && typeof document !== 'undefined' && createPortal(
         <div className="picker-modal-overlay" onClick={() => setPickerOpen(false)}>
           <div className="picker-modal-content avatar-picker" onClick={(e) => e.stopPropagation()}>
             <div className="picker-modal-header">
@@ -698,7 +699,8 @@ function ProfileCard() {
               </div>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </Card>
   )

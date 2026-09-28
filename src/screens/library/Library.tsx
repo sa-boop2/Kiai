@@ -351,9 +351,6 @@ export function LibraryScreen() {
         ) : (
           <>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px', margin: '4px 0 0' }}>
-              <span className="library-count-badge" style={{ fontSize: '12px', fontWeight: 600 }}>
-                {filteredPremade.length} {filteredPremade.length === 1 ? 'Kata' : 'Katas'}
-              </span>
               <div
                 className="glass pressable"
                 style={{
@@ -383,6 +380,9 @@ export function LibraryScreen() {
                   onChange={(val) => setPremadeSort(val as any)}
                 />
               </div>
+              <span className="library-count-badge" style={{ fontSize: '12px', fontWeight: 600 }}>
+                {filteredPremade.length} {filteredPremade.length === 1 ? 'Kata' : 'Katas'}
+              </span>
             </div>
 
             {filteredPremade.length === 0 ? (

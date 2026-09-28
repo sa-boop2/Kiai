@@ -154,7 +154,7 @@ export function HomeScreen() {
 
       {/* Your Kata's section */}
       <div className="home-katas-header" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 0 2px' }}>
-        <h2 className="home-section-title" style={{ textAlign: 'left', width: '100%', fontSize: '22px', fontWeight: 800, letterSpacing: '-0.025em', margin: 0 }}>
+        <h2 className="home-section-title" style={{ textAlign: 'left', width: '100%', fontSize: '28px', fontWeight: 850, letterSpacing: '-0.03em', margin: 0 }}>
           {t("Your Kata's")}
         </h2>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '2px' }}>
@@ -203,7 +203,30 @@ export function HomeScreen() {
             )}
           </div>
           <div>
-            <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+            <button
+              type="button"
+              className="pressable"
+              style={{
+                width: '42px',
+                height: '42px',
+                borderRadius: '50%',
+                display: 'grid',
+                placeItems: 'center',
+                background: 'linear-gradient(135deg, var(--accent) 0%, color-mix(in srgb, var(--accent) 80%, black) 100%)',
+                color: '#0e1017',
+                border: '1.5px solid rgba(255, 255, 255, 0.4)',
+                boxShadow: '0 4px 16px color-mix(in srgb, var(--accent) 45%, transparent), inset 0 1px 1px rgba(255, 255, 255, 0.6)',
+                cursor: 'pointer',
+                flexShrink: 0,
+              }}
+              aria-label="Create Kata"
+              onClick={() => {
+                haptic('selection')
+                nav.present({ name: 'editor', mode: { kind: 'create' } })
+              }}
+            >
+              <Icon name="plus" size={21} strokeWidth={3} style={{ color: '#000' }} />
+            </button>
           </div>
         </div>
       </div>
