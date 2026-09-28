@@ -27,7 +27,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.5.1'
+const VERSION = '2.5.2'
 
 export function SettingsScreen() {
   const settings = useSettings()
@@ -469,9 +469,9 @@ function ProfileCard() {
             setPickerOpen(true)
           }}
         >
-          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={54} />
-          <span className="avatar-camera">
-            <Icon name="camera.fill" size={11} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
+          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={46} />
+          <span className="avatar-camera" style={{ width: 19, height: 19, bottom: -1, right: -1 }}>
+            <Icon name="camera.fill" size={10} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); setPickerOpen(false) }} />
@@ -525,61 +525,61 @@ function ProfileCard() {
       {/* iOS 26 Integrated Minimalist Subelements */}
       <div
         style={{
-          background: 'rgba(255, 255, 255, 0.04)',
-          borderRadius: '14px',
-          padding: '8px 12px',
+          background: 'color-mix(in srgb, var(--text) 4%, transparent)',
+          borderRadius: '12px',
+          padding: '6px 10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          gap: '8px',
-          margin: '2px 0',
+          gap: '6px',
+          margin: '1px 0',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <RankEmblem rank={snapshot.rank} size={22} />
+        <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+          <RankEmblem rank={snapshot.rank} size={20} />
           <div style={{ textAlign: 'left' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.2 }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.15 }}>
               {t('Level %lld', snapshot.rank.level)}
             </span>
-            <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>
               {snapshot.rank.title}
             </span>
           </div>
         </div>
 
-        <div style={{ width: '1px', height: '22px', background: 'rgba(255, 255, 255, 0.1)' }} />
+        <div style={{ width: '1px', height: '18px', background: 'var(--separator)' }} />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
           <div
             style={{
-              width: 24,
-              height: 24,
-              borderRadius: 8,
-              background: 'rgba(239, 68, 68, 0.18)',
+              width: 22,
+              height: 22,
+              borderRadius: 7,
+              background: 'rgba(239, 68, 68, 0.16)',
               color: 'var(--ember)',
               display: 'grid',
               placeItems: 'center',
             }}
           >
-            <Icon name="flame.fill" size={14} />
+            <Icon name="flame.fill" size={13} />
           </div>
           <div style={{ textAlign: 'left' }}>
-            <span style={{ fontSize: '13px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.2 }}>
+            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.15 }}>
               {snapshot.currentStreak} {snapshot.currentStreak === 1 ? 'day' : 'days'}
             </span>
-            <span style={{ fontSize: '11px', color: 'var(--ember)', fontWeight: 600 }}>
+            <span style={{ fontSize: '10.5px', color: 'var(--ember)', fontWeight: 600 }}>
               Streak
             </span>
           </div>
         </div>
       </div>
 
-      <div style={{ margin: '2px 0 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', fontSize: '11px' }}>
+      <div style={{ margin: '1px 0 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px', fontSize: '10.5px' }}>
           <span style={{ color: 'var(--text-secondary)' }}>Rank progress</span>
           <span style={{ color: 'var(--text-tertiary)' }}>{Math.round(snapshot.rankProgress * 100)}%</span>
         </div>
-        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={5} label="Rank progress" />
+        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={4} label="Rank progress" />
       </div>
       {artById(profile.primaryArt) === undefined && <span className="sr-only">No primary art</span>}
 

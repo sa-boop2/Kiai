@@ -1465,21 +1465,43 @@
   gap: 6px;
   padding: 4px 6px 4px 10px;
   border-radius: 20px;
-  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.06);
   transition: all 220ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.picker-row:hover,
-.picker-row:active {
+:root:not([data-theme='dark']) .picker-row {
+  background: rgba(255, 255, 255, 0.78);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
+}
+
+:root:not([data-theme='dark']) .picker-row:hover,
+:root:not([data-theme='dark']) .picker-row:active {
+  background: rgba(255, 255, 255, 0.96);
+  border-color: rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06), inset 0 1px 1px #ffffff;
+}
+
+:root:not([data-theme='dark']) .picker-row.selected {
+  background: color-mix(in srgb, var(--accent) 12%, rgba(255, 255, 255, 0.88));
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  box-shadow: 0 4px 16px color-mix(in srgb, var(--accent) 18%, transparent), inset 0 1px 1px #ffffff;
+}
+
+:root[data-theme='dark'] .picker-row {
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.06);
+}
+
+:root[data-theme='dark'] .picker-row:hover,
+:root[data-theme='dark'] .picker-row:active {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.04));
   border-color: rgba(255, 255, 255, 0.16);
 }
 
-.picker-row.selected {
+:root[data-theme='dark'] .picker-row.selected {
   background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 18%, transparent), color-mix(in srgb, var(--accent) 8%, transparent));
   border-color: color-mix(in srgb, var(--accent) 45%, transparent);
   box-shadow: 0 6px 20px color-mix(in srgb, var(--accent) 22%, transparent), inset 0 1px 1px rgba(255, 255, 255, 0.2);
@@ -1541,7 +1563,7 @@
 .info-btn:hover,
 .info-btn:active {
   color: var(--text);
-  background: rgba(255, 255, 255, 0.08);
+  background: color-mix(in srgb, var(--text) 8%, transparent);
 }
 
 /* ============================================================================================

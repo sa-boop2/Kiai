@@ -448,7 +448,7 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
               margin: '10px 0 6px',
               padding: '10px 14px',
               borderRadius: '16px',
-              background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+              background: 'color-mix(in srgb, var(--accent) 8%, var(--surface))',
               border: '1px dashed color-mix(in srgb, var(--accent) 45%, transparent)',
               color: 'var(--accent)',
               fontSize: '14px',

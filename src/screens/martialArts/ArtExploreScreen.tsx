@@ -58,16 +58,11 @@ export function ArtExploreScreen({ artId }: { artId: string }) {
         {/* HERO BANNER: iOS 26 Liquid Glass Display */}
         {/* ============================================================ */}
         <div
+          className="dojo-hub-card"
           style={{
             position: 'relative',
-            borderRadius: '26px',
             padding: '24px 20px',
             margin: '8px 0 16px',
-            background: 'linear-gradient(150deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))',
-            border: '1px solid rgba(255, 255, 255, 0.14)',
-            backdropFilter: 'blur(32px)',
-            WebkitBackdropFilter: 'blur(32px)',
-            boxShadow: '0 16px 40px rgba(0, 0, 0, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.2)',
             overflow: 'hidden',
           }}
         >

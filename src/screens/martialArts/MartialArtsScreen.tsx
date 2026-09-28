@@ -208,84 +208,135 @@ export function MartialArtsScreen() {
                 description={t('Try adjusting your search query.')}
               />
             ) : (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-                  gap: '12px',
-                  width: '100%',
-                  boxSizing: 'border-box',
-                }}
-              >
+              <div className="art-browse-grid">
                 {filteredArts.map((art) => {
                   const artProfile = getDojoProfile(art.id)
                   const isActive = profile.primaryArt === art.id
                   return (
                     <div
                       key={art.id}
-                      className="pressable"
-                      style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'space-between',
-                        padding: '16px 14px',
-                        borderRadius: '24px',
-                        background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))',
-                        border: isActive ? `1.5px solid var(--accent)` : '1px solid rgba(255, 255, 255, 0.12)',
-                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
-                        backdropFilter: 'blur(24px)',
-                        WebkitBackdropFilter: 'blur(24px)',
-                        cursor: 'pointer',
-                        minHeight: '190px',
-                        position: 'relative',
-                        overflow: 'hidden',
-                      }}
+                      className={`art-grid-card art-theme-${art.id} pressable ${isActive ? 'active-dojo' : ''}`}
                       onClick={() => {
                         haptic('selection')
                         nav.push({ name: 'art', id: art.id })
                       }}
                     >
-                      {isActive && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '10px',
-                            right: '10px',
-                            width: '8px',
-                            height: '8px',
-                            borderRadius: '50%',
-                            background: 'var(--accent)',
-                            boxShadow: '0 0 8px var(--accent)',
-                          }}
-                        />
-                      )}
+                      {/* Stylized native script watermark */}
+                      <span className="art-watermark" aria-hidden="true">
+                        {artProfile.nativeName}
+                      </span>
 
                       <div>
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
-                          <span style={{ fontSize: '32px', lineHeight: 1 }}>{artProfile.flag}</span>
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>
-                            {artProfile.nativeName}
-                          </span>
+                        {/* Top Flag Capsule & Active/Origin Badge */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px', position: 'relative', zIndex: 1 }}>
+                          <div
+                            className="art-pill-flag"
+                            style={{
+                              background: 'color-mix(in srgb, var(--surface) 80%, transparent)',
+                              border: '1px solid var(--separator)',
+                            }}
+                          >
+                            <span style={{ fontSize: '15px', lineHeight: 1 }}>{artProfile.flag}</span>
+                            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                              {artProfile.country}
+                            </span>
+                          </div>
+
+                          {isActive ? (
+                            <span
+                              style={{
+                                fontSize: '9.5px',
+                                fontWeight: 800,
+                                letterSpacing: '0.04em',
+                                color: artProfile.accent,
+                                background: `color-mix(in srgb, ${artProfile.accent} 16%, transparent)`,
+                                border: `1px solid color-mix(in srgb, ${artProfile.accent} 35%, transparent)`,
+                                padding: '2px 6px',
+                                borderRadius: '999px',
+                                display: 'flex',
+                                alignItems: 'center',
+                                gap: '3px',
+                              }}
+                            >
+                              <Icon name="crown.fill" size={9} /> DOJO
+                            </span>
+                          ) : (
+                            <span
+                              style={{
+                                fontSize: '10px',
+                                fontWeight: 700,
+                                color: 'var(--text-tertiary)',
+                                letterSpacing: '0.02em',
+                              }}
+                            >
+                              {artProfile.nativeName}
+                            </span>
+                          )}
                         </div>
 
-                        <strong style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>
-                          {art.name}
-                        </strong>
+                        {/* Title and Tagline */}
+                        <div style={{ marginTop: '10px', position: 'relative', zIndex: 1 }}>
+                          <strong
+                            style={{
+                              fontSize: '15.5px',
+                              fontWeight: 800,
+                              color: 'var(--text)',
+                              display: 'block',
+                              lineHeight: 1.2,
+                              letterSpacing: '-0.01em',
+                            }}
+                          >
+                            {art.name}
+                          </strong>
+                          <p
+                            style={{
+                              margin: '3px 0 0',
+                              fontSize: '11px',
+                              color: 'var(--text-secondary)',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 2,
+                              WebkitBoxOrient: 'vertical',
+                              overflow: 'hidden',
+                              lineHeight: 1.35,
+                            }}
+                          >
+                            {artProfile.tagline}
+                          </p>
+                        </div>
 
-                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '8px' }}>
-                          {art.origin}
-                        </span>
-
-                        <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-tertiary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.35 }}>
-                          {artProfile.tagline}
-                        </p>
+                        {/* Focus Chips */}
+                        <div className="art-focus-chips" style={{ position: 'relative', zIndex: 1 }}>
+                          {(artProfile.mobilityFocus || art.focusAreas).slice(0, 2).map((focus, i) => (
+                            <span
+                              key={i}
+                              className="art-chip"
+                              style={{
+                                background: `color-mix(in srgb, ${artProfile.accent} 12%, var(--surface))`,
+                                color: 'var(--text)',
+                                border: `0.5px solid color-mix(in srgb, ${artProfile.accent} 25%, transparent)`,
+                              }}
+                            >
+                              {focus}
+                            </span>
+                          ))}
+                        </div>
                       </div>
 
-                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                      {/* Footer Info */}
+                      <div className="art-card-footer" style={{ position: 'relative', zIndex: 1 }}>
+                        <span
+                          style={{
+                            fontSize: '11px',
+                            fontWeight: 700,
+                            color: artProfile.accent,
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '3px',
+                          }}
+                        >
                           Explore <Icon name="chevron.right" size={11} strokeWidth={2.4} />
                         </span>
-                        <span style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>
+                        <span style={{ fontSize: '10.5px', color: 'var(--text-tertiary)', fontWeight: 500 }}>
                           {artProfile.routineGoals.length} routines
                         </span>
                       </div>
@@ -301,20 +352,7 @@ export function MartialArtsScreen() {
           /* ============================================================ */
           <>
             {/* 1. FLEXIBILITY MILESTONE WIDGET */}
-            <div
-              style={{
-                borderRadius: '26px',
-                padding: '18px',
-                background: 'linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02))',
-                border: '1px solid rgba(255, 255, 255, 0.14)',
-                backdropFilter: 'blur(30px)',
-                WebkitBackdropFilter: 'blur(30px)',
-                boxShadow: '0 12px 32px rgba(0, 0, 0, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.16)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '14px',
-              }}
-            >
+            <div className="dojo-hub-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
                   <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: currentDojo.accent }}>
@@ -619,7 +657,7 @@ export function MartialArtsScreen() {
                   width: '100%',
                   padding: '12px 16px',
                   borderRadius: '18px',
-                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+                  background: 'color-mix(in srgb, var(--accent) 8%, var(--surface))',
                   border: '1px dashed color-mix(in srgb, var(--accent) 45%, transparent)',
                   color: 'var(--accent)',
                   fontSize: '14px',
