@@ -74,7 +74,7 @@ export function HomeScreen() {
       {/* Header */}
       <div className="home-header">
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <KiaiLogo size={33} />
+          <KiaiLogo size={38} />
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
@@ -153,52 +153,56 @@ export function HomeScreen() {
       </div>
 
       {/* Your Kata's section */}
-      <div className="home-katas-header">
-        <h2 className="home-section-title">{t("Your Kata's")}</h2>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          {displayKatas.length > 1 && (
-            <>
-              <button
-                type="button"
-                className="reorder-toggle no-sheet-drag"
-                onClick={async () => {
-                  const choice = await confirmAction({
-                    title: 'Sort Katas',
-                    actions: [
-                      { label: 'Name (A-Z)' },
-                      { label: 'Duration (Shortest first)' },
-                      { label: 'Duration (Longest first)' },
-                      { label: 'Last Performed (Recent first)' },
-                    ],
-                    cancelLabel: 'Cancel',
-                  })
-                  if (choice === 0) {
-                    sortUserKatas((a, b) => a.name.localeCompare(b.name))
-                  } else if (choice === 1) {
-                    sortUserKatas((a, b) => estimatedSeconds(a, settings.restSeconds) - estimatedSeconds(b, settings.restSeconds))
-                  } else if (choice === 2) {
-                    sortUserKatas((a, b) => estimatedSeconds(b, settings.restSeconds) - estimatedSeconds(a, settings.restSeconds))
-                  } else if (choice === 3) {
-                    sortUserKatas((a, b) => (b.lastPerformedAt ?? 0) - (a.lastPerformedAt ?? 0))
-                  }
-                  if (choice !== null) haptic('success')
-                }}
-              >
-                Sort
-              </button>
-              <button
-                type="button"
-                className={`reorder-toggle no-sheet-drag ${reordering ? 'active' : ''}`}
-                onClick={() => {
-                  haptic('light')
-                  setReordering((v) => !v)
-                }}
-              >
-                {reordering ? 'Done' : 'Reorder'}
-              </button>
-            </>
-          )}
-          <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+      <div className="home-katas-header" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 0 8px' }}>
+        <h2 className="home-section-title" style={{ textAlign: 'center', width: '100%' }}>{t("Your Kata's")}</h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+            {displayKatas.length > 1 && (
+              <>
+                <button
+                  type="button"
+                  className="reorder-toggle no-sheet-drag"
+                  onClick={async () => {
+                    const choice = await confirmAction({
+                      title: 'Sort Katas',
+                      actions: [
+                        { label: 'Name (A-Z)' },
+                        { label: 'Duration (Shortest first)' },
+                        { label: 'Duration (Longest first)' },
+                        { label: 'Last Performed (Recent first)' },
+                      ],
+                      cancelLabel: 'Cancel',
+                    })
+                    if (choice === 0) {
+                      sortUserKatas((a, b) => a.name.localeCompare(b.name))
+                    } else if (choice === 1) {
+                      sortUserKatas((a, b) => estimatedSeconds(a, settings.restSeconds) - estimatedSeconds(b, settings.restSeconds))
+                    } else if (choice === 2) {
+                      sortUserKatas((a, b) => estimatedSeconds(b, settings.restSeconds) - estimatedSeconds(a, settings.restSeconds))
+                    } else if (choice === 3) {
+                      sortUserKatas((a, b) => (b.lastPerformedAt ?? 0) - (a.lastPerformedAt ?? 0))
+                    }
+                    if (choice !== null) haptic('success')
+                  }}
+                >
+                  Sort
+                </button>
+                <button
+                  type="button"
+                  className={`reorder-toggle no-sheet-drag ${reordering ? 'active' : ''}`}
+                  onClick={() => {
+                    haptic('light')
+                    setReordering((v) => !v)
+                  }}
+                >
+                  {reordering ? 'Done' : 'Reorder'}
+                </button>
+              </>
+            )}
+          </div>
+          <div>
+            <NavIconButton icon="plus" label="Create Kata" tinted onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })} />
+          </div>
         </div>
       </div>
 
@@ -238,9 +242,21 @@ export function HomeScreen() {
                   }}
                 >
                   {isReordering ? (
-                    <div className="reorder-controls no-sheet-drag">
+                    <div className="reorder-controls no-sheet-drag" style={{ width: '54px', height: '72px', display: 'flex', flexDirection: 'column', gap: '6px', justifyContent: 'center', alignItems: 'center' }}>
                       <button
                         type="button"
+                        className="pressable"
+                        style={{
+                          width: '46px',
+                          height: '32px',
+                          borderRadius: '10px',
+                          display: 'grid',
+                          placeItems: 'center',
+                          background: 'color-mix(in srgb, var(--accent) 14%, var(--surface-raised))',
+                          border: '1px solid color-mix(in srgb, var(--accent) 26%, transparent)',
+                          color: 'var(--accent)',
+                          cursor: 'pointer',
+                        }}
                         aria-label={`Move ${kata.name} up`}
                         disabled={index === 0}
                         onClick={(e) => {
@@ -248,10 +264,22 @@ export function HomeScreen() {
                           moveKata(index, index - 1)
                         }}
                       >
-                        <Icon name="arrow.up" size={16} strokeWidth={2.5} />
+                        <Icon name="arrow.up" size={20} strokeWidth={2.8} />
                       </button>
                       <button
                         type="button"
+                        className="pressable"
+                        style={{
+                          width: '46px',
+                          height: '32px',
+                          borderRadius: '10px',
+                          display: 'grid',
+                          placeItems: 'center',
+                          background: 'color-mix(in srgb, var(--accent) 14%, var(--surface-raised))',
+                          border: '1px solid color-mix(in srgb, var(--accent) 26%, transparent)',
+                          color: 'var(--accent)',
+                          cursor: 'pointer',
+                        }}
                         aria-label={`Move ${kata.name} down`}
                         disabled={index === displayKatas.length - 1}
                         onClick={(e) => {
@@ -259,7 +287,7 @@ export function HomeScreen() {
                           moveKata(index, index + 1)
                         }}
                       >
-                        <Icon name="arrow.down" size={16} strokeWidth={2.5} />
+                        <Icon name="arrow.down" size={20} strokeWidth={2.8} />
                       </button>
                     </div>
                   ) : (
@@ -285,6 +313,12 @@ export function HomeScreen() {
             ))}
           </div>
         )}
+      </div>
+
+      {/* Clean Bottom Brand & Version Footer */}
+      <div className="settings-footer" style={{ marginTop: '32px', paddingBottom: '20px' }}>
+        <KiaiMark size={28} />
+        <span>Kiai 2.7.5 · Web</span>
       </div>
     </Screen>
   )

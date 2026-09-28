@@ -27,7 +27,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.7.4'
+const VERSION = '2.7.5'
 
 export function SettingsScreen({ back = false }: { back?: boolean }) {
   const settings = useSettings()
@@ -469,9 +469,9 @@ function ProfileCard() {
             setPickerOpen(true)
           }}
         >
-          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={46} />
-          <span className="avatar-camera" style={{ width: 19, height: 19, bottom: -1, right: -1 }}>
-            <Icon name="camera.fill" size={10} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
+          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={64} />
+          <span className="avatar-camera" style={{ width: 22, height: 22, bottom: 0, right: 0 }}>
+            <Icon name="camera.fill" size={12} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); setPickerOpen(false) }} />
@@ -502,15 +502,26 @@ function ProfileCard() {
           ) : (
             <button
               type="button"
-              className="name-display pressable"
-              style={{ fontSize: '22px', fontWeight: 800, gap: '6px' }}
+              className="pressable"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                background: 'transparent',
+                border: 'none',
+                padding: 0,
+                cursor: 'pointer',
+                textAlign: 'left',
+              }}
               onClick={() => {
                 setDraftName(profile.name)
                 setEditing(true)
               }}
             >
-              <span style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>{displayName(profile.name)}</span>
-              <Icon name="pencil" size={14} strokeWidth={2.4} />
+              <span style={{ fontSize: '22px', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+                {displayName(profile.name)}
+              </span>
+              <Icon name="pencil" size={14} strokeWidth={2.6} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
             </button>
           )}
 

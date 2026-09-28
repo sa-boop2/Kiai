@@ -490,28 +490,20 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <line x1="186" y1="205" x2="186" y2="235" className="anatomy-striation" />
                 <line x1="194" y1="205" x2="194" y2="235" className="anatomy-striation" />
 
-                {/* Shorts / Pelvis */}
+                {/* Glutes (Gluteus Medius & Maximus — proportional & accurate anatomy, no black shorts) */}
                 <path
-                  d="M148 238 L232 238 L238 308 L195 312 L190 274 L185 312 L142 308 Z"
-                  fill="#0e1017"
-                  stroke="#1c202e"
-                  strokeWidth="1.5"
-                />
-
-                {/* Glutes (Gluteus Maximus & Medius) */}
-                <path
-                  d="M154 240 C154 274 170 300 185 300 L185 240 Z"
+                  d="M156 238 C154 266 168 290 186 290 L186 238 Z"
                   className={`anatomy-part selectable ${isSel('glutes') ? 'selected' : ''}`}
                   onClick={() => clickPart('glutes')}
                 />
-                <path d="M158 255 Q172 275 180 292" className="anatomy-striation" />
+                <path d="M160 252 Q172 270 180 284" className="anatomy-striation" />
 
                 <path
-                  d="M226 240 C226 274 210 300 195 300 L195 240 Z"
+                  d="M224 238 C226 266 212 290 194 290 L194 238 Z"
                   className={`anatomy-part selectable ${isSel('glutes') ? 'selected' : ''}`}
                   onClick={() => clickPart('glutes')}
                 />
-                <path d="M222 255 Q208 275 200 292" className="anatomy-striation" />
+                <path d="M220 252 Q208 270 200 284" className="anatomy-striation" />
 
                 
 
@@ -621,36 +613,40 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <text x="366" y="189" textAnchor="end" className={`anatomy-callout-text ${isSel('lats') ? 'selected' : ''}`}>Lats</text>
               </g>
 
-              {/* Right 3: Lower back (L-shaped line from screenshot) */}
-              <path
-                d="M366 275 L200 275 L195 219"
-                fill="none"
+              {/* Right 3: Lower back — clean direct horizontal line to lower back */}
+              <line
+                x1="275"
+                y1="219"
+                x2="198"
+                y2="219"
                 className={`anatomy-dashed ${isSel('lowerBack') ? 'active' : ''}`}
               />
               <g className="anatomy-pin-target" onClick={() => clickPart('lowerBack')}>
-                <circle cx="195" cy="219" r="22" fill="transparent" />
-                {isSel('lowerBack') && <circle cx="195" cy="219" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="195" cy="219" r="7" className={`anatomy-pin-dot ${isSel('lowerBack') ? 'selected' : ''}`} />
+                <circle cx="198" cy="219" r="22" fill="transparent" />
+                {isSel('lowerBack') && <circle cx="198" cy="219" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="198" cy="219" r="7" className={`anatomy-pin-dot ${isSel('lowerBack') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('lowerBack')}>
-                <rect x="275" y="255" width="97" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="366" y="272" textAnchor="end" className={`anatomy-callout-text ${isSel('lowerBack') ? 'selected' : ''}`}>Lower back</text>
+                <rect x="275" y="200" width="97" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="366" y="224" textAnchor="end" className={`anatomy-callout-text ${isSel('lowerBack') ? 'selected' : ''}`}>Lower back</text>
               </g>
 
-              {/* Right 4: Glutes (L-shaped line from screenshot) */}
-              <path
-                d="M366 325 L212 325 L212 272"
-                fill="none"
+              {/* Right 4: Glutes — clean direct line to gluteus center, zero line intersection */}
+              <line
+                x1="305"
+                y1="265"
+                x2="210"
+                y2="265"
                 className={`anatomy-dashed ${isSel('glutes') ? 'active' : ''}`}
               />
               <g className="anatomy-pin-target" onClick={() => clickPart('glutes')}>
-                <circle cx="212" cy="272" r="22" fill="transparent" />
-                {isSel('glutes') && <circle cx="212" cy="272" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="212" cy="272" r="7" className={`anatomy-pin-dot ${isSel('glutes') ? 'selected' : ''}`} />
+                <circle cx="210" cy="265" r="22" fill="transparent" />
+                {isSel('glutes') && <circle cx="210" cy="265" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="210" cy="265" r="7" className={`anatomy-pin-dot ${isSel('glutes') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('glutes')}>
-                <rect x="305" y="305" width="67" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="366" y="322" textAnchor="end" className={`anatomy-callout-text ${isSel('glutes') ? 'selected' : ''}`}>Glutes</text>
+                <rect x="305" y="246" width="67" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="366" y="270" textAnchor="end" className={`anatomy-callout-text ${isSel('glutes') ? 'selected' : ''}`}>Glutes</text>
               </g>
             </svg>
           )}

@@ -84,26 +84,30 @@ export function LibraryScreen() {
       titleTrailing={
         <button
           type="button"
-          className="pressable martial-arts-title-btn"
+          className="pressable"
           style={{
             display: 'flex',
+            flexDirection: 'column',
             alignItems: 'center',
-            gap: '6px',
-            padding: '6px 12px',
-            borderRadius: '999px',
-            background: 'color-mix(in srgb, var(--accent) 12%, var(--surface))',
-            border: '1px solid color-mix(in srgb, var(--accent) 28%, transparent)',
+            gap: '2px',
+            background: 'transparent',
+            border: 'none',
             cursor: 'pointer',
-            backdropFilter: 'blur(16px)',
+            padding: 0,
           }}
           onClick={() => {
             haptic('light')
             nav.push({ name: 'martialArts' })
           }}
-          aria-label="Martial Arts Disciplines"
+          aria-label="Martial Arts"
         >
-          <Icon name="figure.martial.arts" size={17} strokeWidth={2.4} style={{ color: 'var(--accent)' }} />
-          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.01em' }}>
+          <div
+            className="glass glass-icon-btn"
+            style={{ width: 38, height: 38, borderRadius: '50%', color: 'var(--text)' }}
+          >
+            <Icon name="figure.martial.arts" size={20} strokeWidth={2.3} />
+          </div>
+          <span style={{ fontSize: '9.5px', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '-0.01em', lineHeight: 1 }}>
             {t('Martial Arts')}
           </span>
         </button>

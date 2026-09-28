@@ -313,9 +313,6 @@ function PhaseEditor({
                   <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category as BodyRegion).tint} size={36} />
                   <span style={{ minWidth: 0 }}>
                     <strong>{exercise.name}</strong>
-                    <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
-                      {exercise.targets.slice(0, 2).join(' · ')}
-                    </span>
                   </span>
                 </button>
                 <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
