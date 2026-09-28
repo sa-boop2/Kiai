@@ -76,18 +76,21 @@ export function HomeScreen() {
         <div style={{ display: 'flex', alignItems: 'center' }}>
           <KiaiLogo size={28} />
         </div>
-        <button
-          type="button"
-          className="glass streak-pill pressable"
-          aria-label={`Streak: ${snapshot.currentStreak} days. Show quick stats`}
-          onClick={() => {
-            haptic('light')
-            nav.present({ name: 'quickStats' })
-          }}
-        >
-          <EmberBadge lit={snapshot.trainedToday} size={18} />
-          <span style={{ fontWeight: 600 }}>{snapshot.currentStreak}</span>
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+          <button
+            type="button"
+            className="glass streak-pill pressable"
+            aria-label={`Streak: ${snapshot.currentStreak} days. Show quick stats`}
+            onClick={() => {
+              haptic('light')
+              nav.present({ name: 'quickStats' })
+            }}
+          >
+            <EmberBadge lit={snapshot.trainedToday} size={18} />
+            <span style={{ fontWeight: 600 }}>{snapshot.currentStreak}</span>
+          </button>
+          <NavIconButton icon="figure.martial.arts" label="Martial Arts" onClick={() => nav.push({ name: 'martialArts' })} />
+        </div>
       </div>
 
       {/* Hero "Repeat Last Workout" Card */}

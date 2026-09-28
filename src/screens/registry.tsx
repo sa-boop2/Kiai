@@ -22,11 +22,9 @@ export function renderRoot(tab: Tab): ReactNode {
   switch (tab) {
     case 'home':
       return <HomeScreen />
-    case 'martialArts':
-      return <MartialArtsScreen />
     case 'library':
       return <LibraryScreen />
-        case 'analytics':
+    case 'analytics':
       return <AnalyticsScreen />
     case 'settings':
       return <SettingsScreen />
@@ -38,6 +36,8 @@ export function renderRoute(route: Route): ReactNode {
 
     case 'kata':
       return <KataDetailScreen id={route.id} />
+    case 'martialArts':
+      return <MartialArtsScreen back />
     case 'art':
       return <ArtExploreScreen artId={route.id} />
     case 'workoutSettings':
@@ -106,7 +106,6 @@ export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'la
       return { content: <div>Not found</div> }
   }
 }
-
 
 
 
