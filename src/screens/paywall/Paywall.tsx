@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { PrimaryButton } from '../../components/ui'
 import { Screen } from '../../components/Screen'
 import { Icon } from '../../components/Icon'
 import { toast } from '../../components/Toast'
@@ -34,6 +33,12 @@ export function PaywallScreen() {
     haptic('selection')
     setPremium(true)
     toast(t('Purchases restored.'), { icon: 'checkmark.seal.fill' })
+  }
+
+  const resetPremiumForDev = () => {
+    haptic('medium')
+    setPremium(false)
+    toast(t('Premium reset for dev testing.'), { icon: 'hammer.fill' })
   }
 
   return (
@@ -115,7 +120,7 @@ export function PaywallScreen() {
         </div>
 
         {/* Feature Rows */}
-        {!isPremium && (
+        {(
           <div
             style={{
               position: 'relative',
@@ -161,8 +166,8 @@ export function PaywallScreen() {
           </div>
         )}
 
-        {/* Pricing Plans — only show if not premium */}
-        {!isPremium && (
+        {/* Pricing Plans */}
+        {(
           <>
             {/* Plan Selector */}
             <div
@@ -318,35 +323,42 @@ export function PaywallScreen() {
           </>
         )}
 
-        {/* Already premium state */}
+        {/* Temporary dev-only reset for premium testing */}
         {isPremium && (
           <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
             <div
               style={{
-                padding: '18px',
-                borderRadius: '20px',
-                background: 'linear-gradient(145deg, rgba(251, 191, 36, 0.16), rgba(245, 158, 11, 0.06))',
-                border: '1.5px solid rgba(251, 191, 36, 0.4)',
-                boxShadow: '0 8px 24px rgba(245, 158, 11, 0.12)',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '14px',
+                padding: '12px 14px',
+                borderRadius: '16px',
+                background: 'color-mix(in srgb, var(--accent) 8%, var(--surface))',
+                border: '1px dashed color-mix(in srgb, var(--accent) 40%, var(--separator))',
                 textAlign: 'left',
               }}
             >
-              <Icon name="checkmark.seal.fill" size={32} style={{ color: '#f59e0b', flexShrink: 0 }} />
-              <div>
-                <strong style={{ fontSize: '16px', color: 'var(--text)', display: 'block', lineHeight: 1.25 }}>
-                  {t('All features unlocked')}
-                </strong>
-                <span style={{ fontSize: '13px', color: 'var(--text-secondary)' }}>
-                  {t('Thank you for supporting Kiai+!')}
-                </span>
-              </div>
+              <strong style={{ display: 'block', fontSize: '12px', lineHeight: 1.3, color: 'var(--text)' }}>
+                {t('Temporary Dev-Only: Reset Premium')}
+              </strong>
+              <span style={{ display: 'block', marginTop: '3px', fontSize: '11px', lineHeight: 1.4, color: 'var(--text-secondary)' }}>
+                {t('Use only for local QA to re-test the non-premium purchase flow.')}
+              </span>
             </div>
-            <PrimaryButton tint="var(--jade)" onClick={() => nav.back()}>
-              {t('Done')}
-            </PrimaryButton>
+            <button
+              type="button"
+              onClick={resetPremiumForDev}
+              style={{
+                width: '100%',
+                padding: '12px',
+                borderRadius: '14px',
+                border: '1px solid color-mix(in srgb, var(--accent) 35%, transparent)',
+                background: 'color-mix(in srgb, var(--accent) 12%, var(--surface))',
+                color: 'var(--text)',
+                fontSize: '13px',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              {t('Reset Premium (Temporary Dev Action)')}
+            </button>
           </div>
         )}
       </div>

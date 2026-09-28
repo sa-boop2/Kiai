@@ -368,53 +368,30 @@ export function PremadeWorkoutsScreen() {
             }
           />
         ) : (
-          <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
+          <div className="library-katas-grid premade-katas-grid">
             {filtered.map((kata) => (
-              <div
+              <button
                 key={kata.uuid}
-                className="card pressable"
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  justifyContent: 'space-between',
-                  padding: '14px',
-                  borderRadius: '18px',
-                  background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
-                  border: '1px solid rgba(255, 255, 255, 0.12)',
-                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
-                  backdropFilter: 'blur(20px)',
-                  WebkitBackdropFilter: 'blur(20px)',
-                  cursor: 'pointer',
-                  minHeight: '160px',
-                }}
+                type="button"
+                className="premade-kata-card pressable"
                 onClick={() => {
                   haptic('selection')
                   nav.push({ name: 'kata', id: kata.uuid })
                 }}
               >
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                    <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={42} />
-                    <DifficultyBadge difficulty={kata.difficulty} pill />
-                  </div>
-                  <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                    {kata.name}
-                  </strong>
-                  <p style={{ margin: '3px 0 0', fontSize: '12px', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>
-                    {kata.subtitle}
-                  </p>
+                <div className="premade-kata-card-top">
+                  <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={42} />
+                  <DifficultyBadge difficulty={kata.difficulty} pill />
                 </div>
-
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '11px', color: 'var(--text-tertiary)' }}>
-                  <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                <strong className="premade-kata-card-title">{kata.name}</strong>
+                <div className="premade-kata-card-bottom">
+                  <span className="premade-kata-card-duration">
                     <Icon name="clock" size={11} strokeWidth={2.4} />
                     {minutes(estimatedSeconds(kata, settings.restSeconds))}
                   </span>
-                  <span>
-                    {kata.items.length} drills
-                  </span>
+                  <Icon name="chevron.right" size={12} />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
@@ -422,7 +399,6 @@ export function PremadeWorkoutsScreen() {
     </Screen>
   )
 }
-
 
 
 
