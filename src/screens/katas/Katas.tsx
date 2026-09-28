@@ -277,7 +277,6 @@ export function ExerciseRow({ exercise, trailing, onClick, children }: { exercis
         {children}
       </span>
       {trailing && <span className="exercise-row-trailing tabular">{trailing}</span>}
-      <MiniMuscleBadge exercise={exercise} size={36} />
       <Icon name="info.circle" size={19} className="muted-icon" />
     </button>
   )
@@ -344,9 +343,9 @@ export function PremadeWorkoutsScreen() {
     >
       <div className="list-stack" style={{ paddingBottom: '24px' }}>
         <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
-          <h2 style={{ fontSize: '18px' }}>Dojo Curated Routines</h2>
+          <h2 style={{ fontSize: '18px' }}>{t('Dojo Curated Routines')}</h2>
           <span className="library-count-badge">
-            {filtered.length} {filtered.length === 1 ? 'routine' : 'routines'}
+            {t('%lld routines', filtered.length)}
           </span>
         </div>
 
@@ -423,5 +422,8 @@ export function PremadeWorkoutsScreen() {
     </Screen>
   )
 }
+
+
+
 
 

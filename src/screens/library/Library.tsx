@@ -144,7 +144,7 @@ export function LibraryScreen() {
             <BodyDiagram
               selectedPart={null}
               onSelectPart={(part) => {
-                if (part) nav.push({ name: 'muscle', part })
+                if (part) nav.present({ name: 'muscle', part })
               }}
             />
 

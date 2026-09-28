@@ -1,4 +1,4 @@
-﻿import { useMemo } from 'react'
+import { useMemo } from 'react'
 import {
   PREMADE_UUID_PREFIX,
   PREMADE_WORKOUTS,
@@ -12,7 +12,6 @@ import type { Kata, Technique, WorkoutTemplate } from '../data/types'
 import { audio } from './audio'
 import { nav } from './nav'
 import { planForTechnique, planForTemplate, type WorkoutPlan } from './plan'
-import { applyScienceProgression } from './science'
 import { type AppState, getState, usePremadeLastPerformed, useUserKatas } from './store'
 
 // Kata lookups ------------------------------------------------------------------------------------
@@ -53,7 +52,6 @@ function present(plan: WorkoutPlan) {
 
 export function startTemplate(template: WorkoutTemplate) {
   const plan = planForTemplate(template, getState().settings);
-  plan.steps = applyScienceProgression(plan.steps, getState().flexibilityRecords);
   present(plan)
 }
 

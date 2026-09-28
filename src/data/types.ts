@@ -49,6 +49,7 @@ export interface WorkoutItem {
   duration: number
   phase: Phase | string
   note?: string
+  pnf?: boolean
 }
 
 export interface PremadeWorkout {

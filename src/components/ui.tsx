@@ -1,4 +1,4 @@
-﻿import { type CSSProperties, type ReactNode, useId, useRef } from 'react'
+import { type CSSProperties, type ReactNode, useId, useRef } from 'react'
 import { difficultyMeta, tintColor } from '../data/meta'
 import type { Rank } from '../data/levels'
 import { haptic } from '../lib/haptics'
@@ -12,8 +12,8 @@ const tintStyle = (tint: string | undefined, extra?: CSSProperties): CSSProperti
 
 /**
  * The Kiai mark: a single tapered brushstroke swept most of the way around a circle, like an
- * ensō painted in one confident stroke that lifts off toward the end, plus the spark it left
- * behind. A fixed path (not a uniform stroked circle) — the taper is what makes it read as ink
+ * enso painted in one confident stroke that lifts off toward the end, plus the spark it left
+ * behind. A fixed path (not a uniform stroked circle) � the taper is what makes it read as ink
  * rather than a progress ring. Mirrors DesignSystem/KiaiLogo.swift's `BrushstrokeRing` exactly.
  */
 export function KiaiMark({ size = 32, tint, className }: { size?: number; tint?: string; className?: string }) {
@@ -223,9 +223,14 @@ export function DifficultyBadge({ difficulty, pill }: { difficulty: string; pill
 }
 
 export function SymbolTile({ icon, tint, size = 48 }: { icon: string; tint?: string; size?: number }) {
+  const isEmoji = !/^[a-z0-9_.-]+$/.test(icon)
   return (
     <span className="symbol-tile" style={tintStyle(tint, { width: size, height: size, borderRadius: size * 0.3 })}>
-      <Icon name={icon} size={Math.round(size * 0.5)} strokeWidth={size >= 56 ? 1.8 : 2} />
+      {isEmoji ? (
+        <span style={{ fontSize: Math.round(size * 0.45), lineHeight: 1 }}>{icon}</span>
+      ) : (
+        <Icon name={icon} size={Math.round(size * 0.5)} strokeWidth={size >= 56 ? 1.8 : 2} />
+      )}
     </span>
   )
 }
@@ -514,7 +519,7 @@ export function Stepper({
 }
 
 /**
- * A row that opens the platform's native picker (the iOS wheel on iPhone) — the web analogue of a
+ * A row that opens the platform's native picker (the iOS wheel on iPhone) � the web analogue of a
  * SwiftUI menu/navigation Picker.
  */
 export function NativeSelect<T extends string | number>({
@@ -581,5 +586,7 @@ export function SettingsRow({
   }
   return <div className="settings-row">{content}</div>
 }
+
+
 
 

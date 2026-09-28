@@ -23,10 +23,12 @@ interface DraftItem {
   slug: string
   duration: number
   note?: string
+  pnf?: boolean
 }
 
 let draftCounter = 0
-const draft = (slug: string, duration: number, note?: string): DraftItem => ({ id: ++draftCounter, slug, duration, note })
+const draft = (slug: string, duration: number, note?: string
+  pnf?: boolean): DraftItem => ({ id: ++draftCounter, slug, duration, note })
 
 /** Create / edit / customise a Kata. Works on a local draft, so Cancel never changes data. */
 export function EditorSheet({ mode }: { mode: EditorMode }) {
@@ -39,7 +41,7 @@ export function EditorSheet({ mode }: { mode: EditorMode }) {
       mode.kind === 'edit' || mode.kind === 'duplicate' ? findKata(mode.id) : undefined
     const template = mode.kind === 'template' ? mode.template : undefined
     const items = source?.items ?? template?.items ?? NEW_KATA_ITEMS
-    const byPhase = (phase: Phase) => items.filter((i) => i.phase === phase).map((i) => draft(i.slug, i.duration, i.note))
+    const byPhase = (phase: Phase) => items.filter((i) => i.phase === phase).map((i) => draft(i.slug, i.duration, i.note, i.pnf))
     return {
       name:
         mode.kind === 'edit' ? (source?.name ?? '')
@@ -74,7 +76,7 @@ export function EditorSheet({ mode }: { mode: EditorMode }) {
           ? 'Add at least one cool-down exercise.'
           : null
 
-  const allItems = (['warmup', 'main', 'cooldown'] as Phase[]).flatMap((phase) => items[phase].map((i) => ({ slug: i.slug, duration: i.duration, phase, note: i.note })))
+  const allItems = (['warmup', 'main', 'cooldown'] as Phase[]).flatMap((phase) => items[phase].map((i) => ({ slug: i.slug, duration: i.duration, phase, note: i.note, pnf: i.pnf })))
   const total = estimatedSeconds({ items: allItems, restSeconds: rest }, settings.restSeconds)
 
   const update = (phase: Phase, fn: (list: DraftItem[]) => DraftItem[]) => setItems((current) => ({ ...current, [phase]: fn(current[phase]) }))
@@ -312,7 +314,6 @@ function PhaseEditor({
                     </span>
                   </span>
                 </button>
-                <MiniMuscleBadge exercise={exercise} size={32} />
                 <div className="duration-edit">
                   <input
                     type="number"
@@ -451,7 +452,6 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
                       </span>
                     </span>
                   </button>
-                  <MiniMuscleBadge exercise={exercise} size={32} style={{ marginRight: '6px' }} />
                   <button type="button" className="info-btn" aria-label={`About ${exercise.name}`} onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}>
                     <Icon name="info.circle" size={21} />
                   </button>
@@ -464,3 +464,5 @@ export function PickerSheet({ phase, onAdd }: { phase: Phase; onAdd: (slugs: str
     </>
   )
 }
+
+

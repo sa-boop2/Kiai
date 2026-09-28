@@ -1,4 +1,4 @@
-﻿import type { AppState } from './store'
+import type { AppState } from './store'
 import { makeSnapshot } from './progression'
 
 export interface Achievement {
@@ -11,6 +11,39 @@ export interface Achievement {
 }
 
 export const ACHIEVEMENTS: Achievement[] = [
+  {
+    id: 'technique_driller',
+    title: 'Technique Driller',
+    description: 'Complete your first Martial Art Technique drill.',
+    icon: 'figure.martial.arts',
+    tint: 'var(--slate)',
+    progress: (state) => {
+      const drills = state.sessions.filter((s) => s.kind === 'technique').length
+      return { current: Math.min(drills, 1), max: 1, unlocked: drills >= 1 }
+    },
+  },
+  {
+    id: 'kata_grandmaster',
+    title: 'Kata Grandmaster',
+    description: 'Design and save 15 custom Kata routines.',
+    icon: 'text.book.closed.fill',
+    tint: 'var(--slate)',
+    progress: (state) => {
+      const customKatas = state.katas.filter((k) => !k.isPremade).length
+      return { current: Math.min(customKatas, 15), max: 15, unlocked: customKatas >= 15 }
+    },
+  },
+  {
+    id: 'early_bird',
+    title: 'Early Riser Dojo',
+    description: 'Complete a mobility session before 8:00 AM.',
+    icon: 'sun.max.fill',
+    tint: 'var(--gold)',
+    progress: (state) => {
+      const early = state.sessions.filter((s) => new Date(s.startedAt).getHours() < 8).length
+      return { current: Math.min(early, 1), max: 1, unlocked: early >= 1 }
+    },
+  },
   {
     id: 'first_session',
     title: 'First Step',
@@ -197,4 +230,5 @@ export function computeAchievements(state: AppState) {
     }
   })
 }
+
 

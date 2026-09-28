@@ -153,11 +153,7 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
 
   return (
     <div className={`screen ${back ? 'pushed-screen' : ''}`} ref={screenRef}>
-      {back && (
-        <div className="screen-grabber-zone" aria-hidden="true">
-          <span className="screen-grabber" />
-        </div>
-      )}
+
       <div className={`screen-scroll ${bottomBar ? 'has-bottom-bar' : ''}`} ref={scrollRef} onScroll={onScroll}>
         {largeTitle && !hideNavBar && <h1 className="large-title">{title}</h1>}
         {header}
@@ -213,3 +209,5 @@ export function NavIconButton({ icon, label, onClick, tinted }: { icon: string; 
     </button>
   )
 }
+
+

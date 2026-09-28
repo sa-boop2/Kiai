@@ -344,16 +344,20 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <text x="14" y="294" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Obliques</text>
               </g>
 
-              {/* Left 4.5: Abductors */}
-              <line x1="72" y1="335" x2="142" y2="335" className={`anatomy-dashed ${isSel('hipFlexors') ? 'active' : ''}`} />
+              {/* Right 4.5: Abductors */}
+              <path
+                d="M366 360 L248 360 L238 335"
+                fill="none"
+                className={`anatomy-dashed ${isSel('hipFlexors') ? 'active' : ''}`}
+              />
               <g className="anatomy-pin-target" onClick={() => clickPart('hipFlexors')}>
-                <circle cx="142" cy="335" r="22" fill="transparent" />
-                {isSel('hipFlexors') && <circle cx="142" cy="335" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="142" cy="335" r="7" className={`anatomy-pin-dot ${isSel('hipFlexors') ? 'selected' : ''}`} />
+                <circle cx="238" cy="335" r="22" fill="transparent" />
+                {isSel('hipFlexors') && <circle cx="238" cy="335" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="238" cy="335" r="7" className={`anatomy-pin-dot ${isSel('hipFlexors') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('hipFlexors')}>
-                <rect x="8" y="315" width="82" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="14" y="339" className={`anatomy-callout-text ${isSel('hipFlexors') ? 'selected' : ''}`}>Abductors</text>
+                <rect x="275" y="340" width="97" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="366" y="364" textAnchor="end" className={`anatomy-callout-text ${isSel('hipFlexors') ? 'selected' : ''}`}>Abductors</text>
               </g>
 
               {/* Left 5: Quads */}
@@ -393,15 +397,19 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
               </g>
 
               {/* Right 4: Adductors */}
-              <line x1="295" y1="390" x2="199" y2="325" className={`anatomy-dashed ${isSel('adductors') ? 'active' : ''}`} />
+              <path
+                d="M366 405 L240 405 L199 325"
+                fill="none"
+                className={`anatomy-dashed ${isSel('adductors') ? 'active' : ''}`}
+              />
               <g className="anatomy-pin-target" onClick={() => clickPart('adductors')}>
                 <circle cx="199" cy="325" r="22" fill="transparent" />
                 {isSel('adductors') && <circle cx="199" cy="325" r="14" className="anatomy-pulse-ring" />}
                 <circle cx="199" cy="325" r="7" className={`anatomy-pin-dot ${isSel('adductors') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('adductors')}>
-                <rect x="285" y="370" width="87" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="366" y="394" textAnchor="end" className={`anatomy-callout-text ${isSel('adductors') ? 'selected' : ''}`}>Adductors</text>
+                <rect x="275" y="385" width="97" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="366" y="409" textAnchor="end" className={`anatomy-callout-text ${isSel('adductors') ? 'selected' : ''}`}>Adductors</text>
               </g>
             </svg>
           ) : (

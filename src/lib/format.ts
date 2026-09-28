@@ -82,3 +82,4 @@ export function toEasternArabicTimer(totalSeconds: number): string {
 
 /** Backwards-compatible alias for existing imports. */
 export const toKanjiTimer = toEasternArabicTimer
+

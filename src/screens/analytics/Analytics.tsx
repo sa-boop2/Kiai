@@ -641,9 +641,9 @@ export function AchievementsScreen() {
         >
           <Icon name="trophy.fill" size={30} />
         </div>
-        <h2 style={{ margin: 0, fontSize: '22px', fontWeight: 700 }}>Martial Milestones</h2>
+        <h2 style={{ margin: 0, fontSize: '22px', fontWeight: 700 }}>{t('Martial Milestones')}</h2>
         <p className="secondary small" style={{ margin: 0, maxWidth: '290px' }}>
-          Honor your training consistency, flexibility breakthroughs, and dedication to the dojo.
+          {t('Honor your training consistency, flexibility breakthroughs, and dedication to the dojo.')}
         </p>
         <span
           style={{
@@ -656,14 +656,14 @@ export function AchievementsScreen() {
             marginTop: '4px',
           }}
         >
-          {unlockedCount} of {achievements.length} Unlocked
+          {t('%lld of %lld Unlocked', unlockedCount, achievements.length)}
         </span>
         <div style={{ width: '100%', maxWidth: '240px', marginTop: '6px' }}>
           <ProgressBar value={unlockedCount / achievements.length} tint="var(--gold)" height={7} />
         </div>
       </Card>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '10px' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '12px', width: '100%', boxSizing: 'border-box' }}>
         {achievements.map((item) => (
           <Card
             key={item.id}
@@ -888,6 +888,9 @@ export function StreakDetailScreen() {
     </Screen>
   )
 }
+
+
+
 
 
 

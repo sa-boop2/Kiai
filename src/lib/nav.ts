@@ -1,4 +1,4 @@
-﻿import { useSyncExternalStore } from 'react'
+import { useSyncExternalStore } from 'react'
 import type { FlexibilityBenchmark, HowTo, Phase, WorkoutTemplate } from '../data/types'
 import type { WorkoutPlan } from './plan'
 
@@ -21,7 +21,6 @@ export type Route =
   | { name: 'terms' }
   | { name: 'faq' }
   | { name: 'achievements' }
-  | { name: 'muscle'; part: string }
   | { name: 'streak' }
   | { name: 'paywall' }
 
@@ -38,6 +37,7 @@ export type SheetRoute =
   | { name: 'editor'; mode: EditorMode }
   | { name: 'picker'; phase: Phase; onAdd: (slugs: string[]) => void }
   | { name: 'quickStats' }
+  | { name: 'muscle'; part: string }
   | { name: 'day'; day: number }
   | { name: 'artLearnMore'; artId: string }
   | { name: 'logFlexibility'; benchmark: FlexibilityBenchmark }
@@ -135,7 +135,7 @@ class NavStore {
 
   /** Pops the top-most sheet or pushed screen synchronously to prevent transition glitching. */
   back() {
-    // A workout in progress is locked in — every exit path (gesture, hardware back, sheet close)
+    // A workout in progress is locked in � every exit path (gesture, hardware back, sheet close)
     // routes through the player's own confirm-and-pause flow instead of silently popping underneath it.
     if (this.state.plan) {
       window.dispatchEvent(new CustomEvent('kiai:request-quit'))
@@ -215,3 +215,4 @@ export const nav = new NavStore()
 export function useNav(): NavState {
   return useSyncExternalStore(nav.subscribe, nav.getState, nav.getState)
 }
+

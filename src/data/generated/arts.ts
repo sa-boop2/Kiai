@@ -8,7 +8,7 @@ export const MARTIAL_ARTS: MartialArt[] = [
     "id": "karate",
     "name": "Karate",
     "origin": "Okinawa, Japan",
-    "symbol": "figure.martial.arts",
+    "symbol": "????",
     "tint": "ember",
     "tagline": "Deep stances. Sharp kicks. Total control.",
     "about": "Karate builds explosive, linear techniques on a foundation of low, stable stances. Flexibility in the hips and hamstrings lets kicks reach head height without sacrificing balance, while single-leg control keeps you rooted through every technique.",
@@ -349,7 +349,7 @@ export const MARTIAL_ARTS: MartialArt[] = [
     "id": "taekwondo",
     "name": "Taekwondo",
     "origin": "Korea",
-    "symbol": "figure.martial.arts",
+    "symbol": "????",
     "tint": "indigo",
     "tagline": "Kick higher than your worries.",
     "about": "Taekwondo is famous for fast, high and spinning kicks. Split-level flexibility and a rock-steady standing leg are the foundations — without them, height and speed never come together.",
@@ -585,3 +585,4 @@ export const MARTIAL_ARTS: MartialArt[] = [
     ]
   }
 ]
+

@@ -1,4 +1,4 @@
-﻿import type { ReactNode } from 'react'
+import type { ReactNode } from 'react'
 import { SheetHeader } from '../components/SheetHost'
 import type { Route, SheetRoute, Tab } from '../lib/nav'
 import { AnalyticsScreen, AchievementsScreen, DaySheet, FlexibilityScreen, LogFlexibilitySheet, StreakDetailScreen } from './analytics/Analytics'
@@ -31,8 +31,7 @@ export function renderRoot(tab: Tab): ReactNode {
 
 export function renderRoute(route: Route): ReactNode {
   switch (route.name) {
-    case 'muscle':
-      return <MuscleDetailScreen part={route.part as any} />
+
     case 'kata':
       return <KataDetailScreen id={route.id} />
     case 'workoutSettings':
@@ -95,10 +94,13 @@ export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'la
       return { content: <LogFlexibilitySheet benchmark={route.benchmark} />, size: 'medium' }
     case 'customExercise':
       return { content: <CustomExerciseSheet onSave={route.onSave} /> }
+    case 'muscle':
+      return { content: <MuscleDetailScreen part={(route as any).part as any} />, size: 'medium' }
     default:
       return { content: <div>Not found</div> }
   }
 }
+
 
 
 

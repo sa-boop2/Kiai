@@ -1,4 +1,4 @@
-﻿import { Screen } from '../../components/Screen'
+import { SheetHeader } from '../../components/SheetHost'
 import { BodyPart } from '../../components/BodyDiagram'
 import { useAllExercises, useFavoriteExercises } from '../../lib/store'
 import { useMemo } from 'react'
@@ -63,7 +63,7 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
         <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 12px' }}>
           <h2 style={{ fontSize: '18px' }}>{title} Stretches</h2>
           <span className="library-count-badge">
-            {exercises.length} {exercises.length === 1 ? 'exercise' : 'exercises'}
+            {t('%lld exercises', exercises.length)}
           </span>
         </div>
 
@@ -121,9 +121,9 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
                   >
                     <Icon name={isFav ? "star.fill" : "star"} size={18} strokeWidth={isFav ? 0 : 2.5} />
                   </button>
-                  <SymbolTile icon={exercise.symbol} size={48} tint={meta.tint} />
+                  <SymbolTile icon={exercise.symbol} size={64} tint={meta.tint} />
                   <div>
-                    <div style={{ fontSize: '14px', fontWeight: 600, color: 'var(--text)', lineHeight: 1.2 }}>{exercise.name}</div>
+                    <div style={{ fontSize: '16px', fontWeight: 700, color: 'var(--text)', lineHeight: 1.2 }}>{exercise.name}</div>
                     <div style={{ fontSize: '12px', color: 'var(--text-secondary)', marginTop: '4px' }}>{exercise.duration}s</div>
                   </div>
                 </div>
@@ -135,4 +135,6 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
     </Screen>
   )
 }
+
+
 

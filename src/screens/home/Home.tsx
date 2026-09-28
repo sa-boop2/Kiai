@@ -215,17 +215,6 @@ export function HomeScreen() {
                 <PrimaryButton icon="plus" full={false} onClick={() => nav.present({ name: 'editor', mode: { kind: 'create' } })}>
                   {t('Create your first Kata')}
                 </PrimaryButton>
-                <button
-                  type="button"
-                  className="text-btn"
-                  onClick={() => {
-                    haptic('selection')
-                    nav.push({ name: 'premadeWorkouts' })
-                  }}
-                  style={{ fontSize: '14px', color: 'var(--accent)', fontWeight: 600 }}
-                >
-                  Or browse Premade Katas →
-                </button>
               </div>
             }
           />
@@ -295,52 +284,6 @@ export function HomeScreen() {
                   {!isReordering && <Icon name="chevron.right" size={16} strokeWidth={2.6} className="kata-row-chevron" />}
                 </div>
               </div>
-            ))}
-
-            {/* Intelligent Browse Premade Katas entry placed cleanly BELOW custom katas */}
-            <button
-              type="button"
-              className="card browse-premade-card pressable"
-              onClick={() => {
-                haptic('selection')
-                nav.push({ name: 'premadeWorkouts' })
-              }}
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '13px 16px',
-                marginTop: '4px',
-                background: 'color-mix(in srgb, var(--accent) 7%, var(--surface))',
-                border: '1px dashed color-mix(in srgb, var(--accent) 30%, var(--stroke))',
-                borderRadius: 'var(--radius-medium)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <div
-                  style={{
-                    width: 36,
-                    height: 36,
-                    borderRadius: 999,
-                    background: 'color-mix(in srgb, var(--accent) 16%, transparent)',
-                    color: 'var(--accent)',
-                    display: 'grid',
-                    placeItems: 'center',
-                  }}
-                >
-                  <Icon name="books.vertical.fill" size={16} strokeWidth={2.4} />
-                </div>
-                <div style={{ textAlign: 'left' }}>
-                  <div style={{ fontWeight: 600, fontSize: '14.5px', color: 'var(--text)' }}>
-                    Browse Dojo Katas
-                  </div>
-                  <div style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
-                    Explore curated routines for all flexibility levels
-                  </div>
-                </div>
-              </div>
-              <Icon name="chevron.right" size={14} className="muted" />
-            </button>
           </div>
         )}
       </div>
