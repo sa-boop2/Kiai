@@ -4214,13 +4214,11 @@
 .art-grid-card {
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   position: relative;
   overflow: hidden;
-  padding: 12px 12px 10px;
+  padding: 10px;
   border-radius: 24px;
-  cursor: pointer;
-  min-height: 190px;
+  min-height: 124px;
   min-width: 0;
   box-sizing: border-box;
   backdrop-filter: blur(32px) saturate(200%);
@@ -4229,7 +4227,7 @@
               box-shadow 240ms ease,
               border-color 220ms ease;
   user-select: none;
-  gap: 6px;
+  gap: 8px;
 }
 
 .art-grid-card:hover { transform: translateY(-2px) scale(1.008); }
@@ -4382,6 +4380,80 @@
 }
 :root[data-theme='dark'] .art-card-footer {
   border-top-color: rgba(255,255,255,0.1);
+}
+
+.art-card-trigger {
+  all: unset;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  cursor: pointer;
+}
+
+.art-card-trigger:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 16px;
+}
+
+.art-inactive-badge {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  opacity: 0.85;
+}
+
+.art-card-details {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 8px 2px 2px;
+}
+
+.art-card-details p {
+  margin: 0;
+  font-size: 11.5px;
+  line-height: 1.35;
+  color: var(--text-secondary);
+}
+
+.art-card-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+
+.art-card-action {
+  border: 1px solid var(--separator);
+  background: color-mix(in srgb, var(--surface) 72%, transparent);
+  color: var(--text);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.art-card-action-primary {
+  border-color: color-mix(in srgb, var(--accent) 35%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
+}
+
+.art-card-action-secondary {
+  color: var(--text-secondary);
+}
+
+.art-card-active-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--text-secondary);
 }
 
 /* ── Active Dojo Ring ── */
@@ -4722,4 +4794,117 @@
 :root[data-theme='dark'] .dojo-sub-card:hover {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
   border-color: rgba(255, 255, 255, 0.15);
+}
+
+.dojo-disclosure {
+  margin-top: 12px;
+}
+
+.dojo-disclosure summary {
+  list-style: none;
+}
+
+.dojo-disclosure summary::-webkit-details-marker {
+  display: none;
+}
+
+.dojo-disclosure-summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 0 4px;
+  cursor: pointer;
+}
+
+.dojo-disclosure-summary span {
+  display: flex;
+  flex-direction: column;
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.dojo-disclosure-summary small {
+  margin-top: 2px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.dojo-disclosure > .dojo-hub-card,
+.dojo-disclosure > div {
+  margin-top: 8px;
+}
+
+.premade-katas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.premade-kata-card {
+  border: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border-radius: 18px;
+  text-align: left;
+  min-height: 138px;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+.premade-kata-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.premade-kata-card-top,
+.premade-kata-card-bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.premade-kata-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.25;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.premade-kata-card-duration {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-tertiary);
+}
+
+@media (max-width: 700px) {
+  .premade-katas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .art-grid-card,
+  .dojo-hub-card,
+  .dojo-sub-card {
+    transition: none !important;
+  }
 }

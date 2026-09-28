@@ -29,11 +29,19 @@ export function MartialArtsScreen() {
   useEffect(() => {
     if (profile.primaryArt) {
       setBrowseMode(false)
+      setExpandedArtId(profile.primaryArt)
     }
   }, [profile.primaryArt])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<string | null>(null)
   const [expandedRoutineId, setExpandedRoutineId] = useState<string | null>(null)
+  const [expandedArtId, setExpandedArtId] = useState<string | null>(profile.primaryArt || null)
+  const [openSections, setOpenSections] = useState({
+    milestone: false,
+    routines: false,
+    custom: false,
+    drills: false,
+  })
   const [, setRefreshKey] = useState(0)
 
   // Current primary art profile (fallback to karate if not chosen)
@@ -84,6 +92,7 @@ export function MartialArtsScreen() {
     haptic('success')
     updateProfile({ primaryArt: artId })
     setBrowseMode(false)
+    setExpandedArtId(artId)
     toast(`${artName} is now your active Dojo!`, { icon: 'crown.fill' })
   }
 
@@ -241,7 +250,7 @@ export function MartialArtsScreen() {
               </span>
             </div>
             <p style={{ margin: '0 4px 10px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-              Tap any discipline to set it as your active Dojo, or explore its sports science and routines.
+              Tap a card to reveal details, then choose Explore or Set Dojo.
             </p>
 
             {filteredArts.length === 0 ? (
@@ -255,106 +264,98 @@ export function MartialArtsScreen() {
                 {filteredArts.map((art) => {
                   const artProfile = getDojoProfile(art.id)
                   const isActive = profile.primaryArt === art.id
+                  const isExpanded = expandedArtId === art.id
                   return (
                     <div
                       key={art.id}
-                      className={`art-grid-card art-theme-${art.id} pressable ${isActive ? 'active-dojo' : ''}`}
-                      onClick={() => handleActivateArt(art.id, art.name)}
+                      className={`art-grid-card art-theme-${art.id} ${isActive ? 'active-dojo' : ''}`}
                     >
-                      {/* Native script watermark - large background calligraphy */}
                       <span className="art-watermark" aria-hidden="true">
                         {artProfile.nativeName}
                       </span>
 
-                      {/* TOP: Flag + Active badge */}
-                      <div className="art-card-top" style={{ position: 'relative', zIndex: 2 }}>
-                        <div className="art-pill-flag">
-                          <span style={{ fontSize: '15px', lineHeight: 1, flexShrink: 0 }}>{artProfile.flag}</span>
-                          <span style={{ fontSize: '10px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', opacity: 0.85 }}>
-                            {artProfile.country}
-                          </span>
+                      <button
+                        type="button"
+                        className="art-card-trigger pressable"
+                        aria-expanded={isExpanded}
+                        onClick={() => {
+                          haptic('selection')
+                          setExpandedArtId(isExpanded ? null : art.id)
+                        }}
+                      >
+                        <div className="art-card-top" style={{ position: 'relative', zIndex: 2 }}>
+                          <div className="art-pill-flag">
+                            <span style={{ fontSize: '15px', lineHeight: 1, flexShrink: 0 }}>{artProfile.flag}</span>
+                            <span style={{ fontSize: '10px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', opacity: 0.85 }}>
+                              {artProfile.country}
+                            </span>
+                          </div>
+                          {isActive ? (
+                            <span className="art-active-badge">
+                              <Icon name="crown.fill" size={7} />
+                              ACTIVE
+                            </span>
+                          ) : (
+                            <span className="art-inactive-badge">INACTIVE</span>
+                          )}
                         </div>
-                        {isActive && (
-                          <span className="art-active-badge">
-                            <Icon name="crown.fill" size={7} />
-                            ACTIVE
+                        <div className="art-card-body" style={{ position: 'relative', zIndex: 2 }}>
+                          <strong className="art-card-title">{art.name}</strong>
+                        </div>
+                        <div className="art-card-footer" style={{ position: 'relative', zIndex: 2 }}>
+                          <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+                            {isExpanded ? 'Hide details' : 'Show details'}
                           </span>
-                        )}
-                      </div>
+                          <Icon name={isExpanded ? 'chevron.up' : 'chevron.down'} size={12} />
+                        </div>
+                      </button>
 
-                      {/* MIDDLE: Title block */}
-                      <div className="art-card-body" style={{ position: 'relative', zIndex: 2 }}>
-                        <strong className="art-card-title">{art.name}</strong>
-                        <p className="art-card-tagline">{artProfile.tagline}</p>
-                        <div className="art-focus-chips">
-                          {(artProfile.mobilityFocus || art.focusAreas).slice(0, 2).map((focus, i) => (
-                            <span
-                              key={i}
-                              className="art-chip"
-                              style={{
-                                background: `color-mix(in srgb, ${artProfile.accent} 18%, transparent)`,
-                                color: artProfile.accent,
-                                border: `0.5px solid color-mix(in srgb, ${artProfile.accent} 30%, transparent)`,
+                      {isExpanded && (
+                        <div className="art-card-details">
+                          <p>{artProfile.tagline}</p>
+                          <div className="art-focus-chips">
+                            {(artProfile.mobilityFocus || art.focusAreas).slice(0, 2).map((focus, i) => (
+                              <span
+                                key={i}
+                                className="art-chip"
+                                style={{
+                                  background: `color-mix(in srgb, ${artProfile.accent} 18%, transparent)`,
+                                  color: artProfile.accent,
+                                  border: `0.5px solid color-mix(in srgb, ${artProfile.accent} 30%, transparent)`,
+                                }}
+                              >
+                                {focus}
+                              </span>
+                            ))}
+                          </div>
+                          <div className="art-card-actions">
+                            <button
+                              type="button"
+                              className="art-card-action art-card-action-secondary"
+                              onClick={() => {
+                                haptic('selection')
+                                nav.push({ name: 'art', id: art.id })
                               }}
                             >
-                              {focus}
-                            </span>
-                          ))}
+                              Explore
+                            </button>
+                            {isActive ? (
+                              <span className="art-card-active-state">
+                                <Icon name="checkmark.circle.fill" size={11} />
+                                Your Dojo
+                              </span>
+                            ) : (
+                              <button
+                                type="button"
+                                className="art-card-action art-card-action-primary"
+                                onClick={() => handleActivateArt(art.id, art.name)}
+                              >
+                                Set Dojo
+                              </button>
+                            )}
+                          </div>
                         </div>
-                      </div>
-
-                      {/* BOTTOM: Action footer */}
-                      <div className="art-card-footer" style={{ position: 'relative', zIndex: 2 }}>
-                        {isActive ? (
-                          <span style={{ fontSize: '11px', fontWeight: 700, color: artProfile.accent, display: 'flex', alignItems: 'center', gap: '3px' }}>
-                            <Icon name="checkmark.circle.fill" size={11} />
-                            Your Dojo
-                          </span>
-                        ) : (
-                          <button
-                            type="button"
-                            onClick={(e) => {
-                              e.stopPropagation()
-                              handleActivateArt(art.id, art.name)
-                            }}
-                            style={{
-                              padding: '4px 10px',
-                              borderRadius: '999px',
-                              fontSize: '10.5px',
-                              fontWeight: 700,
-                              background: `color-mix(in srgb, ${artProfile.accent} 20%, transparent)`,
-                              border: `1px solid color-mix(in srgb, ${artProfile.accent} 40%, transparent)`,
-                              color: artProfile.accent,
-                              cursor: 'pointer',
-                              backdropFilter: 'blur(8px)',
-                            }}
-                          >
-                            Set Dojo
-                          </button>
-                        )}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            haptic('selection')
-                            nav.push({ name: 'art', id: art.id })
-                          }}
-                          style={{
-                            background: 'none',
-                            border: 'none',
-                            fontSize: '10.5px',
-                            fontWeight: 600,
-                            color: 'var(--text-secondary)',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '2px',
-                            cursor: 'pointer',
-                            padding: '2px 0',
-                          }}
-                        >
-                          Explore <Icon name="chevron.right" size={9} />
-                        </button>
-                      </div>
+                      )}
                     </div>
                   )
                 })}
@@ -367,7 +368,22 @@ export function MartialArtsScreen() {
           /* ============================================================ */
           <>
             {/* 1. FLEXIBILITY MILESTONE WIDGET */}
-            <div className="dojo-hub-card">
+            <details
+              className="dojo-disclosure"
+              open={openSections.milestone}
+              onToggle={(event) => {
+                const nextOpen = (event.currentTarget as HTMLDetailsElement).open
+                setOpenSections((prev) => ({ ...prev, milestone: nextOpen }))
+              }}
+            >
+              <summary className="dojo-disclosure-summary">
+                <span>
+                  Milestone Engine
+                  <small>{activeBenchmark.name} · Level {currentLevel} of 5</small>
+                </span>
+                <Icon name={openSections.milestone ? 'chevron.up' : 'chevron.down'} size={12} />
+              </summary>
+              <div className="dojo-hub-card">
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                 <div style={{ minWidth: 0, flex: 1 }}>
                   <span style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: currentDojo.accent }}>
@@ -502,10 +518,26 @@ export function MartialArtsScreen() {
                   </button>
                 )}
               </div>
-            </div>
+              </div>
+            </details>
 
             {/* 2. SCIENCE-BASED ROUTINES PER GOAL */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
+            <details
+              className="dojo-disclosure"
+              open={openSections.routines}
+              onToggle={(event) => {
+                const nextOpen = (event.currentTarget as HTMLDetailsElement).open
+                setOpenSections((prev) => ({ ...prev, routines: nextOpen }))
+              }}
+            >
+              <summary className="dojo-disclosure-summary">
+                <span>
+                  Dojo Mobility Routines
+                  <small>{currentDojo.routineGoals.length} routines</small>
+                </span>
+                <Icon name={openSections.routines ? 'chevron.up' : 'chevron.down'} size={12} />
+              </summary>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px' }}>
                 <div>
                   <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>Dojo Mobility Routines</h3>
@@ -675,10 +707,26 @@ export function MartialArtsScreen() {
                   </div>
                 )
               })}
-            </div>
+              </div>
+            </details>
 
             {/* 3. CREATE YOUR OWN [ART] KATA & USER'S ART KATAS */}
-            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <details
+              className="dojo-disclosure"
+              open={openSections.custom}
+              onToggle={(event) => {
+                const nextOpen = (event.currentTarget as HTMLDetailsElement).open
+                setOpenSections((prev) => ({ ...prev, custom: nextOpen }))
+              }}
+            >
+              <summary className="dojo-disclosure-summary">
+                <span>
+                  Custom {currentDojo.name} Katas
+                  <small>{userArtKatas.length} saved</small>
+                </span>
+                <Icon name={openSections.custom ? 'chevron.up' : 'chevron.down'} size={12} />
+              </summary>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px' }}>
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
                   Custom {currentDojo.name} Katas
@@ -788,10 +836,26 @@ export function MartialArtsScreen() {
                   ))}
                 </div>
               )}
-            </div>
+              </div>
+            </details>
 
             {/* 4. TECHNICAL MOBILITY DRILLS (PLAYABLE & STARTABLE) */}
-            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <details
+              className="dojo-disclosure"
+              open={openSections.drills}
+              onToggle={(event) => {
+                const nextOpen = (event.currentTarget as HTMLDetailsElement).open
+                setOpenSections((prev) => ({ ...prev, drills: nextOpen }))
+              }}
+            >
+              <summary className="dojo-disclosure-summary">
+                <span>
+                  Technical Movement Drills
+                  <small>{currentDojo.drills.length} drills</small>
+                </span>
+                <Icon name={openSections.drills ? 'chevron.up' : 'chevron.down'} size={12} />
+              </summary>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ padding: '0 4px' }}>
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>Technical Movement Drills</h3>
                 <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
@@ -874,7 +938,8 @@ export function MartialArtsScreen() {
                   </div>
                 </div>
               ))}
-            </div>
+              </div>
+            </details>
           </>
         )}
 
