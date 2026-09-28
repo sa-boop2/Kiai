@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { DifficultyBadge, EmptyState, PrimaryButton, SymbolTile } from '../../components/ui'
@@ -11,11 +11,11 @@ import {
   type DojoRoutineGoal,
 } from '../../data/martialDojoData'
 import { tintColor } from '../../data/meta'
-import { saveKata } from '../../lib/actions'
+import { saveKata, updateProfile } from '../../lib/actions'
 import { minutes } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
-import { startKata } from '../../lib/launch'
+import { startKata, startDojoDrill } from '../../lib/launch'
 import { nav } from '../../lib/nav'
 import { useProfile, useUserKatas } from '../../lib/store'
 import { toast } from '../../components/Toast'
@@ -25,12 +25,18 @@ export function MartialArtsScreen() {
   const profile = useProfile()
   const userKatas = useUserKatas()
   const [browseMode, setBrowseMode] = useState(!profile.primaryArt)
+
+  useEffect(() => {
+    if (profile.primaryArt) {
+      setBrowseMode(false)
+    }
+  }, [profile.primaryArt])
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<string | null>(null)
   const [expandedRoutineId, setExpandedRoutineId] = useState<string | null>(null)
   const [, setRefreshKey] = useState(0)
 
-  // Current primary art profile
+  // Current primary art profile (fallback to karate if not chosen)
   const activeArtId = profile.primaryArt || 'karate'
   const currentDojo = useMemo(() => getDojoProfile(activeArtId), [activeArtId])
 
@@ -47,7 +53,7 @@ export function MartialArtsScreen() {
     )
   }, [searchQuery])
 
-  // Active benchmark in the widget
+  // Active benchmark in the milestone widget
   const activeBenchmark = useMemo(() => {
     const list = currentDojo.benchmarks
     if (selectedBenchmarkId) {
@@ -74,10 +80,22 @@ export function MartialArtsScreen() {
     toast(`Reset progress for ${activeBenchmark.name}`, { icon: 'arrow.counterclockwise' })
   }
 
+  const handleActivateArt = (artId: string, artName: string) => {
+    haptic('success')
+    updateProfile({ primaryArt: artId })
+    setBrowseMode(false)
+    toast(`${artName} is now your active Dojo!`, { icon: 'crown.fill' })
+  }
+
   const handlePlayRoutine = (goal: DojoRoutineGoal) => {
     haptic('success')
     const kata = dojoRoutineToKata(goal, currentDojo.name, currentDojo.artId)
     startKata(kata)
+  }
+
+  const handlePlayDrill = (drill: any) => {
+    haptic('success')
+    startDojoDrill(drill, currentDojo.name, currentDojo.artId)
   }
 
   const handleCloneRoutine = (goal: DojoRoutineGoal) => {
@@ -105,7 +123,7 @@ export function MartialArtsScreen() {
 
   return (
     <Screen
-      title={browseMode ? t('Martial Arts') : `${currentDojo.flag} ${currentDojo.nativeName}`}
+      title={browseMode ? t('Martial Arts') : `${currentDojo.flag} ${currentDojo.name}`}
       largeTitle
       header={
         <div style={{ padding: '0 var(--gutter) 4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
@@ -129,23 +147,45 @@ export function MartialArtsScreen() {
               </label>
             </div>
           ) : (
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <span style={{ fontSize: '12px', fontWeight: 700, color: currentDojo.accent, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Active Dojo Discipline
-                </span>
-                <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
-                  {currentDojo.country} · {currentDojo.tagline}
-                </p>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
+              <div style={{ minWidth: 0, flex: 1 }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '6px', minWidth: 0 }}>
+                  <span
+                    style={{
+                      fontSize: '11px',
+                      fontWeight: 800,
+                      color: currentDojo.accent,
+                      background: `color-mix(in srgb, ${currentDojo.accent} 14%, transparent)`,
+                      border: `1px solid color-mix(in srgb, ${currentDojo.accent} 28%, transparent)`,
+                      padding: '2px 7px',
+                      borderRadius: '999px',
+                      whiteSpace: 'nowrap',
+                    }}
+                  >
+                    {currentDojo.nativeName}
+                  </span>
+                  <span
+                    style={{
+                      fontSize: '12px',
+                      color: 'var(--text-secondary)',
+                      whiteSpace: 'nowrap',
+                      overflow: 'hidden',
+                      textOverflow: 'ellipsis',
+                    }}
+                  >
+                    {currentDojo.country}
+                  </span>
+                </div>
               </div>
-              <div style={{ display: 'flex', gap: '8px' }}>
+
+              <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
                 <button
                   type="button"
                   className="glass pressable"
                   style={{
-                    padding: '6px 12px',
+                    padding: '5px 11px',
                     borderRadius: '999px',
-                    fontSize: '12px',
+                    fontSize: '11.5px',
                     fontWeight: 700,
                     color: 'var(--accent)',
                     border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)',
@@ -158,25 +198,28 @@ export function MartialArtsScreen() {
                     nav.push({ name: 'art', id: activeArtId })
                   }}
                 >
-                  <Icon name="sparkles" size={12} /> Explore
+                  <Icon name="sparkles" size={11} /> Explore
                 </button>
                 <button
                   type="button"
                   className="glass pressable"
                   style={{
-                    padding: '6px 14px',
+                    padding: '5px 12px',
                     borderRadius: '999px',
-                    fontSize: '12px',
+                    fontSize: '11.5px',
                     fontWeight: 700,
                     color: 'var(--text)',
                     border: '1px solid var(--stroke)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '3px',
                   }}
                   onClick={() => {
                     haptic('selection')
                     setBrowseMode(true)
                   }}
                 >
-                  Switch
+                  Switch ▾
                 </button>
               </div>
             </div>
@@ -198,7 +241,7 @@ export function MartialArtsScreen() {
               </span>
             </div>
             <p style={{ margin: '0 4px 10px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-              Select any discipline to explore its sports science, routines, and benchmarks, or set it as your active Dojo.
+              Tap any discipline to set it as your active Dojo, or explore its sports science and routines.
             </p>
 
             {filteredArts.length === 0 ? (
@@ -216,10 +259,7 @@ export function MartialArtsScreen() {
                     <div
                       key={art.id}
                       className={`art-grid-card art-theme-${art.id} pressable ${isActive ? 'active-dojo' : ''}`}
-                      onClick={() => {
-                        haptic('selection')
-                        nav.push({ name: 'art', id: art.id })
-                      }}
+                      onClick={() => handleActivateArt(art.id, art.name)}
                     >
                       {/* Stylized native script watermark */}
                       <span className="art-watermark" aria-hidden="true">
@@ -228,7 +268,7 @@ export function MartialArtsScreen() {
 
                       <div>
                         {/* Top Flag Capsule & Active/Origin Badge */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px', position: 'relative', zIndex: 1 }}>
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px', position: 'relative', zIndex: 1, minWidth: 0 }}>
                           <div
                             className="art-pill-flag"
                             style={{
@@ -236,8 +276,8 @@ export function MartialArtsScreen() {
                               border: '1px solid var(--separator)',
                             }}
                           >
-                            <span style={{ fontSize: '15px', lineHeight: 1 }}>{artProfile.flag}</span>
-                            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                            <span style={{ fontSize: '14px', lineHeight: 1 }}>{artProfile.flag}</span>
+                            <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                               {artProfile.country}
                             </span>
                           </div>
@@ -245,28 +285,32 @@ export function MartialArtsScreen() {
                           {isActive ? (
                             <span
                               style={{
-                                fontSize: '9.5px',
+                                fontSize: '9px',
                                 fontWeight: 800,
                                 letterSpacing: '0.04em',
                                 color: artProfile.accent,
                                 background: `color-mix(in srgb, ${artProfile.accent} 16%, transparent)`,
                                 border: `1px solid color-mix(in srgb, ${artProfile.accent} 35%, transparent)`,
-                                padding: '2px 6px',
+                                padding: '2px 5px',
                                 borderRadius: '999px',
                                 display: 'flex',
                                 alignItems: 'center',
-                                gap: '3px',
+                                gap: '2px',
+                                flexShrink: 0,
                               }}
                             >
-                              <Icon name="crown.fill" size={9} /> DOJO
+                              <Icon name="crown.fill" size={8} /> DOJO
                             </span>
                           ) : (
                             <span
                               style={{
-                                fontSize: '10px',
+                                fontSize: '9.5px',
                                 fontWeight: 700,
                                 color: 'var(--text-tertiary)',
-                                letterSpacing: '0.02em',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                whiteSpace: 'nowrap',
+                                flexShrink: 0,
                               }}
                             >
                               {artProfile.nativeName}
@@ -275,29 +319,32 @@ export function MartialArtsScreen() {
                         </div>
 
                         {/* Title and Tagline */}
-                        <div style={{ marginTop: '10px', position: 'relative', zIndex: 1 }}>
+                        <div style={{ marginTop: '8px', position: 'relative', zIndex: 1, minWidth: 0 }}>
                           <strong
                             style={{
-                              fontSize: '15.5px',
+                              fontSize: '15px',
                               fontWeight: 800,
                               color: 'var(--text)',
                               display: 'block',
                               lineHeight: 1.2,
                               letterSpacing: '-0.01em',
+                              overflow: 'hidden',
+                              textOverflow: 'ellipsis',
+                              whiteSpace: 'nowrap',
                             }}
                           >
                             {art.name}
                           </strong>
                           <p
                             style={{
-                              margin: '3px 0 0',
-                              fontSize: '11px',
+                              margin: '2px 0 0',
+                              fontSize: '10.5px',
                               color: 'var(--text-secondary)',
                               display: '-webkit-box',
                               WebkitLineClamp: 2,
                               WebkitBoxOrient: 'vertical',
                               overflow: 'hidden',
-                              lineHeight: 1.35,
+                              lineHeight: 1.3,
                             }}
                           >
                             {artProfile.tagline}
@@ -305,7 +352,7 @@ export function MartialArtsScreen() {
                         </div>
 
                         {/* Focus Chips */}
-                        <div className="art-focus-chips" style={{ position: 'relative', zIndex: 1 }}>
+                        <div className="art-focus-chips" style={{ position: 'relative', zIndex: 1, margin: '6px 0 6px' }}>
                           {(artProfile.mobilityFocus || art.focusAreas).slice(0, 2).map((focus, i) => (
                             <span
                               key={i}
@@ -322,23 +369,57 @@ export function MartialArtsScreen() {
                         </div>
                       </div>
 
-                      {/* Footer Info */}
+                      {/* Footer Info & Actions */}
                       <div className="art-card-footer" style={{ position: 'relative', zIndex: 1 }}>
-                        <span
+                        {isActive ? (
+                          <span style={{ fontSize: '10.5px', fontWeight: 700, color: artProfile.accent, display: 'flex', alignItems: 'center', gap: '3px' }}>
+                            Active <Icon name="checkmark" size={10} strokeWidth={2.4} />
+                          </span>
+                        ) : (
+                          <button
+                            type="button"
+                            className="pressable"
+                            style={{
+                              padding: '3px 8px',
+                              borderRadius: '999px',
+                              fontSize: '10.5px',
+                              fontWeight: 700,
+                              background: `color-mix(in srgb, ${artProfile.accent} 18%, var(--surface))`,
+                              border: `1px solid color-mix(in srgb, ${artProfile.accent} 38%, transparent)`,
+                              color: artProfile.accent,
+                              cursor: 'pointer',
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleActivateArt(art.id, art.name)
+                            }}
+                          >
+                            Activate
+                          </button>
+                        )}
+                        <button
+                          type="button"
+                          className="pressable"
                           style={{
-                            fontSize: '11px',
-                            fontWeight: 700,
-                            color: artProfile.accent,
+                            background: 'none',
+                            border: 'none',
+                            fontSize: '10.5px',
+                            fontWeight: 600,
+                            color: 'var(--text-secondary)',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '3px',
+                            gap: '2px',
+                            cursor: 'pointer',
+                            padding: '2px',
+                          }}
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            haptic('selection')
+                            nav.push({ name: 'art', id: art.id })
                           }}
                         >
-                          Explore <Icon name="chevron.right" size={11} strokeWidth={2.4} />
-                        </span>
-                        <span style={{ fontSize: '10.5px', color: 'var(--text-tertiary)', fontWeight: 500 }}>
-                          {artProfile.routineGoals.length} routines
-                        </span>
+                          Explore <Icon name="chevron.right" size={9} strokeWidth={2.4} />
+                        </button>
                       </div>
                     </div>
                   )
@@ -353,43 +434,52 @@ export function MartialArtsScreen() {
           <>
             {/* 1. FLEXIBILITY MILESTONE WIDGET */}
             <div className="dojo-hub-card">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <div>
-                  <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: currentDojo.accent }}>
-                    {currentDojo.name} Milestone Engine
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+                <div style={{ minWidth: 0, flex: 1 }}>
+                  <span style={{ fontSize: '10.5px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: currentDojo.accent }}>
+                    Milestone Engine
                   </span>
-                  <h3 style={{ margin: '2px 0 0', fontSize: '17px', fontWeight: 800 }}>
+                  <h3 style={{ margin: '1px 0 0', fontSize: '16px', fontWeight: 800, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                     {activeBenchmark.name}
                   </h3>
                 </div>
                 
-                {/* 5-Level Progress Rings */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
-                  {[1, 2, 3, 4, 5].map((lvl) => {
-                    const done = lvl <= currentLevel
-                    return (
-                      <div
-                        key={lvl}
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          borderRadius: '50%',
-                          background: done ? currentDojo.accent : 'rgba(255, 255, 255, 0.08)',
-                          border: done ? `1px solid ${currentDojo.accent}` : '1px solid rgba(255, 255, 255, 0.12)',
-                          display: 'grid',
-                          placeItems: 'center',
-                          fontSize: '10px',
-                          fontWeight: 800,
-                          color: done ? '#000' : 'var(--text-tertiary)',
-                          boxShadow: done ? `0 0 8px ${currentDojo.accent}` : 'none',
-                          transition: 'all 240ms ease',
-                        }}
-                      >
-                        {lvl}
-                      </div>
-                    )
-                  })}
-                </div>
+                {/* Level badge */}
+                <span
+                  style={{
+                    fontSize: '11px',
+                    fontWeight: 800,
+                    color: currentDojo.accent,
+                    background: `color-mix(in srgb, ${currentDojo.accent} 14%, transparent)`,
+                    border: `1px solid color-mix(in srgb, ${currentDojo.accent} 28%, transparent)`,
+                    padding: '2px 8px',
+                    borderRadius: '999px',
+                    whiteSpace: 'nowrap',
+                    flexShrink: 0,
+                  }}
+                >
+                  Level {currentLevel} of 5
+                </span>
+              </div>
+
+              {/* Responsive 5-Segment Milestone Grid */}
+              <div className="dojo-milestone-grid">
+                {[1, 2, 3, 4, 5].map((lvl) => {
+                  const done = lvl <= currentLevel
+                  return (
+                    <div
+                      key={lvl}
+                      className={`dojo-milestone-segment ${done ? 'active' : 'inactive'}`}
+                      style={{
+                        background: done ? currentDojo.accent : undefined,
+                        color: done ? '#000' : undefined,
+                        boxShadow: done ? `0 0 10px ${currentDojo.accent}` : undefined,
+                      }}
+                    >
+                      {lvl}
+                    </div>
+                  )
+                })}
               </div>
 
               {/* Benchmark Switcher Tabs */}
@@ -405,8 +495,8 @@ export function MartialArtsScreen() {
                       fontSize: '11px',
                       fontWeight: 600,
                       whiteSpace: 'nowrap',
-                      background: activeBenchmark.id === b.id ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)',
-                      border: activeBenchmark.id === b.id ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.06)',
+                      background: activeBenchmark.id === b.id ? 'color-mix(in srgb, var(--text) 12%, transparent)' : 'color-mix(in srgb, var(--text) 4%, transparent)',
+                      border: activeBenchmark.id === b.id ? '1px solid color-mix(in srgb, var(--text) 22%, transparent)' : '1px solid var(--separator)',
                       color: activeBenchmark.id === b.id ? 'var(--text)' : 'var(--text-secondary)',
                       cursor: 'pointer',
                     }}
@@ -420,40 +510,42 @@ export function MartialArtsScreen() {
                 ))}
               </div>
 
-              {/* Current Level Status Card */}
+              {/* Current Level Status Box */}
               <div
                 style={{
-                  background: 'rgba(255, 255, 255, 0.04)',
-                  borderRadius: '16px',
-                  padding: '12px 14px',
-                  border: '1px solid rgba(255, 255, 255, 0.07)',
+                  background: 'color-mix(in srgb, var(--text) 4%, transparent)',
+                  borderRadius: '14px',
+                  padding: '10px 12px',
+                  border: '1px solid var(--separator)',
                 }}
               >
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
-                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                    Current Milestone (Level {currentLevel} of 5)
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px' }}>
+                  <span style={{ fontSize: '10.5px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                    Milestone Target
                   </span>
-                  <span style={{ fontSize: '12px', fontWeight: 800, color: currentDojo.accent }}>
+                  <span style={{ fontSize: '11.5px', fontWeight: 800, color: currentDojo.accent }}>
                     {Math.round((currentLevel / 5) * 100)}% Complete
                   </span>
                 </div>
-                <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block', marginBottom: '2px' }}>
+                <strong style={{ fontSize: '13.5px', color: 'var(--text)', display: 'block', marginBottom: '2px' }}>
                   {activeBenchmark.levels[currentLevel - 1]?.title}
                 </strong>
-                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                <p style={{ margin: 0, fontSize: '11.5px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
                   {activeBenchmark.levels[currentLevel - 1]?.target}
                 </p>
               </div>
 
               {/* Action Buttons */}
               <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-                <PrimaryButton
-                  icon="crown.fill"
-                  disabled={currentLevel >= 5}
-                  onClick={() => handleAdvanceLevel(activeBenchmark.id)}
-                >
-                  {currentLevel >= 5 ? 'Mastery Reached' : `Advance to Level ${currentLevel + 1}`}
-                </PrimaryButton>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <PrimaryButton
+                    icon="crown.fill"
+                    disabled={currentLevel >= 5}
+                    onClick={() => handleAdvanceLevel(activeBenchmark.id)}
+                  >
+                    {currentLevel >= 5 ? 'Mastery Reached' : `Advance to Level ${currentLevel + 1}`}
+                  </PrimaryButton>
+                </div>
                 {currentLevel > 1 && (
                   <button
                     type="button"
@@ -461,12 +553,13 @@ export function MartialArtsScreen() {
                     style={{
                       padding: '10px 14px',
                       borderRadius: '14px',
-                      background: 'rgba(255, 255, 255, 0.05)',
-                      border: '1px solid rgba(255, 255, 255, 0.09)',
-                      color: 'var(--text-tertiary)',
+                      background: 'color-mix(in srgb, var(--text) 5%, transparent)',
+                      border: '1px solid var(--separator)',
+                      color: 'var(--text-secondary)',
                       fontSize: '12px',
                       fontWeight: 600,
                       cursor: 'pointer',
+                      flexShrink: 0,
                     }}
                     title="Reset progress to Level 1"
                     onClick={() => handleResetLevel(activeBenchmark.id)}
@@ -493,24 +586,18 @@ export function MartialArtsScreen() {
                 return (
                   <div
                     key={goal.id}
+                    className="dojo-sub-card"
                     style={{
-                      borderRadius: '22px',
-                      padding: '16px',
-                      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02))',
-                      border: '1px solid rgba(255, 255, 255, 0.12)',
-                      backdropFilter: 'blur(24px)',
-                      WebkitBackdropFilter: 'blur(24px)',
-                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
                       display: 'flex',
                       flexDirection: 'column',
                       gap: '10px',
                     }}
                   >
-                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '8px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                         <SymbolTile icon={goal.symbol} tint={goal.accent} size={42} />
-                        <div>
-                          <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: 'block' }}>
+                        <div style={{ minWidth: 0 }}>
+                          <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {goal.title}
                           </strong>
                           <span style={{ fontSize: '12px', color: goal.accent, fontWeight: 600 }}>
@@ -521,14 +608,14 @@ export function MartialArtsScreen() {
                       <DifficultyBadge difficulty={goal.difficulty} pill />
                     </div>
 
-                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                    <p style={{ margin: 0, fontSize: '12.5px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
                       {goal.description}
                     </p>
 
                     <div
                       style={{
-                        background: 'rgba(255, 255, 255, 0.03)',
-                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                        background: 'color-mix(in srgb, var(--text) 3%, transparent)',
+                        border: '1px solid var(--separator)',
                         borderRadius: '10px',
                         padding: '6px 8px',
                         fontSize: '11px',
@@ -583,7 +670,7 @@ export function MartialArtsScreen() {
                               justifyContent: 'space-between',
                               padding: '6px 10px',
                               borderRadius: '10px',
-                              background: 'rgba(255, 255, 255, 0.03)',
+                              background: 'color-mix(in srgb, var(--text) 3%, transparent)',
                               fontSize: '12px',
                             }}
                           >
@@ -616,8 +703,8 @@ export function MartialArtsScreen() {
                         style={{
                           padding: '0 14px',
                           borderRadius: '14px',
-                          background: 'rgba(255, 255, 255, 0.07)',
-                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          background: 'color-mix(in srgb, var(--text) 6%, transparent)',
+                          border: '1px solid var(--separator)',
                           color: 'var(--text)',
                           fontSize: '13px',
                           fontWeight: 600,
@@ -683,20 +770,18 @@ export function MartialArtsScreen() {
                   {userArtKatas.map((kata) => (
                     <div
                       key={kata.uuid}
+                      className="dojo-sub-card"
                       style={{
-                        padding: '12px 14px',
-                        borderRadius: '16px',
-                        background: 'rgba(255, 255, 255, 0.05)',
-                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        padding: '10px 14px',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
                         <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={38} />
-                        <div>
-                          <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block' }}>
+                        <div style={{ minWidth: 0 }}>
+                          <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                             {kata.name}
                           </strong>
                           <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
@@ -705,7 +790,7 @@ export function MartialArtsScreen() {
                         </div>
                       </div>
 
-                      <div style={{ display: 'flex', gap: '6px' }}>
+                      <div style={{ display: 'flex', gap: '6px', flexShrink: 0 }}>
                         <button
                           type="button"
                           className="pressable"
@@ -732,7 +817,7 @@ export function MartialArtsScreen() {
                           style={{
                             padding: '6px 10px',
                             borderRadius: '10px',
-                            background: 'rgba(255, 255, 255, 0.08)',
+                            background: 'color-mix(in srgb, var(--text) 8%, transparent)',
                             color: 'var(--text)',
                             border: 'none',
                             fontWeight: 600,
@@ -753,34 +838,30 @@ export function MartialArtsScreen() {
               )}
             </div>
 
-            {/* 4. TECHNICAL MOBILITY DRILLS */}
+            {/* 4. TECHNICAL MOBILITY DRILLS (PLAYABLE & STARTABLE) */}
             <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
               <div style={{ padding: '0 4px' }}>
                 <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>Technical Movement Drills</h3>
                 <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
-                  Biomechanically tailored movement drills for {currentDojo.name}.
+                  Biomechanically tailored drills for {currentDojo.name}. Start any drill with one tap.
                 </p>
               </div>
 
               {currentDojo.drills.map((drill, idx) => (
                 <div
                   key={idx}
+                  className="dojo-sub-card"
                   style={{
-                    borderRadius: '20px',
-                    padding: '14px 16px',
-                    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02))',
-                    border: '1px solid rgba(255, 255, 255, 0.1)',
-                    backdropFilter: 'blur(20px)',
                     display: 'flex',
                     flexDirection: 'column',
-                    gap: '8px',
+                    gap: '10px',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '8px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
                       <SymbolTile icon={drill.symbol} tint="var(--gold)" size={36} />
-                      <div>
-                        <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block' }}>
+                      <div style={{ minWidth: 0 }}>
+                        <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                           {drill.name}
                         </strong>
                         <span style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 600 }}>
@@ -788,7 +869,7 @@ export function MartialArtsScreen() {
                         </span>
                       </div>
                     </div>
-                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                    <span style={{ fontSize: '11.5px', color: 'var(--text-secondary)', fontWeight: 600, flexShrink: 0 }}>
                       <Icon name="timer" size={12} /> {drill.duration}s
                     </span>
                   </div>
@@ -812,6 +893,16 @@ export function MartialArtsScreen() {
                         <span>{step}</span>
                       </div>
                     ))}
+                  </div>
+
+                  {/* Playable Drill Button */}
+                  <div style={{ marginTop: '4px' }}>
+                    <PrimaryButton
+                      icon="play.fill"
+                      onClick={() => handlePlayDrill(drill)}
+                    >
+                      Start Drill ({drill.duration}s)
+                    </PrimaryButton>
                   </div>
                 </div>
               ))}

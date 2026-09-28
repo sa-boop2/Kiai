@@ -11,7 +11,7 @@ import {
 import type { Kata, Technique, WorkoutTemplate } from '../data/types'
 import { audio } from './audio'
 import { nav } from './nav'
-import { planForTechnique, planForTemplate, type WorkoutPlan } from './plan'
+import { planForDojoDrill, planForTechnique, planForTemplate, type WorkoutPlan, type DojoDrillItem } from './plan'
 import { type AppState, getState, usePremadeLastPerformed, useUserKatas } from './store'
 
 // Kata lookups ------------------------------------------------------------------------------------
@@ -106,5 +106,9 @@ export function quickStart() {
     const t = target.technique
     startTechnique(t, { rounds: t.rounds, workSeconds: t.work, restSeconds: t.rest, includeWarmup: true })
   }
+}
+
+export function startDojoDrill(drill: DojoDrillItem, artName: string, artId: string) {
+  present(planForDojoDrill(drill, artName, artId, getState().settings))
 }
 

@@ -167,3 +167,53 @@ export function planForTechnique(
     pauseBetweenSets: false,
   })
 }
+
+export interface DojoDrillItem {
+  name: string
+  focus: string
+  duration: number
+  symbol?: string
+  instructions?: string[]
+}
+
+export function planForDojoDrill(
+  drill: DojoDrillItem,
+  artName: string,
+  artId: string,
+  settings: Settings
+): WorkoutPlan {
+  const steps: PlayerStep[] = []
+  if (settings.prepareSeconds > 0) {
+    steps.push(prepareStep(steps.length, settings.prepareSeconds, drill.name))
+  }
+  const howTo: HowTo = {
+    title: drill.name,
+    summary: `${artName} Technical Movement Drill · ${drill.focus}`,
+    steps: drill.instructions || [],
+    tips: [`Focus: ${drill.focus}`],
+    symbol: drill.symbol || 'figure.martial.arts',
+  }
+  steps.push({
+    id: steps.length,
+    kind: 'work',
+    title: drill.name,
+    detail: `${artName} · ${drill.focus}`,
+    phase: 'main',
+    duration: Math.max(10, drill.duration || 45),
+    slug: `drill-${artId}-${drill.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}`,
+    symbol: drill.symbol || 'figure.martial.arts',
+    bilateral: false,
+    howTo,
+    note: drill.instructions?.join(' · '),
+  })
+
+  return basePlan(settings, {
+    title: `${artName}: ${drill.name}`,
+    workoutUUID: null,
+    kind: 'technique',
+    art: artId,
+    steps,
+    pauseBetweenSets: false,
+  })
+}
+

@@ -7,7 +7,7 @@ import { saveKata, updateProfile } from '../../lib/actions'
 import { minutes } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
-import { startKata } from '../../lib/launch'
+import { startKata, startDojoDrill } from '../../lib/launch'
 import { nav } from '../../lib/nav'
 import { useAllExercises, useProfile } from '../../lib/store'
 import { toast } from '../../components/Toast'
@@ -608,6 +608,18 @@ export function ArtExploreScreen({ artId }: { artId: string }) {
                       <span>{step}</span>
                     </div>
                   ))}
+                </div>
+
+                <div style={{ marginTop: '4px' }}>
+                  <PrimaryButton
+                    icon="play.fill"
+                    onClick={() => {
+                      haptic('success')
+                      startDojoDrill(drill, dojo.name, dojo.artId)
+                    }}
+                  >
+                    Start Drill ({drill.duration}s)
+                  </PrimaryButton>
                 </div>
               </div>
             ))}
