@@ -261,106 +261,40 @@ export function MartialArtsScreen() {
                       className={`art-grid-card art-theme-${art.id} pressable ${isActive ? 'active-dojo' : ''}`}
                       onClick={() => handleActivateArt(art.id, art.name)}
                     >
-                      {/* Stylized native script watermark */}
+                      {/* Native script watermark - large background calligraphy */}
                       <span className="art-watermark" aria-hidden="true">
                         {artProfile.nativeName}
                       </span>
 
-                      <div>
-                        {/* Top Flag Capsule & Active/Origin Badge */}
-                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '4px', position: 'relative', zIndex: 1, minWidth: 0 }}>
-                          <div
-                            className="art-pill-flag"
-                            style={{
-                              background: 'color-mix(in srgb, var(--surface) 80%, transparent)',
-                              border: '1px solid var(--separator)',
-                            }}
-                          >
-                            <span style={{ fontSize: '14px', lineHeight: 1 }}>{artProfile.flag}</span>
-                            <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)', fontWeight: 600, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                              {artProfile.country}
-                            </span>
-                          </div>
-
-                          {isActive ? (
-                            <span
-                              style={{
-                                fontSize: '9px',
-                                fontWeight: 800,
-                                letterSpacing: '0.04em',
-                                color: artProfile.accent,
-                                background: `color-mix(in srgb, ${artProfile.accent} 16%, transparent)`,
-                                border: `1px solid color-mix(in srgb, ${artProfile.accent} 35%, transparent)`,
-                                padding: '2px 5px',
-                                borderRadius: '999px',
-                                display: 'flex',
-                                alignItems: 'center',
-                                gap: '2px',
-                                flexShrink: 0,
-                              }}
-                            >
-                              <Icon name="crown.fill" size={8} /> DOJO
-                            </span>
-                          ) : (
-                            <span
-                              style={{
-                                fontSize: '9.5px',
-                                fontWeight: 700,
-                                color: 'var(--text-tertiary)',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                whiteSpace: 'nowrap',
-                                flexShrink: 0,
-                              }}
-                            >
-                              {artProfile.nativeName}
-                            </span>
-                          )}
+                      {/* TOP: Flag + Active badge */}
+                      <div className="art-card-top" style={{ position: 'relative', zIndex: 2 }}>
+                        <div className="art-pill-flag">
+                          <span style={{ fontSize: '15px', lineHeight: 1, flexShrink: 0 }}>{artProfile.flag}</span>
+                          <span style={{ fontSize: '10px', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', opacity: 0.85 }}>
+                            {artProfile.country}
+                          </span>
                         </div>
+                        {isActive && (
+                          <span className="art-active-badge">
+                            <Icon name="crown.fill" size={7} />
+                            ACTIVE
+                          </span>
+                        )}
+                      </div>
 
-                        {/* Title and Tagline */}
-                        <div style={{ marginTop: '8px', position: 'relative', zIndex: 1, minWidth: 0 }}>
-                          <strong
-                            style={{
-                              fontSize: '15px',
-                              fontWeight: 800,
-                              color: 'var(--text)',
-                              display: 'block',
-                              lineHeight: 1.2,
-                              letterSpacing: '-0.01em',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap',
-                            }}
-                          >
-                            {art.name}
-                          </strong>
-                          <p
-                            style={{
-                              margin: '2px 0 0',
-                              fontSize: '10.5px',
-                              color: 'var(--text-secondary)',
-                              display: '-webkit-box',
-                              WebkitLineClamp: 2,
-                              WebkitBoxOrient: 'vertical',
-                              overflow: 'hidden',
-                              lineHeight: 1.3,
-                            }}
-                          >
-                            {artProfile.tagline}
-                          </p>
-                        </div>
-
-                        {/* Focus Chips */}
-                        <div className="art-focus-chips" style={{ position: 'relative', zIndex: 1, margin: '6px 0 6px' }}>
+                      {/* MIDDLE: Title block */}
+                      <div className="art-card-body" style={{ position: 'relative', zIndex: 2 }}>
+                        <strong className="art-card-title">{art.name}</strong>
+                        <p className="art-card-tagline">{artProfile.tagline}</p>
+                        <div className="art-focus-chips">
                           {(artProfile.mobilityFocus || art.focusAreas).slice(0, 2).map((focus, i) => (
                             <span
                               key={i}
                               className="art-chip"
                               style={{
-                                background: `color-mix(in srgb, ${artProfile.accent} 12%, var(--surface))`,
-                                color: 'var(--text)',
-                                border: `0.5px solid color-mix(in srgb, ${artProfile.accent} 25%, transparent)`,
+                                background: `color-mix(in srgb, ${artProfile.accent} 18%, transparent)`,
+                                color: artProfile.accent,
+                                border: `0.5px solid color-mix(in srgb, ${artProfile.accent} 30%, transparent)`,
                               }}
                             >
                               {focus}
@@ -369,37 +303,42 @@ export function MartialArtsScreen() {
                         </div>
                       </div>
 
-                      {/* Footer Info & Actions */}
-                      <div className="art-card-footer" style={{ position: 'relative', zIndex: 1 }}>
+                      {/* BOTTOM: Action footer */}
+                      <div className="art-card-footer" style={{ position: 'relative', zIndex: 2 }}>
                         {isActive ? (
-                          <span style={{ fontSize: '10.5px', fontWeight: 700, color: artProfile.accent, display: 'flex', alignItems: 'center', gap: '3px' }}>
-                            Active <Icon name="checkmark" size={10} strokeWidth={2.4} />
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: artProfile.accent, display: 'flex', alignItems: 'center', gap: '3px' }}>
+                            <Icon name="checkmark.circle.fill" size={11} />
+                            Your Dojo
                           </span>
                         ) : (
                           <button
                             type="button"
-                            className="pressable"
-                            style={{
-                              padding: '3px 8px',
-                              borderRadius: '999px',
-                              fontSize: '10.5px',
-                              fontWeight: 700,
-                              background: `color-mix(in srgb, ${artProfile.accent} 18%, var(--surface))`,
-                              border: `1px solid color-mix(in srgb, ${artProfile.accent} 38%, transparent)`,
-                              color: artProfile.accent,
-                              cursor: 'pointer',
-                            }}
                             onClick={(e) => {
                               e.stopPropagation()
                               handleActivateArt(art.id, art.name)
                             }}
+                            style={{
+                              padding: '4px 10px',
+                              borderRadius: '999px',
+                              fontSize: '10.5px',
+                              fontWeight: 700,
+                              background: `color-mix(in srgb, ${artProfile.accent} 20%, transparent)`,
+                              border: `1px solid color-mix(in srgb, ${artProfile.accent} 40%, transparent)`,
+                              color: artProfile.accent,
+                              cursor: 'pointer',
+                              backdropFilter: 'blur(8px)',
+                            }}
                           >
-                            Activate
+                            Set Dojo
                           </button>
                         )}
                         <button
                           type="button"
-                          className="pressable"
+                          onClick={(e) => {
+                            e.stopPropagation()
+                            haptic('selection')
+                            nav.push({ name: 'art', id: art.id })
+                          }}
                           style={{
                             background: 'none',
                             border: 'none',
@@ -410,15 +349,10 @@ export function MartialArtsScreen() {
                             alignItems: 'center',
                             gap: '2px',
                             cursor: 'pointer',
-                            padding: '2px',
-                          }}
-                          onClick={(e) => {
-                            e.stopPropagation()
-                            haptic('selection')
-                            nav.push({ name: 'art', id: art.id })
+                            padding: '2px 0',
                           }}
                         >
-                          Explore <Icon name="chevron.right" size={9} strokeWidth={2.4} />
+                          Explore <Icon name="chevron.right" size={9} />
                         </button>
                       </div>
                     </div>

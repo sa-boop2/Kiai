@@ -4193,9 +4193,11 @@
   color: var(--accent);
 }
 
-/* ─────────────────────────────────────────────────────────────────────────────
-   2.5.2 Update: iOS 26 Liquid Glass Martial Arts System
-   ───────────────────────────────────────────────────────────────────────────── */
+/* ═══════════════════════════════════════════════════════════════════════════
+   2.5.4 Update: iOS 26 Liquid Glass Martial Arts System — Full Overhaul
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── Browse Grid Container ── */
 .art-browse-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -4205,106 +4207,435 @@
 }
 
 @media (max-width: 340px) {
-  .art-browse-grid {
-    grid-template-columns: 1fr;
-  }
+  .art-browse-grid { grid-template-columns: 1fr; }
 }
 
+/* ── Base Card Shell ── */
 .art-grid-card {
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
   overflow: hidden;
-  padding: 13px 12px 11px;
-  border-radius: 22px;
+  padding: 12px 12px 10px;
+  border-radius: 24px;
   cursor: pointer;
-  min-height: 180px;
+  min-height: 190px;
   min-width: 0;
   box-sizing: border-box;
-  backdrop-filter: blur(28px) saturate(180%);
-  -webkit-backdrop-filter: blur(28px) saturate(180%);
-  transition: transform 220ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 220ms ease, border-color 220ms ease;
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1),
+              box-shadow 240ms ease,
+              border-color 220ms ease;
   user-select: none;
+  gap: 6px;
 }
 
-.art-grid-card:hover {
-  transform: translateY(-2px);
-}
+.art-grid-card:hover { transform: translateY(-2px) scale(1.008); }
+.art-grid-card:active { transform: scale(0.972); }
 
-.art-grid-card:active {
-  transform: scale(0.975);
-}
-
-/* Watermark typography */
+/* ── Watermark ── */
 .art-watermark {
   position: absolute;
-  right: -6px;
-  bottom: -6px;
-  font-size: 52px;
+  right: -8px;
+  bottom: -12px;
+  font-size: 72px;
   font-weight: 900;
   line-height: 1;
   pointer-events: none;
   user-select: none;
-  font-family: var(--font-serif, "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif", Georgia, serif);
+  font-family: "Hiragino Mincho ProN", "Yu Mincho", "Noto Serif CJK JP", "Noto Serif", Georgia, serif;
   transition: opacity 200ms ease;
+  z-index: 1;
 }
 
-/* Flag & origin capsule */
+/* ── Card Sections ── */
+.art-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px;
+  min-width: 0;
+  flex-shrink: 0;
+}
+
+.art-card-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  min-height: 0;
+}
+
+.art-card-title {
+  font-size: 16px;
+  font-weight: 900;
+  color: var(--text);
+  display: block;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.art-card-tagline {
+  margin: 0;
+  font-size: 10.5px;
+  color: var(--text-secondary);
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 2.8em;
+}
+
+/* ── Flag pill ── */
 .art-pill-flag {
   display: inline-flex;
   align-items: center;
   gap: 5px;
-  padding: 3px 8px;
+  padding: 3px 8px 3px 5px;
   border-radius: 999px;
   font-size: 11px;
   font-weight: 600;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  max-width: 70%;
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  max-width: 68%;
   min-width: 0;
   overflow: hidden;
   box-sizing: border-box;
 }
 
-/* Focus tags */
+:root:not([data-theme='dark']) .art-pill-flag {
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  color: rgba(0, 0, 0, 0.75);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+
+:root[data-theme='dark'] .art-pill-flag {
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ── Active badge ── */
+.art-active-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 9px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  padding: 3px 7px;
+  border-radius: 999px;
+  flex-shrink: 0;
+  color: #000;
+  background: linear-gradient(135deg, #fef08a, #fbbf24);
+  box-shadow: 0 2px 8px rgba(245, 158, 11, 0.5);
+}
+
+/* ── Focus tags ── */
 .art-focus-chips {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin: 6px 0 8px;
+  margin-top: 5px;
   max-width: 100%;
   overflow: hidden;
   box-sizing: border-box;
 }
 
 .art-chip {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 6px;
-  border-radius: 6px;
-  line-height: 1.25;
+  font-size: 9.5px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 7px;
+  line-height: 1.3;
   white-space: nowrap;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
   box-sizing: border-box;
+  backdrop-filter: blur(8px);
 }
 
-/* Footer row */
+/* ── Footer row ── */
 .art-card-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 4px;
-  margin-top: auto;
+  flex-shrink: 0;
   padding-top: 8px;
-  border-top: 0.5px solid var(--separator);
+  border-top: 0.5px solid;
   min-width: 0;
   box-sizing: border-box;
 }
 
-/* Milestone 5-segment responsive grid */
+:root:not([data-theme='dark']) .art-card-footer {
+  border-top-color: rgba(0,0,0,0.08);
+}
+:root[data-theme='dark'] .art-card-footer {
+  border-top-color: rgba(255,255,255,0.1);
+}
+
+/* ── Active Dojo Ring ── */
+.art-grid-card.active-dojo {
+  box-shadow: 0 0 0 2.5px #fbbf24, 0 12px 36px rgba(251, 191, 36, 0.35) !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   PER-DISCIPLINE THEMES — Each with unique gradient, glow, watermark color
+   Dark & Light mode variants
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* KARATE — Lacquer Crimson: rising sun red over midnight black */
+:root[data-theme='dark'] .art-theme-karate {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(239, 68, 68, 0.35) 0%, transparent 55%),
+    radial-gradient(ellipse at 20% 90%, rgba(220, 38, 38, 0.15) 0%, transparent 50%),
+    linear-gradient(160deg, rgba(32, 16, 16, 0.92) 0%, rgba(16, 16, 22, 0.96) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(239,68,68,0.12), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-karate .art-watermark { color: rgba(239, 68, 68, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-karate {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(239, 68, 68, 0.18) 0%, transparent 55%),
+    linear-gradient(160deg, rgba(255, 243, 243, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(239, 68, 68, 0.25);
+  box-shadow: 0 6px 20px rgba(239,68,68,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-karate .art-watermark { color: rgba(239, 68, 68, 0.12); }
+
+/* BJJ — Rio Midnight: deep cobalt ocean with lightning accents */
+:root[data-theme='dark'] .art-theme-bjj {
+  background:
+    radial-gradient(ellipse at 75% 15%, rgba(59, 130, 246, 0.38) 0%, transparent 55%),
+    radial-gradient(ellipse at 25% 85%, rgba(37, 99, 235, 0.18) 0%, transparent 50%),
+    linear-gradient(160deg, rgba(10, 20, 48, 0.92) 0%, rgba(12, 16, 30, 0.96) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(59,130,246,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-bjj .art-watermark { color: rgba(59, 130, 246, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-bjj {
+  background:
+    radial-gradient(ellipse at 75% 15%, rgba(59, 130, 246, 0.2) 0%, transparent 55%),
+    linear-gradient(160deg, rgba(236, 246, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(59, 130, 246, 0.28);
+  box-shadow: 0 6px 20px rgba(59,130,246,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-bjj .art-watermark { color: rgba(59, 130, 246, 0.12); }
+
+/* MUAY THAI — Siam Fire: burnt orange dusk with gold ember glow */
+:root[data-theme='dark'] .art-theme-muay_thai {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(249, 115, 22, 0.4) 0%, transparent 52%),
+    radial-gradient(ellipse at 15% 85%, rgba(251, 191, 36, 0.12) 0%, transparent 45%),
+    linear-gradient(160deg, rgba(40, 20, 8, 0.92) 0%, rgba(20, 16, 12, 0.96) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(249,115,22,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-muay_thai .art-watermark { color: rgba(249, 115, 22, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-muay_thai {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(249, 115, 22, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(255, 248, 238, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(249, 115, 22, 0.28);
+  box-shadow: 0 6px 20px rgba(249,115,22,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-muay_thai .art-watermark { color: rgba(249, 115, 22, 0.12); }
+
+/* TAEKWONDO — Taegeuk Sky: electric cyan with Hanbok white */
+:root[data-theme='dark'] .art-theme-taekwondo {
+  background:
+    radial-gradient(ellipse at 75% 12%, rgba(6, 182, 212, 0.4) 0%, transparent 52%),
+    radial-gradient(ellipse at 20% 90%, rgba(14, 165, 233, 0.15) 0%, transparent 45%),
+    linear-gradient(160deg, rgba(8, 28, 38, 0.92) 0%, rgba(12, 18, 28, 0.96) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(6,182,212,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-taekwondo .art-watermark { color: rgba(6, 182, 212, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-taekwondo {
+  background:
+    radial-gradient(ellipse at 75% 12%, rgba(6, 182, 212, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(232, 252, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(6, 182, 212, 0.28);
+  box-shadow: 0 6px 20px rgba(6,182,212,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-taekwondo .art-watermark { color: rgba(6, 182, 212, 0.12); }
+
+/* JUDO — Kodokan: deep indigo with silver throwing arc */
+:root[data-theme='dark'] .art-theme-judo {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(99, 102, 241, 0.38) 0%, transparent 52%),
+    radial-gradient(ellipse at 18% 88%, rgba(79, 70, 229, 0.16) 0%, transparent 48%),
+    linear-gradient(160deg, rgba(22, 18, 44, 0.92) 0%, rgba(14, 14, 26, 0.96) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(99,102,241,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-judo .art-watermark { color: rgba(99, 102, 241, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-judo {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(99, 102, 241, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(242, 240, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(99, 102, 241, 0.25);
+  box-shadow: 0 6px 20px rgba(99,102,241,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-judo .art-watermark { color: rgba(99, 102, 241, 0.12); }
+
+/* MMA — Octagon Gold: championship amber-black with cage glow */
+:root[data-theme='dark'] .art-theme-mma {
+  background:
+    radial-gradient(ellipse at 82% 10%, rgba(245, 158, 11, 0.42) 0%, transparent 52%),
+    radial-gradient(ellipse at 20% 85%, rgba(217, 119, 6, 0.18) 0%, transparent 48%),
+    linear-gradient(160deg, rgba(34, 26, 8, 0.92) 0%, rgba(18, 16, 10, 0.96) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(245,158,11,0.18), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-mma .art-watermark { color: rgba(245, 158, 11, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-mma {
+  background:
+    radial-gradient(ellipse at 82% 10%, rgba(245, 158, 11, 0.2) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(255, 250, 230, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+  box-shadow: 0 6px 20px rgba(245,158,11,0.12), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-mma .art-watermark { color: rgba(245, 158, 11, 0.12); }
+
+/* BOXING — Queensberry: deep ruby velvet with ring canvas buff */
+:root[data-theme='dark'] .art-theme-boxing {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(225, 29, 72, 0.4) 0%, transparent 52%),
+    radial-gradient(ellipse at 15% 88%, rgba(190, 18, 60, 0.15) 0%, transparent 45%),
+    linear-gradient(160deg, rgba(36, 14, 22, 0.92) 0%, rgba(20, 14, 18, 0.96) 100%);
+  border: 1px solid rgba(225, 29, 72, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(225,29,72,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-boxing .art-watermark { color: rgba(225, 29, 72, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-boxing {
+  background:
+    radial-gradient(ellipse at 80% 10%, rgba(225, 29, 72, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(255, 238, 242, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(225, 29, 72, 0.26);
+  box-shadow: 0 6px 20px rgba(225,29,72,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-boxing .art-watermark { color: rgba(225, 29, 72, 0.12); }
+
+/* KICKBOXING — Dutch K-1: volcanic orange flame with smoke */
+:root[data-theme='dark'] .art-theme-kickboxing {
+  background:
+    radial-gradient(ellipse at 80% 8%, rgba(255, 120, 40, 0.42) 0%, transparent 52%),
+    radial-gradient(ellipse at 18% 88%, rgba(239, 68, 68, 0.15) 0%, transparent 45%),
+    linear-gradient(160deg, rgba(40, 20, 10, 0.92) 0%, rgba(22, 16, 14, 0.96) 100%);
+  border: 1px solid rgba(255, 120, 40, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(255,120,40,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-kickboxing .art-watermark { color: rgba(255, 120, 40, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-kickboxing {
+  background:
+    radial-gradient(ellipse at 80% 8%, rgba(255, 120, 40, 0.2) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(255, 245, 235, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(255, 120, 40, 0.28);
+  box-shadow: 0 6px 20px rgba(255,120,40,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-kickboxing .art-watermark { color: rgba(255, 120, 40, 0.12); }
+
+/* WRESTLING — Hellenic Bronze: warm amber-bronze with laurel shadow */
+:root[data-theme='dark'] .art-theme-wrestling {
+  background:
+    radial-gradient(ellipse at 78% 12%, rgba(217, 119, 6, 0.38) 0%, transparent 52%),
+    radial-gradient(ellipse at 18% 85%, rgba(180, 83, 9, 0.15) 0%, transparent 48%),
+    linear-gradient(160deg, rgba(36, 26, 10, 0.92) 0%, rgba(20, 18, 14, 0.96) 100%);
+  border: 1px solid rgba(217, 119, 6, 0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(217,119,6,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-wrestling .art-watermark { color: rgba(217, 119, 6, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-wrestling {
+  background:
+    radial-gradient(ellipse at 78% 12%, rgba(217, 119, 6, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(254, 248, 220, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(217, 119, 6, 0.26);
+  box-shadow: 0 6px 20px rgba(217,119,6,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-wrestling .art-watermark { color: rgba(217, 119, 6, 0.12); }
+
+/* WUSHU — Imperial Vermilion: scarlet dragon with imperial gold */
+:root[data-theme='dark'] .art-theme-wushu {
+  background:
+    radial-gradient(ellipse at 80% 8%, rgba(220, 38, 38, 0.42) 0%, transparent 52%),
+    radial-gradient(ellipse at 15% 88%, rgba(245, 158, 11, 0.14) 0%, transparent 45%),
+    linear-gradient(160deg, rgba(36, 12, 12, 0.92) 0%, rgba(22, 14, 14, 0.96) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.38);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(220,38,38,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-wushu .art-watermark { color: rgba(220, 38, 38, 0.2); }
+
+:root:not([data-theme='dark']) .art-theme-wushu {
+  background:
+    radial-gradient(ellipse at 80% 8%, rgba(220, 38, 38, 0.16) 0%, transparent 52%),
+    radial-gradient(ellipse at 20% 90%, rgba(245, 158, 11, 0.08) 0%, transparent 45%),
+    linear-gradient(160deg, rgba(255, 238, 238, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(220, 38, 38, 0.26);
+  box-shadow: 0 6px 20px rgba(220,38,38,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-wushu .art-watermark { color: rgba(220, 38, 38, 0.12); }
+
+/* TAI CHI — Wudang Mist: jade mountain with flowing water */
+:root[data-theme='dark'] .art-theme-tai_chi {
+  background:
+    radial-gradient(ellipse at 75% 12%, rgba(16, 185, 129, 0.38) 0%, transparent 52%),
+    radial-gradient(ellipse at 20% 85%, rgba(5, 150, 105, 0.15) 0%, transparent 48%),
+    linear-gradient(160deg, rgba(10, 30, 24, 0.92) 0%, rgba(10, 22, 18, 0.96) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(16,185,129,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-tai_chi .art-watermark { color: rgba(16, 185, 129, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-tai_chi {
+  background:
+    radial-gradient(ellipse at 75% 12%, rgba(16, 185, 129, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(230, 255, 244, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  box-shadow: 0 6px 20px rgba(16,185,129,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-tai_chi .art-watermark { color: rgba(16, 185, 129, 0.12); }
+
+/* AIKIDO — Aikikai Violet: centered ki energy in deep violet */
+:root[data-theme='dark'] .art-theme-aikido {
+  background:
+    radial-gradient(ellipse at 78% 10%, rgba(139, 92, 246, 0.4) 0%, transparent 52%),
+    radial-gradient(ellipse at 18% 88%, rgba(109, 40, 217, 0.16) 0%, transparent 48%),
+    linear-gradient(160deg, rgba(22, 14, 42, 0.92) 0%, rgba(16, 12, 28, 0.96) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.35);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.45), 0 2px 8px rgba(139,92,246,0.15), inset 0 1px 1px rgba(255,255,255,0.1);
+}
+:root[data-theme='dark'] .art-theme-aikido .art-watermark { color: rgba(139, 92, 246, 0.18); }
+
+:root:not([data-theme='dark']) .art-theme-aikido {
+  background:
+    radial-gradient(ellipse at 78% 10%, rgba(139, 92, 246, 0.18) 0%, transparent 52%),
+    linear-gradient(160deg, rgba(242, 238, 255, 0.97) 0%, rgba(255, 255, 255, 0.92) 100%);
+  border: 1px solid rgba(139, 92, 246, 0.26);
+  box-shadow: 0 6px 20px rgba(139,92,246,0.1), 0 2px 6px rgba(0,0,0,0.04), inset 0 1px 1px #fff;
+}
+:root:not([data-theme='dark']) .art-theme-aikido .art-watermark { color: rgba(139, 92, 246, 0.12); }
+
+/* ── Milestone Progress Grid ── */
 .dojo-milestone-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -4315,8 +4646,8 @@
 }
 
 .dojo-milestone-segment {
-  height: 24px;
-  border-radius: 7px;
+  height: 26px;
+  border-radius: 8px;
   display: grid;
   place-items: center;
   font-size: 11px;
@@ -4333,268 +4664,17 @@
 }
 
 :root[data-theme='dark'] .dojo-milestone-segment.inactive {
-  background: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.07);
   border-color: rgba(255, 255, 255, 0.1);
   color: var(--text-tertiary);
 }
 
-/* =========================================================================
-   Discipline Themes: Dark & Light Mode Liquid Glass
-   ========================================================================= */
-
-/* Karate: Japanese Lacquer Crimson & Ember */
-:root[data-theme='dark'] .art-theme-karate {
-  background: radial-gradient(circle at 85% 15%, rgba(239, 68, 68, 0.22), transparent 65%),
-              linear-gradient(155deg, rgba(38, 22, 22, 0.75), rgba(20, 20, 24, 0.85));
-  border: 1px solid rgba(239, 68, 68, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-karate .art-watermark {
-  color: rgba(239, 68, 68, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-karate {
-  background: radial-gradient(circle at 85% 15%, rgba(239, 68, 68, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(255, 246, 246, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(239, 68, 68, 0.22);
-  box-shadow: 0 4px 16px rgba(239, 68, 68, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-karate .art-watermark {
-  color: rgba(239, 68, 68, 0.08);
-}
-
-/* BJJ: Rio Sapphire & Deep Cobalt */
-:root[data-theme='dark'] .art-theme-bjj {
-  background: radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(18, 28, 48, 0.75), rgba(18, 20, 28, 0.85));
-  border: 1px solid rgba(59, 130, 246, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-bjj .art-watermark {
-  color: rgba(59, 130, 246, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-bjj {
-  background: radial-gradient(circle at 85% 15%, rgba(59, 130, 246, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(240, 246, 255, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(59, 130, 246, 0.22);
-  box-shadow: 0 4px 16px rgba(59, 130, 246, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-bjj .art-watermark {
-  color: rgba(59, 130, 246, 0.08);
-}
-
-/* Muay Thai: Siam Sunset Coral & Golden Fire */
-:root[data-theme='dark'] .art-theme-muay_thai {
-  background: radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.25), transparent 65%),
-              linear-gradient(155deg, rgba(42, 24, 16, 0.75), rgba(22, 18, 20, 0.85));
-  border: 1px solid rgba(249, 115, 22, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-muay_thai .art-watermark {
-  color: rgba(249, 115, 22, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-muay_thai {
-  background: radial-gradient(circle at 85% 15%, rgba(249, 115, 22, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(255, 248, 240, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(249, 115, 22, 0.22);
-  box-shadow: 0 4px 16px rgba(249, 115, 22, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-muay_thai .art-watermark {
-  color: rgba(249, 115, 22, 0.08);
-}
-
-/* Taekwondo: Taegeuk Dual Cyan & Crimson */
-:root[data-theme='dark'] .art-theme-taekwondo {
-  background: radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(16, 32, 40, 0.75), rgba(18, 20, 26, 0.85));
-  border: 1px solid rgba(6, 182, 212, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-taekwondo .art-watermark {
-  color: rgba(6, 182, 212, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-taekwondo {
-  background: radial-gradient(circle at 85% 15%, rgba(6, 182, 212, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(240, 253, 250, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(6, 182, 212, 0.22);
-  box-shadow: 0 4px 16px rgba(6, 182, 212, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-taekwondo .art-watermark {
-  color: rgba(6, 182, 212, 0.08);
-}
-
-/* Judo: Kodokan Indigo & White Gi */
-:root[data-theme='dark'] .art-theme-judo {
-  background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(26, 24, 46, 0.75), rgba(18, 18, 26, 0.85));
-  border: 1px solid rgba(99, 102, 241, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-judo .art-watermark {
-  color: rgba(99, 102, 241, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-judo {
-  background: radial-gradient(circle at 85% 15%, rgba(99, 102, 241, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(245, 243, 255, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(99, 102, 241, 0.22);
-  box-shadow: 0 4px 16px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-judo .art-watermark {
-  color: rgba(99, 102, 241, 0.08);
-}
-
-/* MMA: Championship Amber Gold & Carbon */
-:root[data-theme='dark'] .art-theme-mma {
-  background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(38, 30, 16, 0.75), rgba(22, 20, 18, 0.85));
-  border: 1px solid rgba(245, 158, 11, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-mma .art-watermark {
-  color: rgba(245, 158, 11, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-mma {
-  background: radial-gradient(circle at 85% 15%, rgba(245, 158, 11, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(255, 251, 235, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(245, 158, 11, 0.22);
-  box-shadow: 0 4px 16px rgba(245, 158, 11, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-mma .art-watermark {
-  color: rgba(245, 158, 11, 0.08);
-}
-
-/* Boxing: Queensberry Ruby & Leather */
-:root[data-theme='dark'] .art-theme-boxing {
-  background: radial-gradient(circle at 85% 15%, rgba(225, 29, 72, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(40, 18, 26, 0.75), rgba(24, 18, 20, 0.85));
-  border: 1px solid rgba(225, 29, 72, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-boxing .art-watermark {
-  color: rgba(225, 29, 72, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-boxing {
-  background: radial-gradient(circle at 85% 15%, rgba(225, 29, 72, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(255, 241, 242, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(225, 29, 72, 0.22);
-  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-boxing .art-watermark {
-  color: rgba(225, 29, 72, 0.08);
-}
-
-/* Kickboxing: Dutch K-1 Electric Flame */
-:root[data-theme='dark'] .art-theme-kickboxing {
-  background: radial-gradient(circle at 85% 15%, rgba(255, 120, 73, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(42, 22, 16, 0.75), rgba(24, 18, 20, 0.85));
-  border: 1px solid rgba(255, 120, 73, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-kickboxing .art-watermark {
-  color: rgba(255, 120, 73, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-kickboxing {
-  background: radial-gradient(circle at 85% 15%, rgba(255, 120, 73, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(255, 247, 240, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(255, 120, 73, 0.22);
-  box-shadow: 0 4px 16px rgba(255, 120, 73, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-kickboxing .art-watermark {
-  color: rgba(255, 120, 73, 0.08);
-}
-
-/* Wrestling: Olympic Bronze & Laurel */
-:root[data-theme='dark'] .art-theme-wrestling {
-  background: radial-gradient(circle at 85% 15%, rgba(217, 119, 6, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(38, 28, 14, 0.75), rgba(22, 20, 18, 0.85));
-  border: 1px solid rgba(217, 119, 6, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-wrestling .art-watermark {
-  color: rgba(217, 119, 6, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-wrestling {
-  background: radial-gradient(circle at 85% 15%, rgba(217, 119, 6, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(254, 243, 199, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(217, 119, 6, 0.22);
-  box-shadow: 0 4px 16px rgba(217, 119, 6, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-wrestling .art-watermark {
-  color: rgba(217, 119, 6, 0.08);
-}
-
-/* Wushu Kung Fu: Shaolin Vermilion & Imperial Gold */
-:root[data-theme='dark'] .art-theme-wushu {
-  background: radial-gradient(circle at 85% 15%, rgba(225, 29, 72, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(38, 18, 22, 0.75), rgba(24, 18, 20, 0.85));
-  border: 1px solid rgba(225, 29, 72, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-wushu .art-watermark {
-  color: rgba(225, 29, 72, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-wushu {
-  background: radial-gradient(circle at 85% 15%, rgba(225, 29, 72, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(255, 241, 242, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(225, 29, 72, 0.22);
-  box-shadow: 0 4px 16px rgba(225, 29, 72, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-wushu .art-watermark {
-  color: rgba(225, 29, 72, 0.08);
-}
-
-/* Tai Chi: Wudang Misty Emerald Jade */
-:root[data-theme='dark'] .art-theme-tai_chi {
-  background: radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(16, 36, 28, 0.75), rgba(18, 24, 22, 0.85));
-  border: 1px solid rgba(16, 185, 129, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-tai_chi .art-watermark {
-  color: rgba(16, 185, 129, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-tai_chi {
-  background: radial-gradient(circle at 85% 15%, rgba(16, 185, 129, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(236, 253, 245, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(16, 185, 129, 0.22);
-  box-shadow: 0 4px 16px rgba(16, 185, 129, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-tai_chi .art-watermark {
-  color: rgba(16, 185, 129, 0.08);
-}
-
-/* Aikido: Zen Flowing Violet */
-:root[data-theme='dark'] .art-theme-aikido {
-  background: radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.24), transparent 65%),
-              linear-gradient(155deg, rgba(26, 20, 42, 0.75), rgba(20, 18, 28, 0.85));
-  border: 1px solid rgba(139, 92, 246, 0.28);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35), inset 0 1px 1px rgba(255, 255, 255, 0.12);
-}
-:root[data-theme='dark'] .art-theme-aikido .art-watermark {
-  color: rgba(139, 92, 246, 0.12);
-}
-:root:not([data-theme='dark']) .art-theme-aikido {
-  background: radial-gradient(circle at 85% 15%, rgba(139, 92, 246, 0.12), transparent 60%),
-              linear-gradient(155deg, rgba(245, 243, 255, 0.92), rgba(255, 255, 255, 0.85));
-  border: 1px solid rgba(139, 92, 246, 0.22);
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04), inset 0 1px 1px #ffffff;
-}
-:root:not([data-theme='dark']) .art-theme-aikido .art-watermark {
-  color: rgba(139, 92, 246, 0.08);
-}
-
-/* Active Dojo Card Luminous State */
-.art-grid-card.active-dojo {
-  box-shadow: 0 0 0 2px var(--accent), 0 10px 30px color-mix(in srgb, var(--accent) 30%, transparent) !important;
-}
-
-/* ─────────────────────────────────────────────────────────────────────────────
-   2.5.2 Update: Adaptive Dojo Hub Container & Cards
-   ───────────────────────────────────────────────────────────────────────────── */
+/* ── Dojo Hub Container ── */
 .dojo-hub-card {
   border-radius: 26px;
   padding: 18px;
-  backdrop-filter: blur(30px) saturate(180%);
-  -webkit-backdrop-filter: blur(30px) saturate(180%);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
   display: flex;
   flex-direction: column;
   gap: 14px;
@@ -4608,11 +4688,12 @@
 }
 
 :root[data-theme='dark'] .dojo-hub-card {
-  background: linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02));
+  background: linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03));
   border: 1px solid rgba(255, 255, 255, 0.14);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.16);
 }
 
+/* ── Dojo Sub-Cards ── */
 .dojo-sub-card {
   border-radius: 20px;
   padding: 14px 16px;
@@ -4634,7 +4715,7 @@
 
 :root[data-theme='dark'] .dojo-sub-card {
   background: linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02));
-  border: 1px solid rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.09);
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.08);
 }
 
