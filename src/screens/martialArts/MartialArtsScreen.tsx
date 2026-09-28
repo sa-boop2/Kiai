@@ -138,24 +138,52 @@ export function MartialArtsScreen({ back = false }: { back?: boolean }) {
       header={
         <div style={{ padding: '0 var(--gutter) 4px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {browseMode ? (
-            <div className="search-wrap" style={{ padding: 0 }}>
-              <label className="search-field">
-                <Icon name="magnifyingglass" size={17} strokeWidth={2.4} />
-                <input
-                  type="search"
-                  value={searchQuery}
-                  placeholder={t('Search disciplines, origins & styles...')}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  enterKeyHint="search"
-                  autoComplete="off"
-                />
-                {searchQuery && (
-                  <button type="button" className="search-clear" aria-label="Clear search" onClick={() => setSearchQuery('')}>
-                    <Icon name="xmark.circle.fill" size={17} />
+            <>
+              <div className="search-wrap" style={{ padding: 0 }}>
+                <label className="search-field">
+                  <Icon name="magnifyingglass" size={17} strokeWidth={2.4} />
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    placeholder={t('Search disciplines, origins & styles...')}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    enterKeyHint="search"
+                    autoComplete="off"
+                  />
+                  {searchQuery && (
+                    <button type="button" className="search-clear" aria-label="Clear search" onClick={() => setSearchQuery('')}>
+                      <Icon name="xmark.circle.fill" size={17} />
+                    </button>
+                  )}
+                </label>
+              </div>
+              {profile.primaryArt && (
+                <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+                  <button
+                    type="button"
+                    className="glass pressable"
+                    style={{
+                      padding: '5px 11px',
+                      borderRadius: '999px',
+                      fontSize: '11.5px',
+                      fontWeight: 700,
+                      color: 'var(--text)',
+                      border: '1px solid var(--stroke)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
+                    onClick={() => {
+                      haptic('selection')
+                      setBrowseMode(false)
+                    }}
+                  >
+                    <Icon name="arrow.turn.up.left" size={11} />
+                    My Dojo
                   </button>
-                )}
-              </label>
-            </div>
+                </div>
+              )}
+            </>
           ) : (
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '8px' }}>
               <div style={{ minWidth: 0, flex: 1 }}>
