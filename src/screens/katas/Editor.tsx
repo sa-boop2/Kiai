@@ -310,29 +310,30 @@ function PhaseEditor({
                   </svg>
                 </button>
                 <button type="button" className="editor-row-info" onClick={() => nav.present({ name: 'exercise', slug: exercise.slug })}>
-                  <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category as BodyRegion).tint} size={48} />
-                  <span>
-                    <strong style={{ fontSize: '16px' }}>{exercise.name}</strong>
-                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 500, display: 'flex', alignItems: 'center', gap: '4px' }}>
-                      <span style={{ width: '8px', height: '8px', borderRadius: '4px', background: 'currentColor', opacity: 0.5 }}></span>
-                      {categoryMeta(exercise.category as BodyRegion).title} · {exercise.targets.join(', ')}
+                  <SymbolTile icon={exercise.symbol} tint={categoryMeta(exercise.category as BodyRegion).tint} size={36} />
+                  <span style={{ minWidth: 0 }}>
+                    <strong>{exercise.name}</strong>
+                    <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', fontWeight: 500, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+                      {exercise.targets.slice(0, 2).join(' · ')}
                     </span>
                   </span>
                 </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexShrink: 0 }}>
                   {/* PNF Toggle Pill */}
                   <button
                     type="button"
                     style={{
-                      padding: '4px 8px',
-                      borderRadius: '8px',
-                      fontSize: '11px',
-                      fontWeight: 700,
-                      border: item.pnf ? '1px solid var(--ember)' : '1px solid var(--stroke)',
-                      background: item.pnf ? 'color-mix(in srgb, var(--ember) 20%, transparent)' : 'color-mix(in srgb, var(--surface) 60%, transparent)',
-                      color: item.pnf ? 'var(--ember)' : 'var(--text-secondary)',
+                      padding: '3px 6px',
+                      borderRadius: '6px',
+                      fontSize: '10px',
+                      fontWeight: 800,
+                      letterSpacing: '0.02em',
+                      border: item.pnf ? '1px solid var(--ember)' : '1px solid var(--separator)',
+                      background: item.pnf ? 'color-mix(in srgb, var(--ember) 18%, transparent)' : 'transparent',
+                      color: item.pnf ? 'var(--ember)' : 'var(--text-tertiary)',
                       cursor: 'pointer',
-                      transition: 'all 180ms ease',
+                      transition: 'all 150ms ease',
+                      whiteSpace: 'nowrap',
                     }}
                     title="Toggle PNF (Contract-Relax) Stretching"
                     onClick={() => {
@@ -340,7 +341,7 @@ function PhaseEditor({
                       onChange((list) => list.map((i) => (i.id === item.id ? { ...i, pnf: !i.pnf } : i)))
                     }}
                   >
-                    {item.pnf ? '⚡ PNF ON' : 'PNF'}
+                    {item.pnf ? 'PNF' : 'PNF'}
                   </button>
 
                   <div className="duration-edit">
@@ -355,7 +356,7 @@ function PhaseEditor({
                         onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
                       }}
                     />
-                    <span className="duration-unit">sec</span>
+                    <span className="duration-unit">s</span>
                   </div>
                 </div>
                 <button

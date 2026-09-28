@@ -2979,25 +2979,36 @@
 .duration-edit {
   display: flex;
   align-items: center;
-  background: var(--background);
-  border-radius: 8px;
-  padding: 4px 8px;
-  gap: 4px;
+  background: var(--surface-raised);
+  border-radius: 6px;
+  padding: 2px 5px;
+  gap: 2px;
+  border: 1px solid var(--separator);
 }
 .duration-edit input {
-  width: 48px;
+  width: 32px;
   text-align: right;
   background: none;
   border: none;
   color: var(--text);
   font-family: var(--font-rounded);
-  font-size: 15px;
+  font-size: 13px;
+  font-weight: 700;
   font-variant-numeric: tabular-nums;
   outline: none;
+  padding: 0;
+  -moz-appearance: textfield;
+}
+.duration-edit input::-webkit-outer-spin-button,
+.duration-edit input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
 }
 .duration-unit {
-  font-size: 13px;
+  font-size: 11px;
+  font-weight: 600;
   color: var(--text-secondary);
+  white-space: nowrap;
 }
 
 /* ============================================================================================
