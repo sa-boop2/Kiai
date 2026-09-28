@@ -65,7 +65,7 @@ export function renderRoute(route: Route): ReactNode {
   }
 }
 
-export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'large' | 'medium' } {
+export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'large' | 'medium' | 'tall' } {
   switch (route.name) {
     case 'exercise':
       return { content: <ExerciseSheet slug={route.slug} /> }
@@ -95,7 +95,7 @@ export function renderSheet(route: SheetRoute): { content: ReactNode; size?: 'la
     case 'customExercise':
       return { content: <CustomExerciseSheet onSave={route.onSave} /> }
     case 'muscle':
-      return { content: <MuscleDetailScreen part={(route as any).part as any} />, size: 'medium' }
+      return { content: <MuscleDetailScreen part={(route as any).part as any} />, size: 'tall' }
     default:
       return { content: <div>Not found</div> }
   }

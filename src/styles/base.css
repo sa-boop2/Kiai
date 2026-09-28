@@ -599,6 +599,10 @@ img {
   height: min(68%, calc(100% - var(--safe-top) - 12px));
 }
 
+.sheet[data-size='tall'] {
+  height: min(86%, calc(100% - var(--safe-top) - 32px));
+}
+
 .sheet-layer[data-phase='exit'] .sheet {
   animation: sheet-out 380ms var(--ease-out) both;
 }

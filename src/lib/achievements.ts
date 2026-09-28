@@ -12,6 +12,76 @@ export interface Achievement {
 
 export const ACHIEVEMENTS: Achievement[] = [
   {
+    id: 'night_owl',
+    title: 'Night Ronin',
+    description: 'Complete a mobility session after 9:00 PM.',
+    icon: 'moon.stars.fill',
+    tint: 'var(--indigo)',
+    progress: (state) => {
+      const late = state.sessions.filter((s) => new Date(s.startedAt).getHours() >= 21).length
+      return { current: Math.min(late, 1), max: 1, unlocked: late >= 1 }
+    },
+  },
+  {
+    id: 'weekend_warrior',
+    title: 'Weekend Warrior',
+    description: 'Train on a Saturday or Sunday.',
+    icon: 'shield.fill',
+    tint: 'var(--ember)',
+    progress: (state) => {
+      const weekend = state.sessions.filter((s) => {
+        const d = new Date(s.startedAt).getDay()
+        return d === 0 || d === 6
+      }).length
+      return { current: Math.min(weekend, 1), max: 1, unlocked: weekend >= 1 }
+    },
+  },
+  {
+    id: 'splits_pioneer',
+    title: 'Front Split Explorer',
+    description: 'Reach Level 2 (Kneeling Half Split) or higher.',
+    icon: 'figure.split',
+    tint: 'var(--crimson, #ef4444)',
+    progress: (state) => {
+      const records = state.flexibilityRecords.filter((r) => r.benchmark === 'splits')
+      const maxPercent = records.reduce((max, r) => Math.max(max, r.progressPercent), 0)
+      return { current: Math.min(maxPercent, 35), max: 35, unlocked: maxPercent >= 35 }
+    },
+  },
+  {
+    id: 'shoulder_bulletproof',
+    title: 'Pike Stretch Explorer',
+    description: 'Check in to your first Pike Stretch benchmark.',
+    icon: 'figure.flexibility',
+    tint: 'var(--sakura)',
+    progress: (state) => {
+      const records = state.flexibilityRecords.filter((r) => r.benchmark === 'pikeStretch').length
+      return { current: Math.min(records, 1), max: 1, unlocked: records >= 1 }
+    },
+  },
+  {
+    id: 'kata_connoisseur',
+    title: 'Kata Connoisseur',
+    description: 'Complete 10 martial mobility routines.',
+    icon: 'trophy.fill',
+    tint: 'var(--gold)',
+    progress: (state) => {
+      const count = state.sessions.filter((s) => s.kind === 'routine').length
+      return { current: Math.min(count, 10), max: 10, unlocked: count >= 10 }
+    },
+  },
+  {
+    id: 'centurion',
+    title: 'Dojo Centurion',
+    description: 'Train across 30 distinct calendar days.',
+    icon: 'calendar.badge.clock',
+    tint: 'var(--jade)',
+    progress: (state) => {
+      const days = new Set(state.sessions.map((s) => new Date(s.startedAt).toDateString())).size
+      return { current: Math.min(days, 30), max: 30, unlocked: days >= 30 }
+    },
+  },
+  {
     id: 'technique_driller',
     title: 'Technique Driller',
     description: 'Complete your first Martial Art Technique drill.',

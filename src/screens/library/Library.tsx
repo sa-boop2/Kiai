@@ -15,7 +15,6 @@ import {
 import { MARTIAL_ARTS } from '../../data/content'
 import { categoryMeta, equipmentMeta, tintColor } from '../../data/meta'
 import type { BodyRegion, Exercise, Difficulty } from '../../data/types'
-import { MartialArtEmblem } from '../../components/MartialArtEmblems'
 import { addExerciseToKata, setExerciseNote, toggleFavoriteExercise } from '../../lib/actions'
 import { toast } from '../../components/Toast'
 import { haptic } from '../../lib/haptics'
@@ -346,7 +345,7 @@ export function LibraryScreen() {
                 }
               />
             ) : (
-              <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px', marginTop: '12px' }}>
+              <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', width: '100%', maxWidth: '100%', boxSizing: 'border-box', marginTop: '12px' }}>
                 {filteredPremade.map((kata) => (
                   <div
                     key={kata.uuid}
@@ -437,8 +436,19 @@ export function LibraryScreen() {
                       nav.present({ name: 'artLearnMore', artId: art.id })
                     }}
                   >
-                    <div className="library-art-emblem-wrap">
-                      <MartialArtEmblem artId={art.id} size={56} tint={tintColor(art.tint)} />
+                    <div className="library-art-emblem-wrap" style={{
+                      width: 56,
+                      height: 56,
+                      borderRadius: 18,
+                      background: 'color-mix(in srgb, var(--art-tint) 16%, var(--surface-raised))',
+                      border: '1px solid color-mix(in srgb, var(--art-tint) 32%, transparent)',
+                      display: 'grid',
+                      placeItems: 'center',
+                      fontSize: '32px',
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
+                      marginBottom: '10px'
+                    }}>
+                      <span role="img" aria-label={art.origin}>{art.symbol}</span>
                     </div>
                     <span className="library-art-name">{art.name}</span>
                     <span className="library-art-origin">{art.origin}</span>
@@ -545,7 +555,20 @@ export function ArtDetailSheet({ artId }: { artId: string }) {
       <div className="sheet-scroll form">
         <div className="detail-hero centered" style={{ '--tint': tint } as CSSProperties}>
           <div className="detail-hero-glow" aria-hidden="true" />
-          <MartialArtEmblem artId={art.id} size={88} tint={tint} />
+          <div style={{
+              width: 88,
+              height: 88,
+              borderRadius: 28,
+              background: 'color-mix(in srgb, var(--tint) 18%, var(--surface-raised))',
+              border: '1px solid color-mix(in srgb, var(--tint) 35%, transparent)',
+              display: 'grid',
+              placeItems: 'center',
+              fontSize: '52px',
+              margin: '0 auto 14px',
+              boxShadow: '0 12px 32px rgba(0,0,0,0.25)',
+            }}>
+              <span role="img" aria-label={art.origin}>{art.symbol}</span>
+            </div>
           <h2>{art.name}</h2>
           <p>
             {art.origin} · {art.tagline}

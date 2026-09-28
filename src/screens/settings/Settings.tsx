@@ -356,19 +356,7 @@ export function WorkoutSettingsScreen() {
             />
           }
         />
-              <SettingsRow
-          icon="textformat.123"
-          tint="var(--indigo)"
-          title={t('Eastern Arabic Numerals (١, ٢, ٣)')}
-          trailing={
-            <Toggle
-              label={t('Eastern Arabic Numerals')}
-              checked={settings.arabicTimer ?? false}
-              onChange={(arabicTimer) => updateSettings({ arabicTimer })}
-            />
-          }
-        />
-      </Group>
+              </Group>
 
       <Group title={t('Structure')} footer={t('Warm-up and cool-down phases remain in your routine, but are skipped during play.')}>
         <SettingsRow
@@ -531,15 +519,88 @@ function ProfileCard() {
           />
         </div>
       </div>
-      <div className="profile-level">
-        <RankEmblem rank={snapshot.rank} size={22} />
-        <span className="profile-level-text">{t('Level %lld', snapshot.rank.level)} · {snapshot.rank.title}</span>
-        <span className="profile-streak" aria-label={`${snapshot.currentStreak} day streak`}>
-          <Icon name="flame.fill" size={15} style={{ color: 'var(--ember)' }} />
-          {snapshot.currentStreak}
-        </span>
+      {/* iOS 26 Liquid Glass Level & Streak Highlight */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '10px',
+          margin: '14px 0 10px',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}
+      >
+        <div
+          style={{
+            background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))',
+            border: '1px solid rgba(255, 255, 255, 0.12)',
+            borderRadius: '16px',
+            padding: '12px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 4px 16px rgba(0, 0, 0, 0.15)',
+          }}
+        >
+          <RankEmblem rank={snapshot.rank} size={28} />
+          <div style={{ textAlign: 'left', minWidth: 0 }}>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-secondary)', display: 'block', fontWeight: 600 }}>
+              Rank Level
+            </span>
+            <strong style={{ fontSize: '15px', color: 'var(--text)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', display: 'block' }}>
+              {t('Level %lld', snapshot.rank.level)}
+            </strong>
+          </div>
+        </div>
+
+        <div
+          style={{
+            background: 'linear-gradient(135deg, rgba(239, 68, 68, 0.15), rgba(245, 158, 11, 0.05))',
+            border: '1px solid rgba(239, 68, 68, 0.25)',
+            borderRadius: '16px',
+            padding: '12px 14px',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '10px',
+            backdropFilter: 'blur(20px)',
+            WebkitBackdropFilter: 'blur(20px)',
+            boxShadow: '0 4px 16px rgba(239, 68, 68, 0.12)',
+          }}
+        >
+          <div
+            style={{
+              width: 32,
+              height: 32,
+              borderRadius: 10,
+              background: 'rgba(239, 68, 68, 0.2)',
+              color: 'var(--ember)',
+              display: 'grid',
+              placeItems: 'center',
+              flexShrink: 0,
+            }}
+          >
+            <Icon name="flame.fill" size={18} />
+          </div>
+          <div style={{ textAlign: 'left', minWidth: 0 }}>
+            <span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--ember)', display: 'block', fontWeight: 700 }}>
+              Streak
+            </span>
+            <strong style={{ fontSize: '16px', color: 'var(--text)', display: 'block' }}>
+              {snapshot.currentStreak} {snapshot.currentStreak === 1 ? 'day' : 'days'}
+            </strong>
+          </div>
+        </div>
       </div>
-      <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={8} label="Rank progress" />
+
+      <div style={{ margin: '6px 0 2px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px', fontSize: '12px' }}>
+          <span style={{ color: 'var(--text-secondary)' }}>{snapshot.rank.title}</span>
+          <span style={{ color: 'var(--text-tertiary)' }}>{Math.round(snapshot.rankProgress * 100)}% to {next?.title ?? 'Max'}</span>
+        </div>
+        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={8} label="Rank progress" />
+      </div>
       {artById(profile.primaryArt) === undefined && <span className="sr-only">No primary art</span>}
 
       {pickerOpen && (
@@ -662,7 +723,7 @@ export function AppearanceScreen() {
         </div>
       </Group>
 
-      <Group title={t('Language')}>
+      <Group title={t('Language & Numerals')} footer={t('Switches workout timer digits between Western (1, 2, 3) and Eastern Arabic (١, ٢, ٣).')}>
         <SettingsRow
           icon="globe"
           tint="var(--indigo)"
@@ -673,6 +734,18 @@ export function AppearanceScreen() {
               value={settings.language}
               options={LANGUAGE_OPTIONS.map((o) => ({ value: o.value, title: o.nativeName }))}
               onChange={(language) => updateSettings({ language })}
+            />
+          }
+        />
+        <SettingsRow
+          icon="textformat.123"
+          tint="var(--amber, #f59e0b)"
+          title={t('Eastern Arabic Numerals (١, ٢, ٣)')}
+          trailing={
+            <Toggle
+              label={t('Eastern Arabic Numerals')}
+              checked={settings.arabicTimer ?? false}
+              onChange={(arabicTimer) => updateSettings({ arabicTimer })}
             />
           }
         />

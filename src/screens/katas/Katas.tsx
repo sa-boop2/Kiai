@@ -368,7 +368,7 @@ export function PremadeWorkoutsScreen() {
             }
           />
         ) : (
-          <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '12px' }}>
+          <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', width: '100%', maxWidth: '100%', boxSizing: 'border-box' }}>
             {filtered.map((kata) => (
               <div
                 key={kata.uuid}

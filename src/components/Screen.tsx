@@ -46,33 +46,27 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
 
   useEffect(() => () => cancelAnimationFrame(frame.current), [])
 
-  // Interactive iOS swipe-down to dismiss for pushed screens
+  // Native iOS edge swipe-right to go back for pushed screens
   useEffect(() => {
     if (!back) return
     const screen = screenRef.current
-    const scrollEl = scrollRef.current
-    if (!screen || !scrollEl) return
+    if (!screen) return
 
-    let startY = 0
     let startX = 0
-    let lastY = 0
+    let startY = 0
+    let lastX = 0
     let lastT = 0
     let velocity = 0
     let dragging = false
     let tracking = false
-    let fromGrabber = false
 
     const onTouchStart = (e: TouchEvent) => {
-      const target = e.target as HTMLElement | null
-      fromGrabber = Boolean(target?.closest('.screen-grabber-zone, .navbar'))
-      if (target?.closest('input, textarea, select, button, [role="switch"], .no-sheet-drag') && !fromGrabber) return
-
-      const atTop = scrollEl.scrollTop <= 0
-      if (!fromGrabber && !atTop) return
-
+      const touch = e.touches[0]
+      // Only track if gesture begins near left edge (< 40px), authentic to iOS navigation
+      if (touch.clientX > 40) return
       tracking = true
-      startY = lastY = e.touches[0].clientY
-      startX = e.touches[0].clientX
+      startX = lastX = touch.clientX
+      startY = touch.clientY
       lastT = performance.now()
       velocity = 0
       dragging = false
@@ -80,17 +74,14 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
 
     const onTouchMove = (e: TouchEvent) => {
       if (!tracking) return
-      const y = e.touches[0].clientY
-      const x = e.touches[0].clientX
-      const dy = y - startY
-      const dx = x - startX
+      const touch = e.touches[0]
+      const dx = touch.clientX - startX
+      const dy = touch.clientY - startY
 
       if (!dragging) {
-        if (dy < 6) {
-          if (dy < -4 || Math.abs(dx) > Math.abs(dy)) tracking = false
-          return
-        }
-        if (Math.abs(dx) > dy) {
+        if (dx < 6) return
+        // Ignore if gesture is mostly vertical scroll
+        if (Math.abs(dy) > dx * 0.75) {
           tracking = false
           return
         }
@@ -100,14 +91,13 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
 
       if (e.cancelable) e.preventDefault()
       const now = performance.now()
-      velocity = (y - lastY) / Math.max(1, now - lastT)
-      lastY = y
+      velocity = (touch.clientX - lastX) / Math.max(1, now - lastT)
+      lastX = touch.clientX
       lastT = now
 
-      const offset = Math.max(0, dy)
-      const scale = Math.max(0.92, 1 - offset * 0.0002)
-      screen.style.transform = `translate3d(0, ${offset}px, 0) scale(${scale})`
-      screen.style.borderRadius = `${Math.min(24, offset * 0.2)}px`
+      const offset = Math.max(0, dx)
+      screen.style.transform = `translate3d(${offset}px, 0, 0)`
+      screen.style.boxShadow = '-10px 0 30px rgba(0, 0, 0, 0.35)'
     }
 
     const onTouchEnd = () => {
@@ -117,24 +107,26 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
       dragging = false
       screen.classList.remove('screen-dragging')
 
-      const offset = lastY - startY
-      if (offset > 120 || velocity > 0.5) {
+      const offset = lastX - startX
+      const shouldDismiss = offset > 100 || (offset > 30 && velocity > 0.35)
+      if (shouldDismiss) {
         haptic('light')
-        screen.style.transition = 'transform 260ms cubic-bezier(0.2, 0.8, 0.25, 1), border-radius 260ms ease, opacity 260ms ease'
-        screen.style.transform = 'translate3d(0, 105%, 0) scale(0.9)'
-        screen.style.opacity = '0.5'
+        screen.style.transition = 'transform 240ms cubic-bezier(0.32, 0.72, 0, 1)'
+        screen.style.transform = 'translate3d(100%, 0, 0)'
         window.setTimeout(() => {
           resetTabbar()
           nav.back()
-        }, 260)
+          screen.style.transform = ''
+          screen.style.boxShadow = ''
+          screen.style.transition = ''
+        }, 240)
       } else {
-        screen.style.transition = 'transform 240ms cubic-bezier(0.25, 1, 0.5, 1), border-radius 240ms ease, opacity 240ms ease'
+        screen.style.transition = 'transform 220ms cubic-bezier(0.32, 0.72, 0, 1)'
         screen.style.transform = ''
-        screen.style.borderRadius = ''
-        screen.style.opacity = ''
+        screen.style.boxShadow = ''
         window.setTimeout(() => {
           if (screen) screen.style.transition = ''
-        }, 250)
+        }, 220)
       }
     }
 
@@ -142,7 +134,6 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
     screen.addEventListener('touchmove', onTouchMove, { passive: false })
     screen.addEventListener('touchend', onTouchEnd)
     screen.addEventListener('touchcancel', onTouchEnd)
-
     return () => {
       screen.removeEventListener('touchstart', onTouchStart)
       screen.removeEventListener('touchmove', onTouchMove)

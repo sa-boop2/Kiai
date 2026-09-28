@@ -319,19 +319,44 @@ function PhaseEditor({
                     </span>
                   </span>
                 </button>
-                <div className="duration-edit">
-                  <input
-                    type="number"
-                    aria-label={`${exercise.name} duration in seconds`}
-                    value={item.duration || ''}
-                    min={1}
-                    max={3600}
-                    onChange={(e) => {
-                      const value = Number(e.target.value)
-                      onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  {/* PNF Toggle Pill */}
+                  <button
+                    type="button"
+                    style={{
+                      padding: '4px 8px',
+                      borderRadius: '8px',
+                      fontSize: '11px',
+                      fontWeight: 700,
+                      border: item.pnf ? '1px solid var(--ember)' : '1px solid var(--stroke)',
+                      background: item.pnf ? 'color-mix(in srgb, var(--ember) 20%, transparent)' : 'color-mix(in srgb, var(--surface) 60%, transparent)',
+                      color: item.pnf ? 'var(--ember)' : 'var(--text-secondary)',
+                      cursor: 'pointer',
+                      transition: 'all 180ms ease',
                     }}
-                  />
-                  <span className="duration-unit">sec</span>
+                    title="Toggle PNF (Contract-Relax) Stretching"
+                    onClick={() => {
+                      haptic('selection')
+                      onChange((list) => list.map((i) => (i.id === item.id ? { ...i, pnf: !i.pnf } : i)))
+                    }}
+                  >
+                    {item.pnf ? '⚡ PNF ON' : 'PNF'}
+                  </button>
+
+                  <div className="duration-edit">
+                    <input
+                      type="number"
+                      aria-label={`${exercise.name} duration in seconds`}
+                      value={item.duration || ''}
+                      min={1}
+                      max={3600}
+                      onChange={(e) => {
+                        const value = Number(e.target.value)
+                        onChange((list) => list.map((i) => (i.id === item.id ? { ...i, duration: value } : i)))
+                      }}
+                    />
+                    <span className="duration-unit">sec</span>
+                  </div>
                 </div>
                 <button
                   type="button"

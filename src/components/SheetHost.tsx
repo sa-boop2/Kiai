@@ -13,7 +13,7 @@ interface Rendered {
 const instantExits = new Set<number>()
 
 /** Renders the sheet stack with enter/exit animations. */
-export function SheetHost({ renderSheet }: { renderSheet: (route: SheetRoute) => { content: ReactNode; size?: 'large' | 'medium' } }) {
+export function SheetHost({ renderSheet }: { renderSheet: (route: SheetRoute) => { content: ReactNode; size?: 'large' | 'medium' | 'tall' } }) {
   const { sheets } = useNav()
   const [rendered, setRendered] = useState<Rendered[]>([])
 
@@ -64,7 +64,7 @@ export function SheetHost({ renderSheet }: { renderSheet: (route: SheetRoute) =>
 
 function SheetFrame({
   entryKey, phase, size, under, children, onExited,
-}: { entryKey: number; phase: Phase; size: 'large' | 'medium'; under: boolean; children: ReactNode; onExited: () => void }) {
+}: { entryKey: number; phase: Phase; size: 'large' | 'medium' | 'tall'; under: boolean; children: ReactNode; onExited: () => void }) {
   const sheetRef = useRef<HTMLDivElement>(null)
   const backdropRef = useRef<HTMLDivElement>(null)
 
