@@ -26,8 +26,6 @@ export function renderRoot(tab: Tab): ReactNode {
       return <LibraryScreen />
     case 'analytics':
       return <AnalyticsScreen />
-    case 'settings':
-      return <SettingsScreen />
   }
 }
 
@@ -38,6 +36,8 @@ export function renderRoute(route: Route): ReactNode {
       return <KataDetailScreen id={route.id} />
     case 'martialArts':
       return <MartialArtsScreen back />
+    case 'settings':
+      return <SettingsScreen back />
     case 'art':
       return <ArtExploreScreen artId={route.id} />
     case 'workoutSettings':

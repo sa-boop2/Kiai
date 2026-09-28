@@ -27,9 +27,9 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.7.0'
+const VERSION = '2.7.1'
 
-export function SettingsScreen() {
+export function SettingsScreen({ back = false }: { back?: boolean }) {
   const settings = useSettings()
   const isPremium = useIsPremium()
   const { t, locale } = useI18n()
@@ -88,7 +88,7 @@ export function SettingsScreen() {
   }
 
   return (
-    <Screen title={t('Settings')} largeTitle>
+    <Screen title={t('Settings')} largeTitle back={back}>
             <ProfileCard />
 
       <Group>

@@ -475,7 +475,7 @@ img {
 }
 
 .tabbar {
-  --count: 5;
+  --count: 3;
   --index: 0;
   --pad: 5px;
   pointer-events: auto;

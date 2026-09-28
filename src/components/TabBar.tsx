@@ -10,7 +10,6 @@ const ITEMS: Record<Tab, { icon: string; label: string }> = {
   home: { icon: 'house.fill', label: 'Home' },
   library: { icon: 'books.vertical.fill', label: 'Library' },
   analytics: { icon: 'chart.bar.xaxis', label: 'Stats' },
-  settings: { icon: 'gearshape.fill', label: 'Settings' },
 }
 
 /**

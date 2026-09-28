@@ -2,13 +2,14 @@ import { useSyncExternalStore } from 'react'
 import type { FlexibilityBenchmark, HowTo, Phase, WorkoutTemplate } from '../data/types'
 import type { WorkoutPlan } from './plan'
 
-export type Tab = 'home' | 'library' | 'analytics' | 'settings'
-export const TABS: Tab[] = ['home', 'library', 'analytics', 'settings']
+export type Tab = 'home' | 'library' | 'analytics'
+export const TABS: Tab[] = ['home', 'library', 'analytics']
 
 /** Screens pushed onto a tab's navigation stack. */
 export type Route =
   | { name: 'kata'; id: string }
   | { name: 'martialArts' }
+  | { name: 'settings' }
   | { name: 'art'; id: string }
   | { name: 'technique'; slug: string }
   | { name: 'workoutSettings' }
@@ -65,7 +66,7 @@ export interface NavState {
 class NavStore {
   state: NavState = {
     tab: 'home',
-    stacks: { home: [], library: [], analytics: [], settings: [] },
+    stacks: { home: [], library: [], analytics: [] },
     sheets: [],
     plan: null,
     planMinimized: false,
