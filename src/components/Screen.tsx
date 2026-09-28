@@ -17,6 +17,7 @@ interface ScreenProps {
   back?: boolean
   leading?: ReactNode
   trailing?: ReactNode
+  titleTrailing?: ReactNode
   /** Content rendered directly under the large title (e.g. a search field). */
   header?: ReactNode
   /** Sticky bottom call-to-action. */
@@ -26,7 +27,7 @@ interface ScreenProps {
   contentClassName?: string
 }
 
-export function Screen({ title, children, largeTitle, back, leading, trailing, header, bottomBar, hideNavBar, contentClassName }: ScreenProps) {
+export function Screen({ title, children, largeTitle, back, leading, trailing, titleTrailing, header, bottomBar, hideNavBar, contentClassName }: ScreenProps) {
   const navbarRef = useRef<HTMLElement>(null)
   const screenRef = useRef<HTMLDivElement>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
@@ -188,7 +189,16 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, h
     <div className={`screen ${back ? 'pushed-screen' : ''}`} ref={screenRef}>
 
       <div className={`screen-scroll ${bottomBar ? 'has-bottom-bar' : ''}`} ref={scrollRef} onScroll={onScroll}>
-        {largeTitle && !hideNavBar && <h1 className="large-title">{title}</h1>}
+        {largeTitle && !hideNavBar && (
+          titleTrailing ? (
+            <div className="large-title-row">
+              <h1 className="large-title">{title}</h1>
+              <div className="large-title-trailing">{titleTrailing}</div>
+            </div>
+          ) : (
+            <h1 className="large-title">{title}</h1>
+          )
+        )}
         {header}
         <div className={`screen-content ${contentClassName ?? ''}`}>{children}</div>
       </div>

@@ -81,19 +81,20 @@ export function LibraryScreen() {
     <Screen
       title={t('Library')}
       largeTitle
-      trailing={
+      titleTrailing={
         <button
           type="button"
-          className="pressable"
+          className="pressable martial-arts-title-btn"
           style={{
             display: 'flex',
-            flexDirection: 'column',
             alignItems: 'center',
-            gap: '2px',
-            background: 'transparent',
-            border: 'none',
+            gap: '6px',
+            padding: '6px 12px',
+            borderRadius: '999px',
+            background: 'color-mix(in srgb, var(--accent) 12%, var(--surface))',
+            border: '1px solid color-mix(in srgb, var(--accent) 28%, transparent)',
             cursor: 'pointer',
-            padding: '2px 4px',
+            backdropFilter: 'blur(16px)',
           }}
           onClick={() => {
             haptic('light')
@@ -101,13 +102,8 @@ export function LibraryScreen() {
           }}
           aria-label="Martial Arts Disciplines"
         >
-          <div
-            className="glass glass-icon-btn"
-            style={{ width: 34, height: 34, borderRadius: '50%' }}
-          >
-            <Icon name="figure.martial.arts" size={18} strokeWidth={2.4} />
-          </div>
-          <span style={{ fontSize: '9px', fontWeight: 600, color: 'var(--text-secondary)', letterSpacing: '-0.01em', lineHeight: 1 }}>
+          <Icon name="figure.martial.arts" size={17} strokeWidth={2.4} style={{ color: 'var(--accent)' }} />
+          <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', letterSpacing: '-0.01em' }}>
             {t('Martial Arts')}
           </span>
         </button>

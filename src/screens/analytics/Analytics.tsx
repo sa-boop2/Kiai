@@ -2,7 +2,7 @@ import { type CSSProperties, useEffect, useMemo, useRef, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
 import { SheetHeader } from '../../components/SheetHost'
-import { Card, EmptyState, PrimaryButton, ProgressBar, StatTile, SymbolTile, TagChip } from '../../components/ui'
+import { Card, EmptyState, ProgressBar, StatTile, SymbolTile, TagChip } from '../../components/ui'
 import { artById } from '../../data/content'
 import { phaseMeta } from '../../data/meta'
 import type { FlexibilityBenchmark } from '../../data/types'
@@ -572,8 +572,11 @@ export function LogFlexibilitySheet({ benchmark }: { benchmark: FlexibilityBench
                   background: isSelected ? `color-mix(in srgb, ${meta.tint} 12%, var(--card-bg))` : 'var(--card-bg)',
                 }}
                 onClick={() => {
-                  haptic('selection')
+                  haptic('success')
                   setSelectedLevel(m.level)
+                  logFlexibility(benchmark, m.percent)
+                  toast(`Updated to Level ${m.level}: ${m.title}!`, { icon: 'checkmark.circle.fill' })
+                  window.setTimeout(() => nav.back(), 260)
                 }}
               >
                 <div
@@ -604,15 +607,7 @@ export function LogFlexibilitySheet({ benchmark }: { benchmark: FlexibilityBench
           })}
         </div>
 
-        <PrimaryButton
-          onClick={() => {
-            haptic('success')
-            logFlexibility(benchmark, activeMilestone.percent)
-            nav.back()
-          }}
-        >
-          Confirm Level {activeMilestone.level}: {activeMilestone.title}
-        </PrimaryButton>
+
       </div>
     </>
   )

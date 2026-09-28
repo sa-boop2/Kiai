@@ -6,7 +6,7 @@ import type { PremadeWorkout } from '../types'
 export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "daily-kiai-flow",
-    "name": "Daily Kiai Flow",
+    "name": "Full Body Daily Flow",
     "subtitle": "A balanced 12-minute full-body routine for every day.",
     "symbol": "sunrise.fill",
     "tint": "ember",
@@ -62,7 +62,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "kick-range-unlock",
-    "name": "Kick Range Unlock",
+    "name": "High Kick Range",
     "subtitle": "Hips and hamstrings for higher, looser kicks.",
     "symbol": "figure.kickboxing",
     "tint": "gold",
@@ -123,7 +123,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "iron-stance",
-    "name": "Iron Stance",
+    "name": "Lower Body Stance Power",
     "subtitle": "Deeper, stronger stances with stability work.",
     "symbol": "figure.lunge",
     "tint": "slate",
@@ -179,7 +179,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "balance-dojo",
-    "name": "Balance Dojo",
+    "name": "Core & Balance Stability",
     "subtitle": "Own your standing leg. Kicks will follow.",
     "symbol": "figure.balance",
     "tint": "indigo",
@@ -230,7 +230,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "guard-mobility",
-    "name": "Guard Mobility",
+    "name": "BJJ Guard & Hip Mobility",
     "subtitle": "Hip rotation and spine mobility for grapplers.",
     "symbol": "figure.wrestling",
     "tint": "jade",
@@ -286,7 +286,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "thai-hip-opener",
-    "name": "Thai Hip Opener",
+    "name": "Muay Thai Hip Mobility",
     "subtitle": "Turn the roundhouse over with open, springy hips.",
     "symbol": "figure.kickboxing",
     "tint": "sakura",
@@ -337,7 +337,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "split-quest",
-    "name": "Split Quest",
+    "name": "Front & Side Splits",
     "subtitle": "An advanced session chasing front and side splits.",
     "symbol": "figure.split",
     "tint": "ember",
@@ -454,7 +454,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "centered-blend",
-    "name": "Centered Blend",
+    "name": "Aikido Joint & Spine",
     "subtitle": "Hip rotation, wrist health and rolling mobility for Aikido.",
     "symbol": "arrow.triangle.2.circlepath",
     "tint": "deepBlue",

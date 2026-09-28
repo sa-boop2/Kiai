@@ -35,11 +35,6 @@ export function PaywallScreen() {
     toast(t('Purchases restored.'), { icon: 'checkmark.seal.fill' })
   }
 
-  const resetPremiumForDev = () => {
-    haptic('medium')
-    setPremium(false)
-    toast(t('Premium reset for dev testing.'), { icon: 'hammer.fill' })
-  }
 
   return (
     <Screen title="Kiai+" back>
@@ -323,41 +318,49 @@ export function PaywallScreen() {
           </>
         )}
 
-        {/* Temporary dev-only reset for premium testing */}
         {isPremium && (
-          <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '12px', width: '100%' }}>
+          <div style={{ position: 'relative', zIndex: 1, display: 'flex', flexDirection: 'column', gap: '14px', width: '100%' }}>
             <div
               style={{
-                padding: '12px 14px',
-                borderRadius: '16px',
-                background: 'color-mix(in srgb, var(--accent) 8%, var(--surface))',
-                border: '1px dashed color-mix(in srgb, var(--accent) 40%, var(--separator))',
-                textAlign: 'left',
+                padding: '20px 18px',
+                borderRadius: '24px',
+                background: 'linear-gradient(145deg, rgba(251, 191, 36, 0.18), rgba(245, 158, 11, 0.08))',
+                border: '1.5px solid rgba(251, 191, 36, 0.45)',
+                boxShadow: '0 12px 32px -8px rgba(245, 158, 11, 0.25)',
+                textAlign: 'center',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                gap: '8px',
               }}
             >
-              <strong style={{ display: 'block', fontSize: '12px', lineHeight: 1.3, color: 'var(--text)' }}>
-                {t('Temporary Dev-Only: Reset Premium')}
+              <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'linear-gradient(135deg, #fef08a, #fbbf24)', display: 'grid', placeItems: 'center', color: '#78350f' }}>
+                <Icon name="checkmark.seal.fill" size={24} />
+              </div>
+              <strong style={{ fontSize: '18px', fontWeight: 800, color: 'var(--text)' }}>
+                {t('Kiai+ Active Member')}
               </strong>
-              <span style={{ display: 'block', marginTop: '3px', fontSize: '11px', lineHeight: 1.4, color: 'var(--text-secondary)' }}>
-                {t('Use only for local QA to re-test the non-premium purchase flow.')}
-              </span>
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45, maxWidth: '320px' }}>
+                {t('All master routines, flexibility benchmarks, and Dojo systems are unlocked.')}
+              </p>
             </div>
             <button
               type="button"
-              onClick={resetPremiumForDev}
+              className="pressable"
+              onClick={() => nav.back()}
               style={{
                 width: '100%',
-                padding: '12px',
-                borderRadius: '14px',
-                border: '1px solid color-mix(in srgb, var(--accent) 35%, transparent)',
-                background: 'color-mix(in srgb, var(--accent) 12%, var(--surface))',
-                color: 'var(--text)',
-                fontSize: '13px',
+                padding: '14px',
+                borderRadius: '16px',
+                background: 'var(--accent)',
+                color: '#fff',
+                fontSize: '15px',
                 fontWeight: 700,
+                border: 'none',
                 cursor: 'pointer',
               }}
             >
-              {t('Reset Premium (Temporary Dev Action)')}
+              {t('Continue Training')}
             </button>
           </div>
         )}

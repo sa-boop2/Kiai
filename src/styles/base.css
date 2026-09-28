@@ -428,6 +428,20 @@ img {
   opacity: 0.4;
 }
 
+.large-title-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 2px var(--gutter) 6px;
+  max-width: var(--content-max);
+  margin: 0 auto;
+}
+
+.large-title-row .large-title {
+  padding: 0;
+  margin: 0;
+}
+
 .large-title {
   font-family: var(--font-rounded);
   font-size: 34px;

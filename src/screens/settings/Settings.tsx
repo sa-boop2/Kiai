@@ -27,7 +27,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.7.3'
+const VERSION = '2.7.4'
 
 export function SettingsScreen({ back = false }: { back?: boolean }) {
   const settings = useSettings()
@@ -476,7 +476,7 @@ function ProfileCard() {
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); setPickerOpen(false) }} />
 
-        <div className="profile-text">
+        <div className="profile-text" style={{ flex: 1, minWidth: 0 }}>
           {editing ? (
             <form
               className="name-edit"
@@ -491,7 +491,7 @@ function ProfileCard() {
                 value={draftName}
                 autoFocus
                 maxLength={40}
-                style={{ fontSize: '18px', padding: '2px 8px' }}
+                style={{ fontSize: '22px', fontWeight: 800, padding: '2px 8px' }}
                 onChange={(e) => setDraftName(e.target.value)}
                 onBlur={() => {
                   if (draftName.trim()) updateProfile({ name: draftName.trim() })
@@ -503,22 +503,56 @@ function ProfileCard() {
             <button
               type="button"
               className="name-display pressable"
-              style={{ fontSize: '18px', gap: '6px' }}
+              style={{ fontSize: '22px', fontWeight: 800, gap: '6px' }}
               onClick={() => {
                 setDraftName(profile.name)
                 setEditing(true)
               }}
             >
-              <span style={{ fontWeight: 700 }}>{displayName(profile.name)}</span>
-              <Icon name="pencil" size={13} strokeWidth={2.4} />
+              <span style={{ fontWeight: 800, letterSpacing: '-0.02em' }}>{displayName(profile.name)}</span>
+              <Icon name="pencil" size={14} strokeWidth={2.4} />
             </button>
           )}
-          <NativeSelect<string>
-            label="Primary martial art"
-            value={profile.primaryArt ?? ''}
-            options={[{ value: '', title: 'Choose your art' }, ...MARTIAL_ARTS.map((a) => ({ value: a.id, title: a.name }))]}
-            onChange={(id) => updateProfile({ primaryArt: id || null })}
-          />
+
+          {/* Aesthetic Martial Art Pill */}
+          <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginTop: '4px' }}>
+            <div
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '5px',
+                padding: '4px 10px',
+                borderRadius: '999px',
+                background: 'color-mix(in srgb, var(--accent) 12%, var(--surface-raised))',
+                border: '1px solid color-mix(in srgb, var(--accent) 26%, transparent)',
+                fontSize: '12px',
+                fontWeight: 700,
+                color: 'var(--text)',
+              }}
+            >
+              <Icon name="figure.martial.arts" size={13} style={{ color: 'var(--accent)' }} />
+              <span>{MARTIAL_ARTS.find((a) => a.id === profile.primaryArt)?.name || t('Choose your art')}</span>
+              <Icon name="chevron.up.chevron.down" size={10} style={{ opacity: 0.6 }} />
+            </div>
+            <select
+              aria-label="Primary martial art"
+              value={profile.primaryArt ?? ''}
+              onChange={(e) => updateProfile({ primaryArt: e.target.value || null })}
+              style={{
+                position: 'absolute',
+                inset: 0,
+                opacity: 0,
+                cursor: 'pointer',
+                width: '100%',
+                height: '100%',
+              }}
+            >
+              <option value="">{t('Choose your art')}</option>
+              {MARTIAL_ARTS.map((a) => (
+                <option key={a.id} value={a.id}>{a.name}</option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
