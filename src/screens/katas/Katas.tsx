@@ -1,7 +1,7 @@
 import { type CSSProperties, useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { NavIconButton, Screen } from '../../components/Screen'
-import { MiniMuscleBadge, exerciseTargetLabel } from '../../components/MiniMuscleBadge'
+import { exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { confirmAction } from '../../components/ActionSheet'
 import { toast } from '../../components/Toast'
 import { DifficultyBadge, EmptyState, FilterPill, KiaiMark, PrimaryButton, SecondaryButton, SymbolTile, TagChip } from '../../components/ui'

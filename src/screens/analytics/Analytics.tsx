@@ -619,6 +619,7 @@ export function LogFlexibilitySheet({ benchmark }: { benchmark: FlexibilityBench
 }
 
 export function AchievementsScreen() {
+  const { t } = useI18n()
   const appState = getState()
   const achievements = useMemo(() => computeAchievements(appState), [appState])
   const unlockedCount = achievements.filter((a) => a.unlocked).length

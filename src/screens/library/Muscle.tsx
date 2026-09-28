@@ -58,8 +58,16 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
   }, [allExercises, part, favorites])
 
   return (
-    <Screen title={title} back>
-      <div className="list-stack" style={{ padding: '0 var(--gutter) 24px' }}>
+    <>
+      <SheetHeader
+        title={title}
+        trailing={
+          <button type="button" className="navbar-action strong" onClick={() => nav.back()}>
+            Done
+          </button>
+        }
+      />
+      <div className="sheet-scroll form" style={{ padding: '0 16px 24px' }}>
         <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 12px' }}>
           <h2 style={{ fontSize: '18px' }}>{title} Stretches</h2>
           <span className="library-count-badge">
@@ -89,7 +97,7 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
                     padding: '16px 12px',
                     textAlign: 'center',
                     position: 'relative',
-                    gap: '8px'
+                    gap: '8px',
                   }}
                   onClick={() => {
                     haptic('selection')
@@ -111,7 +119,7 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
                       background: 'transparent',
                       border: 'none',
                       zIndex: 2,
-                      cursor: 'pointer'
+                      cursor: 'pointer',
                     }}
                     onClick={(e) => {
                       e.stopPropagation()
@@ -132,7 +140,7 @@ export function MuscleDetailScreen({ part }: { part: BodyPart }) {
           </div>
         )}
       </div>
-    </Screen>
+    </>
   )
 }
 

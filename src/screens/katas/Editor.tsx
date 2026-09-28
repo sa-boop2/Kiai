@@ -2,7 +2,7 @@ import { useMemo, useRef, useState } from 'react'
 import { BodyDiagram, type BodyPart } from '../../components/BodyDiagram'
 import { Icon } from '../../components/Icon'
 import { SheetHeader } from '../../components/SheetHost'
-import { MiniMuscleBadge, exerciseTargetLabel } from '../../components/MiniMuscleBadge'
+import { exerciseTargetLabel } from '../../components/MiniMuscleBadge'
 import { toast } from '../../components/Toast'
 import { NativeSelect, SymbolTile } from '../../components/ui'
 import { PHASE, TINTS, categoryMeta, phaseMeta, tintColor, tintTitle } from '../../data/meta'
@@ -27,8 +27,13 @@ interface DraftItem {
 }
 
 let draftCounter = 0
-const draft = (slug: string, duration: number, note?: string
-  pnf?: boolean): DraftItem => ({ id: ++draftCounter, slug, duration, note })
+const draft = (slug: string, duration: number, note?: string, pnf?: boolean): DraftItem => ({
+  id: ++draftCounter,
+  slug,
+  duration,
+  note,
+  pnf,
+})
 
 /** Create / edit / customise a Kata. Works on a local draft, so Cancel never changes data. */
 export function EditorSheet({ mode }: { mode: EditorMode }) {

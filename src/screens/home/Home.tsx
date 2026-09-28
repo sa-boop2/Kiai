@@ -284,6 +284,7 @@ export function HomeScreen() {
                   {!isReordering && <Icon name="chevron.right" size={16} strokeWidth={2.6} className="kata-row-chevron" />}
                 </div>
               </div>
+            ))}
           </div>
         )}
       </div>

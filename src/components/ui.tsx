@@ -13,7 +13,7 @@ const tintStyle = (tint: string | undefined, extra?: CSSProperties): CSSProperti
 /**
  * The Kiai mark: a single tapered brushstroke swept most of the way around a circle, like an
  * enso painted in one confident stroke that lifts off toward the end, plus the spark it left
- * behind. A fixed path (not a uniform stroked circle) — the taper is what makes it read as ink
+ * behind. A fixed path (not a uniform stroked circle) â€” the taper is what makes it read as ink
  * rather than a progress ring. Mirrors DesignSystem/KiaiLogo.swift's `BrushstrokeRing` exactly.
  */
 export function KiaiMark({ size = 32, tint, className }: { size?: number; tint?: string; className?: string }) {
@@ -519,7 +519,7 @@ export function Stepper({
 }
 
 /**
- * A row that opens the platform's native picker (the iOS wheel on iPhone) — the web analogue of a
+ * A row that opens the platform's native picker (the iOS wheel on iPhone) â€” the web analogue of a
  * SwiftUI menu/navigation Picker.
  */
 export function NativeSelect<T extends string | number>({
