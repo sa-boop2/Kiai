@@ -1,28 +1,34 @@
 import { useMemo, useState } from 'react'
 import { Icon } from '../../components/Icon'
 import { Screen } from '../../components/Screen'
-import { EmptyState, SymbolTile } from '../../components/ui'
+import { DifficultyBadge, EmptyState, PrimaryButton, SymbolTile } from '../../components/ui'
 import { MARTIAL_ARTS } from '../../data/content'
-import { getDojoProfile, type MartialDojoProfile } from '../../data/martialDojoData'
+import {
+  dojoRoutineToKata,
+  getDojoBenchmarkLevel,
+  getDojoProfile,
+  setDojoBenchmarkLevel,
+  type DojoRoutineGoal,
+} from '../../data/martialDojoData'
 import { tintColor } from '../../data/meta'
-import { updateProfile } from '../../lib/actions'
+import { saveKata } from '../../lib/actions'
 import { minutes } from '../../lib/format'
 import { haptic } from '../../lib/haptics'
 import { useI18n } from '../../lib/i18n'
-import { startKata, usePremadeKatas } from '../../lib/launch'
+import { startKata } from '../../lib/launch'
 import { nav } from '../../lib/nav'
-import { useProfile } from '../../lib/store'
+import { useProfile, useUserKatas } from '../../lib/store'
 import { toast } from '../../components/Toast'
 
 export function MartialArtsScreen() {
   const { t } = useI18n()
   const profile = useProfile()
-  const premadeKatas = usePremadeKatas()
+  const userKatas = useUserKatas()
   const [browseMode, setBrowseMode] = useState(!profile.primaryArt)
   const [searchQuery, setSearchQuery] = useState('')
   const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<string | null>(null)
-  const [activeBenchmarkLevel, setActiveBenchmarkLevel] = useState<Record<string, number>>({})
-  const [selectedArtDetail, setSelectedArtDetail] = useState<MartialDojoProfile | null>(null)
+  const [expandedRoutineId, setExpandedRoutineId] = useState<string | null>(null)
+  const [, setRefreshKey] = useState(0)
 
   // Current primary art profile
   const activeArtId = profile.primaryArt || 'karate'
@@ -51,30 +57,51 @@ export function MartialArtsScreen() {
     return list[0]
   }, [currentDojo, selectedBenchmarkId])
 
-  const currentLevel = activeBenchmark ? (activeBenchmarkLevel[activeBenchmark.id] ?? 2) : 1
+  const currentLevel = activeBenchmark ? getDojoBenchmarkLevel(activeBenchmark.id, 2) : 1
 
   const handleAdvanceLevel = (benchmarkId: string) => {
     haptic('success')
-    setActiveBenchmarkLevel((prev) => {
-      const cur = prev[benchmarkId] ?? 2
-      const next = Math.min(5, cur + 1)
-      toast(`Level Up! Reached Level ${next} in ${activeBenchmark.name}`, { icon: 'crown.fill' })
-      return { ...prev, [benchmarkId]: next }
-    })
+    const next = Math.min(5, currentLevel + 1)
+    setDojoBenchmarkLevel(benchmarkId, next)
+    setRefreshKey((k) => k + 1)
+    toast(`Level Up! Reached Level ${next} in ${activeBenchmark.name}`, { icon: 'crown.fill' })
   }
 
-  const handleSelectDiscipline = (artId: string) => {
+  const handleResetLevel = (benchmarkId: string) => {
+    haptic('medium')
+    setDojoBenchmarkLevel(benchmarkId, 1)
+    setRefreshKey((k) => k + 1)
+    toast(`Reset progress for ${activeBenchmark.name}`, { icon: 'arrow.counterclockwise' })
+  }
+
+  const handlePlayRoutine = (goal: DojoRoutineGoal) => {
     haptic('success')
-    updateProfile({ primaryArt: artId })
-    setBrowseMode(false)
-    setSelectedArtDetail(null)
-    toast(`Dojo updated to ${getDojoProfile(artId).nativeName} (${artId.toUpperCase()})`, { icon: 'sparkles' })
+    const kata = dojoRoutineToKata(goal, currentDojo.name, currentDojo.artId)
+    startKata(kata)
   }
 
-  // Find katas related to this art
-  const relatedKatas = useMemo(() => {
-    return premadeKatas.filter((k) => k.art === activeArtId || k.uuid.includes(activeArtId) || k.name.toLowerCase().includes(activeArtId)).slice(0, 3)
-  }, [premadeKatas, activeArtId])
+  const handleCloneRoutine = (goal: DojoRoutineGoal) => {
+    haptic('medium')
+    const kata = dojoRoutineToKata(goal, currentDojo.name, currentDojo.artId)
+    const newId = saveKata({
+      name: kata.name,
+      subtitle: kata.subtitle,
+      symbol: kata.symbol,
+      tint: kata.tint,
+      art: kata.art,
+      restSeconds: kata.restSeconds,
+      items: kata.items,
+    })
+    toast(`Saved "${goal.title}" to your Katas!`, { icon: 'checkmark.circle.fill' })
+    nav.push({ name: 'kata', id: newId })
+  }
+
+  // Find user's own katas created for this art
+  const userArtKatas = useMemo(() => {
+    return userKatas.filter(
+      (k) => k.art === activeArtId || k.name.toLowerCase().includes(currentDojo.name.toLowerCase())
+    )
+  }, [userKatas, activeArtId, currentDojo.name])
 
   return (
     <Screen
@@ -111,32 +138,56 @@ export function MartialArtsScreen() {
                   {currentDojo.country} · {currentDojo.tagline}
                 </p>
               </div>
-              <button
-                type="button"
-                className="glass pressable"
-                style={{
-                  padding: '6px 14px',
-                  borderRadius: '999px',
-                  fontSize: '12px',
-                  fontWeight: 700,
-                  color: 'var(--text)',
-                  border: '1px solid var(--stroke)',
-                }}
-                onClick={() => {
-                  haptic('selection')
-                  setBrowseMode(true)
-                }}
-              >
-                Switch
-              </button>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <button
+                  type="button"
+                  className="glass pressable"
+                  style={{
+                    padding: '6px 12px',
+                    borderRadius: '999px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    color: 'var(--accent)',
+                    border: '1px solid color-mix(in srgb, var(--accent) 30%, transparent)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                  }}
+                  onClick={() => {
+                    haptic('selection')
+                    nav.push({ name: 'art', id: activeArtId })
+                  }}
+                >
+                  <Icon name="sparkles" size={12} /> Explore
+                </button>
+                <button
+                  type="button"
+                  className="glass pressable"
+                  style={{
+                    padding: '6px 14px',
+                    borderRadius: '999px',
+                    fontSize: '12px',
+                    fontWeight: 700,
+                    color: 'var(--text)',
+                    border: '1px solid var(--stroke)',
+                  }}
+                  onClick={() => {
+                    haptic('selection')
+                    setBrowseMode(true)
+                  }}
+                >
+                  Switch
+                </button>
+              </div>
             </div>
           )}
         </div>
       }
     >
-      <div className="list-stack" style={{ paddingBottom: '32px' }}>
+      <div className="list-stack" style={{ paddingBottom: '36px' }}>
+        
         {/* ============================================================ */}
-        {/* MODE A: BROWSE ALL DISCIPLINES (2 PER ROW BIG AESTHETIC CARDS) */}
+        {/* MODE A: BROWSE ALL DISCIPLINES (FULL-SCREEN ENTRY GRID) */}
         {/* ============================================================ */}
         {browseMode ? (
           <>
@@ -147,7 +198,7 @@ export function MartialArtsScreen() {
               </span>
             </div>
             <p style={{ margin: '0 4px 10px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-              Choose a discipline to transform this section into your dedicated mobility hub with specialized benchmarks, routines, and lore.
+              Select any discipline to explore its sports science, routines, and benchmarks, or set it as your active Dojo.
             </p>
 
             {filteredArts.length === 0 ? (
@@ -163,82 +214,80 @@ export function MartialArtsScreen() {
                   gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
                   gap: '12px',
                   width: '100%',
-                  maxWidth: '100%',
                   boxSizing: 'border-box',
                 }}
               >
                 {filteredArts.map((art) => {
-                  const dojo = getDojoProfile(art.id)
-                  const isSelected = profile.primaryArt === art.id
+                  const artProfile = getDojoProfile(art.id)
+                  const isActive = profile.primaryArt === art.id
                   return (
                     <div
                       key={art.id}
-                      className="card pressable"
+                      className="pressable"
                       style={{
                         display: 'flex',
                         flexDirection: 'column',
                         justifyContent: 'space-between',
                         padding: '16px 14px',
-                        borderRadius: '22px',
+                        borderRadius: '24px',
                         background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))',
-                        border: isSelected ? `2px solid ${tintColor(art.tint)}` : '1px solid rgba(255, 255, 255, 0.12)',
-                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.12)',
-                        backdropFilter: 'blur(20px)',
-                        WebkitBackdropFilter: 'blur(20px)',
+                        border: isActive ? `1.5px solid var(--accent)` : '1px solid rgba(255, 255, 255, 0.12)',
+                        boxShadow: '0 8px 24px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
+                        backdropFilter: 'blur(24px)',
+                        WebkitBackdropFilter: 'blur(24px)',
                         cursor: 'pointer',
-                        minHeight: '210px',
-                        minWidth: 0,
-                        maxWidth: '100%',
-                        boxSizing: 'border-box',
+                        minHeight: '190px',
+                        position: 'relative',
+                        overflow: 'hidden',
                       }}
                       onClick={() => {
                         haptic('selection')
-                        setSelectedArtDetail(dojo)
+                        nav.push({ name: 'art', id: art.id })
                       }}
                     >
+                      {isActive && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '10px',
+                            right: '10px',
+                            width: '8px',
+                            height: '8px',
+                            borderRadius: '50%',
+                            background: 'var(--accent)',
+                            boxShadow: '0 0 8px var(--accent)',
+                          }}
+                        />
+                      )}
+
                       <div>
-                        {/* Top Medallion & Native Script */}
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '10px' }}>
-                          <div
-                            style={{
-                              width: 48,
-                              height: 48,
-                              borderRadius: '16px',
-                              background: `color-mix(in srgb, ${tintColor(art.tint)} 18%, var(--surface-raised))`,
-                              border: `1px solid color-mix(in srgb, ${tintColor(art.tint)} 35%, transparent)`,
-                              display: 'grid',
-                              placeItems: 'center',
-                              fontSize: '26px',
-                              boxShadow: '0 6px 16px rgba(0,0,0,0.15)',
-                            }}
-                          >
-                            <span role="img" aria-label={art.origin}>{art.symbol}</span>
-                          </div>
-                          <span style={{ fontSize: '14px', fontWeight: 800, color: 'var(--text-tertiary)', letterSpacing: '0.04em' }}>
-                            {dojo.nativeName}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                          <span style={{ fontSize: '32px', lineHeight: 1 }}>{artProfile.flag}</span>
+                          <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-tertiary)', textTransform: 'uppercase' }}>
+                            {artProfile.nativeName}
                           </span>
                         </div>
 
-                        {/* Name & Origin */}
-                        <strong style={{ fontSize: '17px', fontWeight: 800, color: 'var(--text)', display: 'block', lineHeight: 1.2 }}>
+                        <strong style={{ fontSize: '16px', fontWeight: 800, color: 'var(--text)', display: 'block', marginBottom: '2px' }}>
                           {art.name}
                         </strong>
-                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginTop: '2px' }}>
+
+                        <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block', marginBottom: '8px' }}>
                           {art.origin}
                         </span>
 
-                        {/* Tagline */}
-                        <p style={{ margin: '8px 0 0', fontSize: '11px', color: 'var(--text-tertiary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.35 }}>
-                          {art.tagline}
+                        <p style={{ margin: 0, fontSize: '11px', color: 'var(--text-tertiary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.35 }}>
+                          {artProfile.tagline}
                         </p>
                       </div>
 
-                      {/* Action Pill */}
-                      <div style={{ marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <span style={{ fontSize: '11px', fontWeight: 700, color: tintColor(art.tint) }}>
-                          {isSelected ? 'Active Dojo' : 'Explore'}
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)' }}>
+                        <span style={{ fontSize: '11px', fontWeight: 600, color: 'var(--accent)', display: 'flex', alignItems: 'center', gap: '3px' }}>
+                          Explore <Icon name="chevron.right" size={11} strokeWidth={2.4} />
                         </span>
-                        <Icon name="chevron.right" size={13} strokeWidth={2.6} style={{ color: tintColor(art.tint) }} />
+                        <span style={{ fontSize: '10px', color: 'var(--text-tertiary)' }}>
+                          {artProfile.routineGoals.length} routines
+                        </span>
                       </div>
                     </div>
                   )
@@ -248,383 +297,491 @@ export function MartialArtsScreen() {
           </>
         ) : (
           /* ============================================================ */
-          /* MODE B: DEDICATED MARTIAL DOJO HUB                           */
+          /* MODE B: ACTIVE DOJO HUB (DYNAMIC SYSTEM)                     */
           /* ============================================================ */
           <>
-            {/* 1. UNIQUE DISCIPLINE FLEXIBILITY & PROGRESSION WIDGET */}
+            {/* 1. FLEXIBILITY MILESTONE WIDGET */}
             <div
               style={{
-                borderRadius: '24px',
-                padding: '20px',
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.03))',
-                border: '1px solid rgba(255, 255, 255, 0.15)',
-                boxShadow: '0 12px 36px rgba(0, 0, 0, 0.25)',
-                backdropFilter: 'blur(24px)',
-                WebkitBackdropFilter: 'blur(24px)',
+                borderRadius: '26px',
+                padding: '18px',
+                background: 'linear-gradient(150deg, rgba(255, 255, 255, 0.09), rgba(255, 255, 255, 0.02))',
+                border: '1px solid rgba(255, 255, 255, 0.14)',
+                backdropFilter: 'blur(30px)',
+                WebkitBackdropFilter: 'blur(30px)',
+                boxShadow: '0 12px 32px rgba(0, 0, 0, 0.22), inset 0 1px 1px rgba(255, 255, 255, 0.16)',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '16px',
+                gap: '14px',
               }}
             >
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
-                  <span style={{ fontSize: '11px', fontWeight: 800, color: currentDojo.accent, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    {currentDojo.nativeName} · Milestones & Biomechanics
+                  <span style={{ fontSize: '11px', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em', color: currentDojo.accent }}>
+                    {currentDojo.name} Milestone Engine
                   </span>
-                  <h2 style={{ margin: '4px 0 0', fontSize: '20px', fontWeight: 800, color: 'var(--text)' }}>
-                    Flexibility Progression
-                  </h2>
+                  <h3 style={{ margin: '2px 0 0', fontSize: '17px', fontWeight: 800 }}>
+                    {activeBenchmark.name}
+                  </h3>
                 </div>
-
-                <div
-                  style={{
-                    width: 44,
-                    height: 44,
-                    borderRadius: '14px',
-                    background: `color-mix(in srgb, ${currentDojo.accent} 20%, transparent)`,
-                    color: currentDojo.accent,
-                    display: 'grid',
-                    placeItems: 'center',
-                    fontSize: '22px',
-                  }}
-                >
-                  <Icon name="figure.flexibility" size={24} />
+                
+                {/* 5-Level Progress Rings */}
+                <div style={{ display: 'flex', alignItems: 'center', gap: '5px' }}>
+                  {[1, 2, 3, 4, 5].map((lvl) => {
+                    const done = lvl <= currentLevel
+                    return (
+                      <div
+                        key={lvl}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '50%',
+                          background: done ? currentDojo.accent : 'rgba(255, 255, 255, 0.08)',
+                          border: done ? `1px solid ${currentDojo.accent}` : '1px solid rgba(255, 255, 255, 0.12)',
+                          display: 'grid',
+                          placeItems: 'center',
+                          fontSize: '10px',
+                          fontWeight: 800,
+                          color: done ? '#000' : 'var(--text-tertiary)',
+                          boxShadow: done ? `0 0 8px ${currentDojo.accent}` : 'none',
+                          transition: 'all 240ms ease',
+                        }}
+                      >
+                        {lvl}
+                      </div>
+                    )
+                  })}
                 </div>
               </div>
 
-              {/* Benchmark Selector Tabs */}
-              <div style={{ display: 'flex', gap: '8px', overflowX: 'auto', paddingBottom: '4px' }}>
-                {currentDojo.benchmarks.map((bench) => {
-                  const isSelected = (activeBenchmark?.id === bench.id)
-                  const lvl = activeBenchmarkLevel[bench.id] ?? 2
-                  return (
-                    <button
-                      key={bench.id}
-                      type="button"
-                      style={{
-                        padding: '8px 12px',
-                        borderRadius: '12px',
-                        fontSize: '12px',
-                        fontWeight: 700,
-                        whiteSpace: 'nowrap',
-                        background: isSelected ? currentDojo.accent : 'rgba(255, 255, 255, 0.06)',
-                        color: isSelected ? '#ffffff' : 'var(--text-secondary)',
-                        border: 'none',
-                        cursor: 'pointer',
-                        transition: 'all 160ms ease',
-                      }}
-                      onClick={() => {
-                        haptic('selection')
-                        setSelectedBenchmarkId(bench.id)
-                      }}
-                    >
-                      {bench.name} (Lvl {lvl})
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* Active Benchmark Level Card */}
-              {activeBenchmark && (
-                <div
-                  style={{
-                    background: 'rgba(0, 0, 0, 0.2)',
-                    borderRadius: '18px',
-                    padding: '16px',
-                    border: '1px solid rgba(255, 255, 255, 0.08)',
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                    <div>
-                      <strong style={{ fontSize: '16px', color: 'var(--text)' }}>{activeBenchmark.name}</strong>
-                      <span style={{ fontSize: '12px', color: 'var(--text-secondary)', display: 'block' }}>
-                        {activeBenchmark.description}
-                      </span>
-                    </div>
-
-                    <div style={{ textAlign: 'right' }}>
-                      <span style={{ fontSize: '20px', fontWeight: 800, color: currentDojo.accent }}>
-                        Level {currentLevel}/5
-                      </span>
-                    </div>
-                  </div>
-
-                  {/* Level Target Box */}
-                  <div
+              {/* Benchmark Switcher Tabs */}
+              <div style={{ display: 'flex', gap: '6px', overflowX: 'auto', paddingBottom: '2px' }}>
+                {currentDojo.benchmarks.map((b) => (
+                  <button
+                    key={b.id}
+                    type="button"
+                    className="pressable"
                     style={{
-                      margin: '10px 0 14px',
-                      padding: '12px 14px',
-                      borderRadius: '12px',
-                      background: `color-mix(in srgb, ${currentDojo.accent} 12%, transparent)`,
-                      border: `1px solid color-mix(in srgb, ${currentDojo.accent} 25%, transparent)`,
+                      padding: '5px 10px',
+                      borderRadius: '10px',
+                      fontSize: '11px',
+                      fontWeight: 600,
+                      whiteSpace: 'nowrap',
+                      background: activeBenchmark.id === b.id ? 'rgba(255, 255, 255, 0.12)' : 'rgba(255, 255, 255, 0.04)',
+                      border: activeBenchmark.id === b.id ? '1px solid rgba(255, 255, 255, 0.18)' : '1px solid rgba(255, 255, 255, 0.06)',
+                      color: activeBenchmark.id === b.id ? 'var(--text)' : 'var(--text-secondary)',
+                      cursor: 'pointer',
+                    }}
+                    onClick={() => {
+                      haptic('selection')
+                      setSelectedBenchmarkId(b.id)
                     }}
                   >
-                    <span style={{ fontSize: '11px', fontWeight: 800, color: currentDojo.accent, textTransform: 'uppercase' }}>
-                      Current Goal: {activeBenchmark.levels[currentLevel - 1]?.title}
-                    </span>
-                    <p style={{ margin: '3px 0 0', fontSize: '13px', color: 'var(--text)', lineHeight: 1.35 }}>
-                      {activeBenchmark.levels[currentLevel - 1]?.target}
-                    </p>
-                  </div>
-
-                  {/* Action Buttons */}
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <button
-                      type="button"
-                      style={{
-                        flex: 1,
-                        padding: '12px',
-                        borderRadius: '12px',
-                        background: currentDojo.accent,
-                        color: '#ffffff',
-                        fontWeight: 700,
-                        fontSize: '13px',
-                        border: 'none',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => handleAdvanceLevel(activeBenchmark.id)}
-                    >
-                      {currentLevel >= 5 ? 'Mastery Level 5 Max' : `Check In & Advance to Lvl ${currentLevel + 1}`}
-                    </button>
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* 2. ROUTINES PER GOAL */}
-            <div>
-              <div className="section-header" style={{ padding: '0 4px', margin: '8px 0 10px' }}>
-                <h2 style={{ fontSize: '18px' }}>Routines Per Goal</h2>
-                <span className="library-count-badge">Curated Katas</span>
+                    {b.name}
+                  </button>
+                ))}
               </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {currentDojo.routineGoals.map((goal, idx) => {
-                  const matchingKata = relatedKatas[idx] || premadeKatas[idx]
-                  return (
+              {/* Current Level Status Card */}
+              <div
+                style={{
+                  background: 'rgba(255, 255, 255, 0.04)',
+                  borderRadius: '16px',
+                  padding: '12px 14px',
+                  border: '1px solid rgba(255, 255, 255, 0.07)',
+                }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '11px', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
+                    Current Milestone (Level {currentLevel} of 5)
+                  </span>
+                  <span style={{ fontSize: '12px', fontWeight: 800, color: currentDojo.accent }}>
+                    {Math.round((currentLevel / 5) * 100)}% Complete
+                  </span>
+                </div>
+                <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block', marginBottom: '2px' }}>
+                  {activeBenchmark.levels[currentLevel - 1]?.title}
+                </strong>
+                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                  {activeBenchmark.levels[currentLevel - 1]?.target}
+                </p>
+              </div>
+
+              {/* Action Buttons */}
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <PrimaryButton
+                  icon="crown.fill"
+                  disabled={currentLevel >= 5}
+                  onClick={() => handleAdvanceLevel(activeBenchmark.id)}
+                >
+                  {currentLevel >= 5 ? 'Mastery Reached' : `Advance to Level ${currentLevel + 1}`}
+                </PrimaryButton>
+                {currentLevel > 1 && (
+                  <button
+                    type="button"
+                    className="pressable"
+                    style={{
+                      padding: '10px 14px',
+                      borderRadius: '14px',
+                      background: 'rgba(255, 255, 255, 0.05)',
+                      border: '1px solid rgba(255, 255, 255, 0.09)',
+                      color: 'var(--text-tertiary)',
+                      fontSize: '12px',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                    }}
+                    title="Reset progress to Level 1"
+                    onClick={() => handleResetLevel(activeBenchmark.id)}
+                  >
+                    Reset
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* 2. SCIENCE-BASED ROUTINES PER GOAL */}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', marginTop: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>Dojo Mobility Routines</h3>
+                  <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                    Science-based stretching protocols built specifically for {currentDojo.name}.
+                  </p>
+                </div>
+              </div>
+
+              {currentDojo.routineGoals.map((goal) => {
+                const expanded = expandedRoutineId === goal.id
+                return (
+                  <div
+                    key={goal.id}
+                    style={{
+                      borderRadius: '22px',
+                      padding: '16px',
+                      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02))',
+                      border: '1px solid rgba(255, 255, 255, 0.12)',
+                      backdropFilter: 'blur(24px)',
+                      WebkitBackdropFilter: 'blur(24px)',
+                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.18)',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '10px',
+                    }}
+                  >
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <SymbolTile icon={goal.symbol} tint={goal.accent} size={42} />
+                        <div>
+                          <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: 'block' }}>
+                            {goal.title}
+                          </strong>
+                          <span style={{ fontSize: '12px', color: goal.accent, fontWeight: 600 }}>
+                            {goal.subtitle}
+                          </span>
+                        </div>
+                      </div>
+                      <DifficultyBadge difficulty={goal.difficulty} pill />
+                    </div>
+
+                    <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.35 }}>
+                      {goal.description}
+                    </p>
+
                     <div
-                      key={goal.title}
-                      className="card pressable"
                       style={{
+                        background: 'rgba(255, 255, 255, 0.03)',
+                        border: '1px solid rgba(255, 255, 255, 0.06)',
+                        borderRadius: '10px',
+                        padding: '6px 8px',
+                        fontSize: '11px',
+                        color: 'var(--text-secondary)',
+                        lineHeight: 1.3,
+                        display: 'flex',
+                        gap: '6px',
+                      }}
+                    >
+                      <Icon name="sparkles" size={13} style={{ color: 'var(--gold)', flexShrink: 0, marginTop: '1px' }} />
+                      <span>{goal.scienceRationale}</span>
+                    </div>
+
+                    {/* Exercise list toggle */}
+                    <button
+                      type="button"
+                      className="pressable"
+                      style={{
+                        background: 'transparent',
+                        border: 'none',
+                        color: 'var(--text-tertiary)',
+                        fontSize: '12px',
+                        fontWeight: 600,
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'space-between',
-                        padding: '16px',
-                        borderRadius: '20px',
-                        background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02))',
-                        border: '1px solid rgba(255, 255, 255, 0.12)',
-                        backdropFilter: 'blur(20px)',
+                        padding: '2px 0',
+                        cursor: 'pointer',
                       }}
                       onClick={() => {
-                        haptic('selection')
-                        if (matchingKata) startKata(matchingKata)
-                        else nav.push({ name: 'premadeWorkouts' })
+                        haptic('light')
+                        setExpandedRoutineId(expanded ? null : goal.id)
                       }}
                     >
-                      <div style={{ display: 'flex', alignItems: 'center', gap: '14px', flex: 1, minWidth: 0 }}>
-                        <SymbolTile icon={goal.symbol} tint={goal.accent} size={48} />
-                        <div style={{ minWidth: 0 }}>
-                          <strong style={{ fontSize: '16px', color: 'var(--text)', display: 'block' }}>{goal.title}</strong>
-                          <p style={{ margin: '2px 0 0', fontSize: '12px', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                            {goal.description}
-                          </p>
-                          <span style={{ fontSize: '11px', color: 'var(--text-tertiary)', marginTop: '4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
-                            <Icon name="clock" size={11} /> {minutes(goal.duration)} · {goal.exercisesCount} exercises
+                      <span>
+                        {goal.exercises.length} exercises · {minutes(goal.duration)} total
+                      </span>
+                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px', color: 'var(--accent)' }}>
+                        {expanded ? 'Hide drills' : 'View drills'}
+                        <Icon name={expanded ? 'chevron.up' : 'chevron.down'} size={12} />
+                      </span>
+                    </button>
+
+                    {expanded && (
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+                        {goal.exercises.map((item, idx) => (
+                          <div
+                            key={idx}
+                            style={{
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'space-between',
+                              padding: '6px 10px',
+                              borderRadius: '10px',
+                              background: 'rgba(255, 255, 255, 0.03)',
+                              fontSize: '12px',
+                            }}
+                          >
+                            <span style={{ color: 'var(--text)' }}>
+                              {idx + 1}. {item.slug.replace(/-/g, ' ')}
+                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                              {item.pnf && (
+                                <span style={{ fontSize: '9px', fontWeight: 800, color: 'var(--ember)', background: 'color-mix(in srgb, var(--ember) 16%, transparent)', padding: '1px 4px', borderRadius: '4px' }}>
+                                  PNF
+                                </span>
+                              )}
+                              <span style={{ color: 'var(--text-secondary)' }}>{item.duration}s</span>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr auto', gap: '8px', marginTop: '2px' }}>
+                      <PrimaryButton
+                        icon="play.fill"
+                        onClick={() => handlePlayRoutine(goal)}
+                      >
+                        Play ({minutes(goal.duration)})
+                      </PrimaryButton>
+                      <button
+                        type="button"
+                        className="pressable"
+                        style={{
+                          padding: '0 14px',
+                          borderRadius: '14px',
+                          background: 'rgba(255, 255, 255, 0.07)',
+                          border: '1px solid rgba(255, 255, 255, 0.1)',
+                          color: 'var(--text)',
+                          fontSize: '13px',
+                          fontWeight: 600,
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '6px',
+                          cursor: 'pointer',
+                        }}
+                        title="Clone to My Katas"
+                        onClick={() => handleCloneRoutine(goal)}
+                      >
+                        <Icon name="plus" size={15} strokeWidth={2.4} />
+                        <span>Save</span>
+                      </button>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+
+            {/* 3. CREATE YOUR OWN [ART] KATA & USER'S ART KATAS */}
+            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px' }}>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
+                  Custom {currentDojo.name} Katas
+                </h3>
+                <span className="library-count-badge">
+                  {userArtKatas.length} saved
+                </span>
+              </div>
+
+              {/* Create Custom Kata Pill Button */}
+              <button
+                type="button"
+                className="pressable"
+                style={{
+                  width: '100%',
+                  padding: '12px 16px',
+                  borderRadius: '18px',
+                  background: 'linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
+                  border: '1px dashed color-mix(in srgb, var(--accent) 45%, transparent)',
+                  color: 'var(--accent)',
+                  fontSize: '14px',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px',
+                  backdropFilter: 'blur(16px)',
+                  cursor: 'pointer',
+                }}
+                onClick={() => {
+                  haptic('selection')
+                  nav.present({ name: 'editor', mode: { kind: 'create' } })
+                }}
+              >
+                <Icon name="plus" size={16} strokeWidth={2.4} />
+                <span>Create Custom {currentDojo.name} Routine</span>
+              </button>
+
+              {userArtKatas.length > 0 && (
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  {userArtKatas.map((kata) => (
+                    <div
+                      key={kata.uuid}
+                      style={{
+                        padding: '12px 14px',
+                        borderRadius: '16px',
+                        background: 'rgba(255, 255, 255, 0.05)',
+                        border: '1px solid rgba(255, 255, 255, 0.08)',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'space-between',
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={38} />
+                        <div>
+                          <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block' }}>
+                            {kata.name}
+                          </strong>
+                          <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>
+                            {kata.items.length} exercises · {kata.subtitle}
                           </span>
                         </div>
                       </div>
 
-                      <button
-                        type="button"
-                        className="btn-primary"
-                        style={{
-                          padding: '8px 14px',
-                          borderRadius: '12px',
-                          background: goal.accent,
-                          color: '#ffffff',
-                          fontWeight: 700,
-                          fontSize: '12px',
-                          border: 'none',
-                          cursor: 'pointer',
-                          flexShrink: 0,
-                          marginLeft: '10px',
-                        }}
-                        onClick={(e) => {
-                          e.stopPropagation()
-                          haptic('medium')
-                          if (matchingKata) startKata(matchingKata)
-                          else nav.push({ name: 'premadeWorkouts' })
-                        }}
-                      >
-                        Start
-                      </button>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
-
-            {/* 3. SIGNATURE MARTIAL DRILLS */}
-            <div>
-              <div className="section-header" style={{ padding: '0 4px', margin: '8px 0 10px' }}>
-                <h2 style={{ fontSize: '18px' }}>Technical Mobility Drills</h2>
-                <span className="library-count-badge">{currentDojo.drills.length} drills</span>
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {currentDojo.drills.map((drill) => (
-                  <div
-                    key={drill.name}
-                    className="card"
-                    style={{
-                      padding: '16px',
-                      borderRadius: '20px',
-                      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.02))',
-                      border: '1px solid rgba(255, 255, 255, 0.1)',
-                      backdropFilter: 'blur(20px)',
-                    }}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-                      <SymbolTile icon={drill.symbol} tint={currentDojo.accent} size={42} />
-                      <div>
-                        <strong style={{ fontSize: '15px', color: 'var(--text)', display: 'block' }}>{drill.name}</strong>
-                        <span style={{ fontSize: '12px', color: currentDojo.accent, fontWeight: 600 }}>{drill.focus}</span>
+                      <div style={{ display: 'flex', gap: '6px' }}>
+                        <button
+                          type="button"
+                          className="pressable"
+                          style={{
+                            padding: '6px 10px',
+                            borderRadius: '10px',
+                            background: 'var(--accent)',
+                            color: '#000',
+                            border: 'none',
+                            fontWeight: 700,
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => {
+                            haptic('success')
+                            startKata(kata)
+                          }}
+                        >
+                          Play
+                        </button>
+                        <button
+                          type="button"
+                          className="pressable"
+                          style={{
+                            padding: '6px 10px',
+                            borderRadius: '10px',
+                            background: 'rgba(255, 255, 255, 0.08)',
+                            color: 'var(--text)',
+                            border: 'none',
+                            fontWeight: 600,
+                            fontSize: '12px',
+                            cursor: 'pointer',
+                          }}
+                          onClick={() => {
+                            haptic('selection')
+                            nav.push({ name: 'kata', id: kata.uuid })
+                          }}
+                        >
+                          Edit
+                        </button>
                       </div>
                     </div>
-
-                    <ol style={{ margin: '8px 0 0', paddingLeft: '18px', fontSize: '12px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-                      {drill.instructions.map((inst, i) => (
-                        <li key={i}>{inst}</li>
-                      ))}
-                    </ol>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
 
-            {/* 4. LINEAGE, PHILOSOPHY & LORE CARD */}
-            <div
-              className="card"
-              style={{
-                padding: '18px',
-                borderRadius: '22px',
-                background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02))',
-                border: '1px solid rgba(255, 255, 255, 0.12)',
-                backdropFilter: 'blur(20px)',
-              }}
-            >
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '8px' }}>
-                <span style={{ fontSize: '24px' }}>{currentDojo.flag}</span>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '16px', fontWeight: 800 }}>Lineage & Philosophy</h3>
-                  <span style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>Origin: {currentDojo.country}</span>
-                </div>
-              </div>
-              <p style={{ margin: '6px 0', fontSize: '13px', color: 'var(--text)', lineHeight: 1.45 }}>
-                {currentDojo.history}
-              </p>
-              <div style={{ marginTop: '10px', padding: '10px 12px', borderRadius: '12px', background: 'rgba(255, 255, 255, 0.04)', borderLeft: `3px solid ${currentDojo.accent}` }}>
-                <p style={{ margin: 0, fontSize: '12px', color: 'var(--text-secondary)', fontStyle: 'italic', lineHeight: 1.4 }}>
-                  "{currentDojo.philosophy}"
+            {/* 4. TECHNICAL MOBILITY DRILLS */}
+            <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+              <div style={{ padding: '0 4px' }}>
+                <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>Technical Movement Drills</h3>
+                <p style={{ margin: '2px 0 0', fontSize: '13px', color: 'var(--text-secondary)' }}>
+                  Biomechanically tailored movement drills for {currentDojo.name}.
                 </p>
               </div>
+
+              {currentDojo.drills.map((drill, idx) => (
+                <div
+                  key={idx}
+                  style={{
+                    borderRadius: '20px',
+                    padding: '14px 16px',
+                    background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.02))',
+                    border: '1px solid rgba(255, 255, 255, 0.1)',
+                    backdropFilter: 'blur(20px)',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    gap: '8px',
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <SymbolTile icon={drill.symbol} tint="var(--gold)" size={36} />
+                      <div>
+                        <strong style={{ fontSize: '14px', color: 'var(--text)', display: 'block' }}>
+                          {drill.name}
+                        </strong>
+                        <span style={{ fontSize: '11px', color: 'var(--gold)', fontWeight: 600 }}>
+                          {drill.focus}
+                        </span>
+                      </div>
+                    </div>
+                    <span style={{ fontSize: '12px', color: 'var(--text-secondary)', fontWeight: 600 }}>
+                      <Icon name="timer" size={12} /> {drill.duration}s
+                    </span>
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '2px' }}>
+                    {drill.instructions.map((step, sIdx) => (
+                      <div
+                        key={sIdx}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '6px',
+                          fontSize: '12px',
+                          color: 'var(--text-secondary)',
+                          lineHeight: 1.35,
+                        }}
+                      >
+                        <span style={{ width: '16px', color: 'var(--text-tertiary)', fontWeight: 700, flexShrink: 0 }}>
+                          {sIdx + 1}.
+                        </span>
+                        <span>{step}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
             </div>
           </>
         )}
+
       </div>
-
-      {/* ============================================================ */}
-      {/* DISCIPLINE DETAIL & SELECTION MODAL                          */}
-      {/* ============================================================ */}
-      {selectedArtDetail && (
-        <div className="picker-modal-overlay" onClick={() => setSelectedArtDetail(null)}>
-          <div className="picker-modal-content" onClick={(e) => e.stopPropagation()} style={{ maxHeight: '88vh' }}>
-            <div className="picker-modal-header">
-              <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                <span style={{ fontSize: '28px' }}>{selectedArtDetail.flag}</span>
-                <div>
-                  <h3 style={{ margin: 0, fontSize: '18px', fontWeight: 800 }}>
-                    {selectedArtDetail.nativeName} ({selectedArtDetail.artId.toUpperCase()})
-                  </h3>
-                  <span style={{ fontSize: '12px', color: 'var(--text-secondary)' }}>{selectedArtDetail.country}</span>
-                </div>
-              </div>
-              <button
-                type="button"
-                className="search-clear"
-                style={{ width: 28, height: 28 }}
-                onClick={() => setSelectedArtDetail(null)}
-                aria-label="Close"
-              >
-                <Icon name="xmark" size={16} />
-              </button>
-            </div>
-
-            <div className="sheet-scroll form" style={{ padding: '0 16px 20px', display: 'flex', flexDirection: 'column', gap: '14px' }}>
-              <div>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: selectedArtDetail.accent, textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  Tagline
-                </span>
-                <p style={{ margin: '2px 0', fontSize: '15px', fontWeight: 700, color: 'var(--text)' }}>
-                  {selectedArtDetail.tagline}
-                </p>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                  History & Lineage
-                </span>
-                <p style={{ margin: '4px 0', fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.45 }}>
-                  {selectedArtDetail.history}
-                </p>
-              </div>
-
-              <div>
-                <span style={{ fontSize: '11px', fontWeight: 800, color: 'var(--text-secondary)', textTransform: 'uppercase' }}>
-                  Key Biomechanical Demands
-                </span>
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' }}>
-                  {selectedArtDetail.mobilityFocus.map((focus) => (
-                    <span
-                      key={focus}
-                      style={{
-                        padding: '4px 10px',
-                        borderRadius: '999px',
-                        background: 'rgba(255, 255, 255, 0.08)',
-                        fontSize: '12px',
-                        color: 'var(--text)',
-                      }}
-                    >
-                      {focus}
-                    </span>
-                  ))}
-                </div>
-              </div>
-
-              <div style={{ marginTop: '10px' }}>
-                <button
-                  type="button"
-                  style={{
-                    width: '100%',
-                    padding: '16px',
-                    borderRadius: '16px',
-                    background: selectedArtDetail.accent,
-                    color: '#ffffff',
-                    fontSize: '16px',
-                    fontWeight: 800,
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: `0 8px 24px color-mix(in srgb, ${selectedArtDetail.accent} 40%, transparent)`,
-                  }}
-                  onClick={() => handleSelectDiscipline(selectedArtDetail.artId)}
-                >
-                  Set as Active Dojo Discipline
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
     </Screen>
   )
 }

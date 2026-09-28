@@ -35,7 +35,7 @@ export function LibraryScreen() {
   const userKatas = useUserKatas()
   const premadeKatas = usePremadeKatas()
   const settings = useSettings()
-  const [activeTab, setActiveTab] = useState<'exercises' | 'premadeKatas' | 'martialArts'>('exercises')
+  const [activeTab, setActiveTab] = useState<'exercises' | 'premadeKatas'>('exercises')
   const [query, setQuery] = useState('')
   const [difficultyFilter, setDifficultyFilter] = useState<'all' | Difficulty>('all')
   const [pickerExercise, setPickerExercise] = useState<Exercise | null>(null)
@@ -51,19 +51,6 @@ export function LibraryScreen() {
         (ex.targets || []).some((t) => (t || '').toLowerCase().includes(q))
     )
   }, [allExercises, query])
-
-  // Filter martial arts
-  const filteredArts = useMemo(() => {
-    const q = query.trim().toLowerCase()
-    if (!q) return MARTIAL_ARTS
-    return MARTIAL_ARTS.filter(
-      (art) =>
-        (art.name || "").toLowerCase().includes(q) ||
-        (art.origin || "").toLowerCase().includes(q) ||
-        (art.tagline || "").toLowerCase().includes(q) ||
-        (art.focusAreas || []).some((fa) => (fa || "").toLowerCase().includes(q))
-    )
-  }, [query])
 
   // Filter premade katas
   const filteredPremade = useMemo(() => {
@@ -87,10 +74,9 @@ export function LibraryScreen() {
             options={[
               { value: 'exercises', title: t('Exercises') },
               { value: 'premadeKatas', title: t('Premade Katas') },
-              { value: 'martialArts', title: t('Martial Arts') },
             ]}
             onChange={(val) => {
-              setActiveTab(val as 'exercises' | 'premadeKatas' | 'martialArts')
+              setActiveTab(val as 'exercises' | 'premadeKatas')
               setQuery('')
             }}
             ariaLabel="Library section"
@@ -103,7 +89,7 @@ export function LibraryScreen() {
               <input
                 type="search"
                 value={query}
-                placeholder={activeTab === 'exercises' ? t('Search exercises & muscles...') : t('Search Martial Arts...')}
+                placeholder={activeTab === 'exercises' ? t('Search exercises & muscles...') : t('Search premade Katas...')}
                 onChange={(e) => setQuery(e.target.value)}
                 enterKeyHint="search"
                 autoComplete="off"
@@ -316,7 +302,7 @@ export function LibraryScreen() {
               </div>
             )}
           </>
-        ) : activeTab === 'premadeKatas' ? (
+        ) : (
           <>
             <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
               <h2 style={{ fontSize: '18px' }}>Dojo Curated Routines</h2>
@@ -390,70 +376,6 @@ export function LibraryScreen() {
                         {kata.items.length} drills
                       </span>
                     </div>
-                  </div>
-                ))}
-              </div>
-            )}
-          </>
-        ) : (
-          /* Martial Arts Disciplines View: 2-Column Liquid Glass Grid */
-          <>
-            <div className="section-header" style={{ padding: '0 4px', margin: '4px 0 0' }}>
-              <h2 style={{ fontSize: '18px' }}>Martial Arts Disciplines</h2>
-              <span className="library-count-badge">
-                {filteredArts.length} {filteredArts.length === 1 ? 'discipline' : 'disciplines'}
-              </span>
-            </div>
-            <p style={{ margin: '0 4px 12px', fontSize: '13px', color: 'var(--text-secondary)' }}>
-              Explore targeted mobility, foundational stances, and recovery routines designed specifically for your martial art.
-            </p>
-
-            {filteredArts.length === 0 ? (
-              <EmptyState
-                icon={<Icon name="figure.martial.arts" size={48} />}
-                title={t('No disciplines found')}
-                description={t('Try adjusting your search query.')}
-                action={
-                  <button
-                    type="button"
-                    className="btn btn-secondary"
-                    onClick={() => setQuery('')}
-                  >
-                    Clear Search
-                  </button>
-                }
-              />
-            ) : (
-              <div className="library-arts-grid">
-                {filteredArts.map((art) => (
-                  <div
-                    key={art.id}
-                    className="library-art-card pressable"
-                    style={{ '--art-tint': tintColor(art.tint) } as CSSProperties}
-                    onClick={() => {
-                      haptic('selection')
-                      nav.present({ name: 'artLearnMore', artId: art.id })
-                    }}
-                  >
-                    <div className="library-art-emblem-wrap" style={{
-                      width: 56,
-                      height: 56,
-                      borderRadius: 18,
-                      background: 'color-mix(in srgb, var(--art-tint) 16%, var(--surface-raised))',
-                      border: '1px solid color-mix(in srgb, var(--art-tint) 32%, transparent)',
-                      display: 'grid',
-                      placeItems: 'center',
-                      fontSize: '32px',
-                      boxShadow: '0 8px 20px rgba(0,0,0,0.15)',
-                      marginBottom: '10px'
-                    }}>
-                      <span role="img" aria-label={art.origin}>{art.symbol}</span>
-                    </div>
-                    <span className="library-art-name">{art.name}</span>
-                    <span className="library-art-origin">{art.origin}</span>
-                    <span className="library-art-cta">
-                      Explore <Icon name="chevron.right" size={11} strokeWidth={2.6} />
-                    </span>
                   </div>
                 ))}
               </div>

@@ -1,4 +1,5 @@
 import { MartialArtsScreen } from './martialArts/MartialArtsScreen'
+import { ArtExploreScreen } from './martialArts/ArtExploreScreen'
 import type { ReactNode } from 'react'
 import { SheetHeader } from '../components/SheetHost'
 import type { Route, SheetRoute, Tab } from '../lib/nav'
@@ -37,6 +38,8 @@ export function renderRoute(route: Route): ReactNode {
 
     case 'kata':
       return <KataDetailScreen id={route.id} />
+    case 'art':
+      return <ArtExploreScreen artId={route.id} />
     case 'workoutSettings':
       return <WorkoutSettingsScreen />
     case 'audioSettings':
