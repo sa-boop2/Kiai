@@ -315,7 +315,7 @@ export function PremadeWorkoutsScreen() {
 
   return (
     <Screen
-      title={t('Premade Katas')}
+      title={t('Katas')}
       back
       header={
         <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', padding: '0 var(--gutter) 4px' }}>

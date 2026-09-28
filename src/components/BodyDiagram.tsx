@@ -228,39 +228,59 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <path d="M155 170 L160 174 M154 185 L160 189 M154 200 L160 204" className="anatomy-striation" />
                 <path d="M225 170 L220 174 M226 185 L220 189 M226 200 L220 204" className="anatomy-striation" />
 
-                {/* Black Athletic Training Shorts */}
+                {/* Hip Flexors & Iliopsoas / TFL (Anatomical pelvic musculature, zero black shorts) */}
                 <path
-                  d="M152 232 L228 232 L234 300 L195 304 L190 265 L185 304 L146 300 Z"
-                  fill="#0e1017"
-                  stroke="#1c202e"
-                  strokeWidth="1.5"
+                  d="M154 232 C152 248 156 268 164 286 L182 276 L178 244 L166 232 Z"
+                  className={`anatomy-part selectable ${isSel('hipFlexors') ? 'selected' : ''}`}
+                  onClick={() => clickPart('hipFlexors')}
                 />
-
-                {/* Adductors / Inner Thighs */}
+                <path d="M158 244 Q166 258 172 272" className="anatomy-striation" />
                 <path
-                  d="M175 298 L190 268 L184 340 L174 340 Z M205 298 L190 268 L196 340 L206 340 Z"
+                  d="M226 232 C228 248 224 268 216 286 L198 276 L202 244 L214 232 Z"
+                  className={`anatomy-part selectable ${isSel('hipFlexors') ? 'selected' : ''}`}
+                  onClick={() => clickPart('hipFlexors')}
+                />
+                <path d="M222 244 Q214 258 208 272" className="anatomy-striation" />
+
+                {/* Inguinal folds / Pelvic arch lines */}
+                <path d="M154 232 Q172 248 186 262" className="anatomy-striation" />
+                <path d="M226 232 Q208 248 194 262" className="anatomy-striation" />
+
+                {/* Adductors / Inner Thighs (Gracilis, Adductor Longus, Pectineus) */}
+                <path
+                  d="M178 274 L188 262 L185 348 L172 348 L168 300 Z"
                   className={`anatomy-part selectable ${isSel('adductors') ? 'selected' : ''}`}
                   onClick={() => clickPart('adductors')}
                 />
+                <path d="M180 278 L179 328" className="anatomy-striation" />
 
-
-                {/* Quadriceps (Vastus Lateralis, Rectus Femoris, Vastus Medialis Teardrop) */}
                 <path
-                  d="M150 298 C140 324 135 365 146 410 C154 414 168 414 172 398 C172 368 170 324 164 298 Z"
+                  d="M202 274 L192 262 L195 348 L208 348 L212 300 Z"
+                  className={`anatomy-part selectable ${isSel('adductors') ? 'selected' : ''}`}
+                  onClick={() => clickPart('adductors')}
+                />
+                <path d="M200 278 L201 328" className="anatomy-striation" />
+
+                {/* Left Quadriceps (Rectus Femoris, Vastus Lateralis, Vastus Medialis Teardrop) */}
+                <path
+                  d="M164 246 C152 270 138 315 146 410 C154 414 168 414 172 398 C172 360 174 290 164 246 Z"
                   className={`anatomy-part selectable ${isSel('quads') ? 'selected' : ''}`}
                   onClick={() => clickPart('quads')}
                 />
-                {/* Teardrop Vastus Medialis & central groove */}
-                <path d="M162 315 C164 345 166 380 168 402" className="anatomy-striation" />
-                <path d="M150 330 C146 360 148 385 152 405" className="anatomy-striation" />
+                {/* Teardrop Vastus Medialis on inner side & lateral contours */}
+                <path d="M162 275 C164 330 166 370 168 402" className="anatomy-striation" />
+                <path d="M150 295 C146 338 148 375 152 405" className="anatomy-striation" />
+                <path d="M166 365 C172 378 173 392 170 401" className="anatomy-striation" />
 
+                {/* Right Quadriceps */}
                 <path
-                  d="M230 298 C240 324 245 365 234 410 C226 414 212 414 208 398 C208 368 210 324 216 298 Z"
+                  d="M216 246 C228 270 242 315 234 410 C226 414 212 414 208 398 C208 360 206 290 216 246 Z"
                   className={`anatomy-part selectable ${isSel('quads') ? 'selected' : ''}`}
                   onClick={() => clickPart('quads')}
                 />
-                <path d="M218 315 C216 345 214 380 212 402" className="anatomy-striation" />
-                <path d="M230 330 C234 360 232 385 228 405" className="anatomy-striation" />
+                <path d="M218 275 C216 330 214 370 212 402" className="anatomy-striation" />
+                <path d="M230 295 C234 338 232 375 228 405" className="anatomy-striation" />
+                <path d="M214 365 C208 378 207 392 210 401" className="anatomy-striation" />
 
                 {/* Knees */}
                 <circle cx="158" cy="418" r="7" className="anatomy-part neutral" />
@@ -339,16 +359,16 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
               </g>
 
 
-              {/* Left 5: Quads — pinned on the inner edge of the quad (vastus medialis teardrop) */}
-              <line x1="56" y1="365" x2="168" y2="365" className={`anatomy-dashed ${isSel('quads') ? 'active' : ''}`} />
+              {/* Left 5: Quads — pinned directly on the inner head (vastus medialis teardrop) */}
+              <line x1="56" y1="380" x2="168" y2="380" className={`anatomy-dashed ${isSel('quads') ? 'active' : ''}`} />
               <g className="anatomy-pin-target" onClick={() => clickPart('quads')}>
-                <circle cx="168" cy="365" r="22" fill="transparent" />
-                {isSel('quads') && <circle cx="168" cy="365" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="168" cy="365" r="7" className={`anatomy-pin-dot ${isSel('quads') ? 'selected' : ''}`} />
+                <circle cx="168" cy="380" r="22" fill="transparent" />
+                {isSel('quads') && <circle cx="168" cy="380" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="168" cy="380" r="7" className={`anatomy-pin-dot ${isSel('quads') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('quads')}>
-                <rect x="8" y="345" width="56" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="14" y="369" className={`anatomy-callout-text ${isSel('quads') ? 'selected' : ''}`}>Quads</text>
+                <rect x="8" y="360" width="56" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="14" y="384" className={`anatomy-callout-text ${isSel('quads') ? 'selected' : ''}`}>Quads</text>
               </g>
 
               {/* Right 1: Biceps */}
@@ -375,20 +395,22 @@ export function BodyDiagram({ selectedPart, onSelectPart }: BodyDiagramProps) {
                 <text x="366" y="249" textAnchor="end" className={`anatomy-callout-text ${isSel('core') ? 'selected' : ''}`}>Abs</text>
               </g>
 
-              {/* Right 4: Adductors */}
-              <path
-                d="M366 405 L240 405 L199 325"
-                fill="none"
+              {/* Right 4: Adductors — clean direct line to inner thigh adductor, zero line intersection */}
+              <line
+                x1="275"
+                y1="312"
+                x2="198"
+                y2="312"
                 className={`anatomy-dashed ${isSel('adductors') ? 'active' : ''}`}
               />
               <g className="anatomy-pin-target" onClick={() => clickPart('adductors')}>
-                <circle cx="199" cy="325" r="22" fill="transparent" />
-                {isSel('adductors') && <circle cx="199" cy="325" r="14" className="anatomy-pulse-ring" />}
-                <circle cx="199" cy="325" r="7" className={`anatomy-pin-dot ${isSel('adductors') ? 'selected' : ''}`} />
+                <circle cx="198" cy="312" r="22" fill="transparent" />
+                {isSel('adductors') && <circle cx="198" cy="312" r="14" className="anatomy-pulse-ring" />}
+                <circle cx="198" cy="312" r="7" className={`anatomy-pin-dot ${isSel('adductors') ? 'selected' : ''}`} />
               </g>
               <g className="anatomy-label-target" onClick={() => clickPart('adductors')}>
-                <rect x="275" y="385" width="97" height="38" rx="10" className="anatomy-label-plate" />
-                <text x="366" y="409" textAnchor="end" className={`anatomy-callout-text ${isSel('adductors') ? 'selected' : ''}`}>Adductors</text>
+                <rect x="275" y="293" width="97" height="38" rx="10" className="anatomy-label-plate" />
+                <text x="366" y="317" textAnchor="end" className={`anatomy-callout-text ${isSel('adductors') ? 'selected' : ''}`}>Adductors</text>
               </g>
             </svg>
           ) : (

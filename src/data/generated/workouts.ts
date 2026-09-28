@@ -7,15 +7,20 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "daily-kiai-flow",
     "name": "Full Body Daily Flow",
-    "subtitle": "A balanced 12-minute full-body routine for every day.",
+    "subtitle": "A balanced 12-minute full-body routine for everyday martial readiness.",
     "symbol": "sunrise.fill",
     "tint": "ember",
     "art": null,
     "difficulty": "beginner",
     "items": [
       {
-        "slug": "joint-circles",
+        "slug": "neck-circles-controlled-neck-rotations",
         "duration": 60,
+        "phase": "warmup"
+      },
+      {
+        "slug": "arm-circles",
+        "duration": 45,
         "phase": "warmup"
       },
       {
@@ -24,27 +29,27 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "warmup"
       },
       {
-        "slug": "low-lunge",
+        "slug": "world-s-greatest-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "standing-hamstring-fold",
+        "slug": "standing-hamstring-stretch-one-foot-forward",
         "duration": 45,
         "phase": "main"
       },
       {
-        "slug": "butterfly-stretch",
+        "slug": "butterfly-stretch-seated-soles-together",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "open-book-rotation",
+        "slug": "thoracic-spine-rotation-open-book-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "crane-balance",
+        "slug": "deep-squat-mobility-hold",
         "duration": 60,
         "phase": "main"
       },
@@ -54,7 +59,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -62,8 +67,8 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "kick-range-unlock",
-    "name": "High Kick Range",
-    "subtitle": "Hips and hamstrings for higher, looser kicks.",
+    "name": "High Kick Dynamic Range",
+    "subtitle": "Active hamstring, adductor and hip flexor opening for head kicks.",
     "symbol": "figure.kickboxing",
     "tint": "gold",
     "art": null,
@@ -75,17 +80,17 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "warmup"
       },
       {
-        "slug": "leg-swings-front",
+        "slug": "leg-swings-forward-backward",
         "duration": 60,
         "phase": "warmup"
       },
       {
-        "slug": "leg-swings-side",
+        "slug": "leg-swings-side-to-side",
         "duration": 60,
         "phase": "warmup"
       },
       {
-        "slug": "low-lunge",
+        "slug": "lunge-hip-flexor-stretch",
         "duration": 60,
         "phase": "main"
       },
@@ -95,7 +100,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "main"
       },
       {
-        "slug": "seated-straddle",
+        "slug": "wide-leg-seated-straddle-forward-fold",
         "duration": 60,
         "phase": "main"
       },
@@ -105,18 +110,18 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "main"
       },
       {
-        "slug": "chamber-hold",
+        "slug": "couch-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "supine-twist",
+        "slug": "supine-spinal-twist",
         "duration": 60,
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
-        "duration": 45,
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
         "phase": "cooldown"
       }
     ]
@@ -124,44 +129,49 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "iron-stance",
     "name": "Lower Body Stance Power",
-    "subtitle": "Deeper, stronger stances with stability work.",
-    "symbol": "figure.lunge",
-    "tint": "slate",
-    "art": "karate",
+    "subtitle": "Joint resilience and deep mobility for horse stance and low transitions.",
+    "symbol": "figure.cross.training",
+    "tint": "moss",
+    "art": null,
     "difficulty": "intermediate",
     "items": [
       {
-        "slug": "joint-circles",
-        "duration": 60,
-        "phase": "warmup"
-      },
-      {
-        "slug": "jumping-jacks",
+        "slug": "ankle-rotations",
         "duration": 45,
         "phase": "warmup"
       },
       {
-        "slug": "deep-squat-hold",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "horse-stance-hold",
+        "slug": "hip-circles",
         "duration": 45,
-        "phase": "main"
+        "phase": "warmup"
       },
       {
-        "slug": "cossack-squat",
+        "slug": "walking-lunges-twist",
+        "duration": 60,
+        "phase": "warmup"
+      },
+      {
+        "slug": "deep-squat-mobility-hold",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "stance-transitions",
+        "slug": "side-lunge-cossack-squat-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "single-leg-rdl",
+        "slug": "lunge-with-quad-reach-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "single-leg-seated-hamstring-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "standing-soleus-stretch-bent-back-knee",
         "duration": 60,
         "phase": "main"
       },
@@ -171,7 +181,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -179,50 +189,60 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "balance-dojo",
-    "name": "Core & Balance Stability",
-    "subtitle": "Own your standing leg. Kicks will follow.",
-    "symbol": "figure.balance",
+    "name": "Core & Rotational Stability",
+    "subtitle": "Single-leg alignment, rotational core and hip stabilizer conditioning.",
+    "symbol": "target",
     "tint": "indigo",
     "art": null,
     "difficulty": "intermediate",
     "items": [
       {
-        "slug": "joint-circles",
-        "duration": 60,
-        "phase": "warmup"
-      },
-      {
-        "slug": "leg-swings-front",
-        "duration": 60,
-        "phase": "warmup"
-      },
-      {
-        "slug": "crane-balance",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "single-leg-rdl",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "chamber-hold",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "slow-motion-side-kick",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "standing-hamstring-fold",
+        "slug": "neck-rolls",
         "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "leg-swings-forward-backward",
+        "duration": 60,
+        "phase": "warmup"
+      },
+      {
+        "slug": "torso-twists",
+        "duration": 60,
+        "phase": "warmup"
+      },
+      {
+        "slug": "single-leg-seated-hamstring-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "triangle-pose",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "standing-side-bend-with-overhead-reach",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "side-lying-oblique-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "good-morning-style-hamstring-stretch-bodyweight-hinge",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "reclining-spinal-twist",
+        "duration": 60,
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -231,54 +251,59 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "guard-mobility",
     "name": "BJJ Guard & Hip Mobility",
-    "subtitle": "Hip rotation and spine mobility for grapplers.",
-    "symbol": "figure.wrestling",
-    "tint": "jade",
-    "art": "bjj",
+    "subtitle": "Closed guard retention, hip escape mobility and wrist health.",
+    "symbol": "shield.checkered",
+    "tint": "ocean",
+    "art": null,
     "difficulty": "beginner",
     "items": [
       {
-        "slug": "joint-circles",
+        "slug": "wrist-flexor-stretch",
         "duration": 45,
         "phase": "warmup"
       },
       {
-        "slug": "wrist-mobility",
+        "slug": "wrist-extensor-stretch",
         "duration": 45,
         "phase": "warmup"
       },
       {
-        "slug": "hip-90-90",
+        "slug": "hip-circles",
+        "duration": 60,
+        "phase": "warmup"
+      },
+      {
+        "slug": "butterfly-stretch-seated-soles-together",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "butterfly-stretch",
+        "slug": "seated-figure-four-pretzel-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "open-book-rotation",
+        "slug": "thoracic-spine-rotation-open-book-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "hip-escape-drill",
+        "slug": "double-knee-to-chest-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "bridge-and-roll",
-        "duration": 45,
+        "slug": "supine-lumbar-spinal-twist",
+        "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "supine-twist",
+        "slug": "child-s-pose-lower-back-emphasis",
         "duration": 60,
         "phase": "cooldown"
       },
       {
-        "slug": "childs-pose",
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -287,10 +312,10 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "thai-hip-opener",
     "name": "Muay Thai Hip Mobility",
-    "subtitle": "Turn the roundhouse over with open, springy hips.",
-    "symbol": "figure.kickboxing",
-    "tint": "sakura",
-    "art": "muay-thai",
+    "subtitle": "Pelvic opening and hip capsule elasticity for powerful roundhouse kicks.",
+    "symbol": "flame.fill",
+    "tint": "ember",
+    "art": null,
     "difficulty": "intermediate",
     "items": [
       {
@@ -299,12 +324,17 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "warmup"
       },
       {
-        "slug": "leg-swings-side",
+        "slug": "leg-swings-side-to-side",
         "duration": 60,
         "phase": "warmup"
       },
       {
-        "slug": "deep-squat-hold",
+        "slug": "high-knees",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "deep-squat-mobility-hold",
         "duration": 60,
         "phase": "main"
       },
@@ -314,68 +344,78 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "main"
       },
       {
-        "slug": "seated-straddle",
+        "slug": "wide-leg-seated-straddle-forward-fold",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "teep-chamber-extend",
+        "slug": "kneeling-adductor-stretch-kneeling-box-split",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "supine-twist",
+        "slug": "half-kneeling-hip-flexor-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "supine-spinal-twist",
         "duration": 60,
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
-        "duration": 45,
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
         "phase": "cooldown"
       }
     ]
   },
   {
     "key": "split-quest",
-    "name": "Front & Side Splits",
-    "subtitle": "An advanced session chasing front and side splits.",
-    "symbol": "figure.split",
-    "tint": "ember",
-    "art": "taekwondo",
+    "name": "Front & Side Splits Protocol",
+    "subtitle": "End-range isometric and progressive flexibility for full split freedom.",
+    "symbol": "arrow.left.and.right",
+    "tint": "gold",
+    "art": null,
     "difficulty": "advanced",
     "items": [
       {
         "slug": "jumping-jacks",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "leg-swings-forward-backward",
         "duration": 60,
         "phase": "warmup"
       },
       {
-        "slug": "leg-swings-front",
+        "slug": "leg-swings-side-to-side",
         "duration": 60,
         "phase": "warmup"
       },
       {
-        "slug": "leg-swings-side",
-        "duration": 60,
-        "phase": "warmup"
-      },
-      {
-        "slug": "low-lunge",
+        "slug": "lunge-hip-flexor-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "front-split-progression",
-        "duration": 90,
+        "slug": "elevated-hamstring-stretch-heel-on-box",
+        "duration": 75,
         "phase": "main"
       },
       {
         "slug": "frog-stretch",
-        "duration": 60,
+        "duration": 90,
         "phase": "main"
       },
       {
-        "slug": "side-split-progression",
+        "slug": "kneeling-adductor-stretch-kneeling-box-split",
+        "duration": 90,
+        "phase": "main"
+      },
+      {
+        "slug": "wide-leg-seated-straddle-forward-fold",
         "duration": 90,
         "phase": "main"
       },
@@ -385,7 +425,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -393,116 +433,121 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   },
   {
     "key": "rooted-and-flowing",
-    "name": "Rooted & Flowing",
-    "subtitle": "Slow weight-shifting and standing-post work, Tai Chi style.",
-    "symbol": "figure.taichi",
-    "tint": "jade",
-    "art": "taichi",
+    "name": "Rooted & Flowing Qigong Flow",
+    "subtitle": "Joint lubrication, fascia hydration and smooth martial flow.",
+    "symbol": "wind",
+    "tint": "moss",
+    "art": null,
     "difficulty": "beginner",
     "items": [
       {
-        "slug": "joint-circles",
+        "slug": "neck-circles-controlled-neck-rotations",
         "duration": 60,
         "phase": "warmup"
       },
       {
-        "slug": "leg-swings-side",
+        "slug": "shoulder-rolls",
         "duration": 45,
         "phase": "warmup"
       },
       {
-        "slug": "deep-squat-hold",
+        "slug": "arm-circles",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "deep-squat-mobility-hold",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "horse-stance-hold",
+        "slug": "side-lunge-cossack-squat-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "cossack-squat",
+        "slug": "cat-cow-spine-mobilization",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "silk-reeling-arms",
+        "slug": "triangle-pose",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "cloud-hands-flow",
-        "duration": 90,
-        "phase": "main"
-      },
-      {
-        "slug": "crane-balance",
+        "slug": "standing-full-body-overhead-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "open-book-rotation",
+        "slug": "standing-side-bend-stretch",
         "duration": 60,
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
-        "duration": 60,
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 75,
         "phase": "cooldown"
       }
     ]
   },
   {
     "key": "centered-blend",
-    "name": "Aikido Joint & Spine",
-    "subtitle": "Hip rotation, wrist health and rolling mobility for Aikido.",
-    "symbol": "arrow.triangle.2.circlepath",
-    "tint": "deepBlue",
-    "art": "aikido",
+    "name": "Aikido Joint & Spine Flexibility",
+    "subtitle": "Wrist locks, shoulder rolls and spinal decompression.",
+    "symbol": "circle.dotted",
+    "tint": "indigo",
+    "art": null,
     "difficulty": "intermediate",
     "items": [
       {
-        "slug": "joint-circles",
+        "slug": "wrist-flexor-stretch",
         "duration": 45,
         "phase": "warmup"
       },
       {
-        "slug": "wrist-mobility",
+        "slug": "wrist-extensor-stretch",
         "duration": 45,
         "phase": "warmup"
       },
       {
-        "slug": "hip-90-90",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "tenkan-pivot-drill",
-        "duration": 60,
-        "phase": "main"
-      },
-      {
-        "slug": "shoulder-cross-stretch",
+        "slug": "forearm-pronation-supination-stretch",
         "duration": 45,
-        "phase": "main"
+        "phase": "warmup"
       },
       {
-        "slug": "seiza-ankle-stretch",
+        "slug": "cross-body-shoulder-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "open-book-rotation",
+        "slug": "sleeper-stretch",
         "duration": 60,
         "phase": "main"
       },
       {
-        "slug": "supine-twist",
+        "slug": "thoracic-spine-rotation-open-book-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "kneeling-toe-point-stretch-sit-back-on-toes",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "supine-lumbar-spinal-twist",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "child-s-pose-lat-dominant",
         "duration": 60,
         "phase": "cooldown"
       },
       {
-        "slug": "box-breathing",
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -511,20 +556,20 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "strikers-high-kick-protocol",
     "name": "Striker's High Kick Protocol",
-    "subtitle": "Hamstring and adductor opening for clean head kicks.",
-    "symbol": "figure.kickboxing",
-    "tint": "crimson",
-    "art": "taekwondo",
+    "subtitle": "End-range hamstring extension, adductor flexibility and hip hinge mechanics.",
+    "symbol": "bolt.fill",
+    "tint": "ember",
+    "art": null,
     "difficulty": "advanced",
     "items": [
       {
         "slug": "leg-swings-forward-backward",
-        "duration": 45,
+        "duration": 60,
         "phase": "warmup"
       },
       {
         "slug": "leg-swings-side-to-side",
-        "duration": 45,
+        "duration": 60,
         "phase": "warmup"
       },
       {
@@ -549,12 +594,12 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
       },
       {
         "slug": "frog-stretch",
-        "duration": 90,
+        "duration": 75,
         "phase": "main"
       },
       {
         "slug": "wide-leg-seated-straddle-forward-fold",
-        "duration": 60,
+        "duration": 75,
         "phase": "main"
       },
       {
@@ -572,26 +617,26 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "grapplers-neck-spine-armor",
     "name": "Grappler's Neck & Spine Armor",
-    "subtitle": "Thoracic mobilization and neck resilience for mat combat.",
+    "subtitle": "Cervical resilience, thoracic rotational freedom and lumbar decompression.",
     "symbol": "shield.lefthalf.filled",
-    "tint": "indigo",
-    "art": "bjj",
+    "tint": "ocean",
+    "art": null,
     "difficulty": "intermediate",
     "items": [
       {
         "slug": "neck-circles-controlled-neck-rotations",
-        "duration": 45,
+        "duration": 60,
         "phase": "warmup"
       },
       {
         "slug": "cat-cow-spine-mobilization",
-        "duration": 45,
+        "duration": 60,
         "phase": "warmup"
       },
       {
         "slug": "chin-tuck",
         "duration": 45,
-        "phase": "main"
+        "phase": "warmup"
       },
       {
         "slug": "upper-trap-stretch",
@@ -614,6 +659,11 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
         "phase": "main"
       },
       {
+        "slug": "single-knee-to-chest-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
         "slug": "child-s-pose-lower-back-emphasis",
         "duration": 60,
         "phase": "cooldown"
@@ -628,10 +678,10 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "boxers-thoracic-shoulder-release",
     "name": "Boxer's Thoracic & Shoulder Release",
-    "subtitle": "Pectoral, rotator cuff and lat decompression after punching.",
+    "subtitle": "Counter rounded guard posture with anterior chest expansion and rotator cuff mobility.",
     "symbol": "figure.boxing",
     "tint": "ember",
-    "art": "boxing",
+    "art": null,
     "difficulty": "beginner",
     "items": [
       {
@@ -651,12 +701,12 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
       },
       {
         "slug": "cross-body-shoulder-stretch",
-        "duration": 45,
+        "duration": 60,
         "phase": "main"
       },
       {
         "slug": "sleeper-stretch",
-        "duration": 45,
+        "duration": 60,
         "phase": "main"
       },
       {
@@ -689,10 +739,10 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "deep-squat-ankle-mobility",
     "name": "Deep Squat & Ankle Mobility",
-    "subtitle": "Dorsiflexion and deep hip capsule depth for low stances.",
-    "symbol": "figure.martial.arts",
-    "tint": "jade",
-    "art": "karate",
+    "subtitle": "Dorsiflexion restoration, Achilles release and deep pelvic descent.",
+    "symbol": "shoeprints.fill",
+    "tint": "moss",
+    "art": null,
     "difficulty": "intermediate",
     "items": [
       {
@@ -717,7 +767,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
       },
       {
         "slug": "deep-squat-mobility-hold",
-        "duration": 90,
+        "duration": 75,
         "phase": "main"
       },
       {
@@ -732,11 +782,16 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
       },
       {
         "slug": "single-knee-to-chest-stretch",
-        "duration": 45,
-        "phase": "cooldown"
+        "duration": 60,
+        "phase": "main"
       },
       {
         "slug": "childs-pose",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
         "duration": 60,
         "phase": "cooldown"
       }
@@ -745,10 +800,10 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "wrestlers-bridge-hip-explosiveness",
     "name": "Wrestler's Hip & Extension Drive",
-    "subtitle": "Hip flexor lengthening and posterior chain drive for takedowns.",
-    "symbol": "figure.wrestling",
+    "subtitle": "Psoas release, glute firing and spinal bridge elasticity.",
+    "symbol": "flame",
     "tint": "gold",
-    "art": "wrestling",
+    "art": null,
     "difficulty": "advanced",
     "items": [
       {
@@ -783,7 +838,7 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
       },
       {
         "slug": "pigeon-pose",
-        "duration": 90,
+        "duration": 75,
         "phase": "main"
       },
       {
@@ -801,10 +856,10 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
   {
     "key": "zen-post-dojo-restorative",
     "name": "Zen Post-Dojo Restorative Flow",
-    "subtitle": "Full nervous system reset and fascia release after intense training.",
+    "subtitle": "Parasympathetic down-regulation, gentle spinal twists and mindful breathing.",
     "symbol": "sparkles",
-    "tint": "amethyst",
-    "art": "aikido",
+    "tint": "indigo",
+    "art": null,
     "difficulty": "beginner",
     "items": [
       {
@@ -845,11 +900,72 @@ export const PREMADE_WORKOUTS: PremadeWorkout[] = [
       {
         "slug": "double-knee-to-chest-stretch",
         "duration": 60,
-        "phase": "cooldown"
+        "phase": "main"
       },
       {
         "slug": "deep-diaphragmatic-breathing",
         "duration": 90,
+        "phase": "cooldown"
+      }
+    ]
+  },
+  {
+    "key": "judoka-rotational-torque",
+    "name": "Judoka Grip & Rotational Torque",
+    "subtitle": "Scapular retraction, lat release, forearm grip endurance and thoracic spine twist for throws.",
+    "symbol": "figure.judo",
+    "tint": "indigo",
+    "art": null,
+    "difficulty": "intermediate",
+    "items": [
+      {
+        "slug": "wrist-flexor-stretch",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "wrist-extensor-stretch",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "torso-twists",
+        "duration": 45,
+        "phase": "warmup"
+      },
+      {
+        "slug": "scapular-retraction-stretch-arms-forward-shoulder-blades-spread",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "lunge-with-thoracic-rotation",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "overhead-chest-and-lat-stretch",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "cross-leg-seated-glute-stretch-torso-lean-forward",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "biceps-wall-stretch-arm-extended-behind",
+        "duration": 60,
+        "phase": "main"
+      },
+      {
+        "slug": "child-s-pose-lat-dominant",
+        "duration": 60,
+        "phase": "cooldown"
+      },
+      {
+        "slug": "deep-diaphragmatic-breathing",
+        "duration": 60,
         "phase": "cooldown"
       }
     ]

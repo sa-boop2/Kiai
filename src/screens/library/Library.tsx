@@ -119,7 +119,7 @@ export function LibraryScreen() {
             value={activeTab}
             options={[
               { value: 'exercises', title: t('Exercises') },
-              { value: 'premadeKatas', title: t('Premade Katas') },
+              { value: 'premadeKatas', title: t('Katas') },
             ]}
             onChange={(val) => {
               setActiveTab(val as 'exercises' | 'premadeKatas')
@@ -135,7 +135,7 @@ export function LibraryScreen() {
               <input
                 type="search"
                 value={query}
-                placeholder={activeTab === 'exercises' ? t('Search exercises & muscles...') : t('Search premade Katas...')}
+                placeholder={activeTab === 'exercises' ? t('Search exercises & muscles...') : t('Search katas...')}
                 onChange={(e) => setQuery(e.target.value)}
                 enterKeyHint="search"
                 autoComplete="off"
@@ -350,21 +350,35 @@ export function LibraryScreen() {
           </>
         ) : (
           <>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px', margin: '6px 0 2px' }}>
-              <span className="library-count-badge">
-                {filteredPremade.length} {filteredPremade.length === 1 ? 'routine' : 'routines'}
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0 4px', margin: '4px 0 0' }}>
+              <span className="library-count-badge" style={{ fontSize: '12px', fontWeight: 600 }}>
+                {filteredPremade.length} {filteredPremade.length === 1 ? 'Kata' : 'Katas'}
               </span>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-                <Icon name="arrow.up.arrow.down" size={13} style={{ color: 'var(--text-secondary)' }} />
+              <div
+                className="glass pressable"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '6px',
+                  padding: '5px 12px',
+                  borderRadius: '999px',
+                  border: '1px solid color-mix(in srgb, var(--text) 12%, transparent)',
+                  background: 'color-mix(in srgb, var(--surface-raised) 70%, transparent)',
+                  backdropFilter: 'blur(16px)',
+                  WebkitBackdropFilter: 'blur(16px)',
+                  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08), inset 0 1px 1px rgba(255, 255, 255, 0.12)',
+                }}
+              >
+                <Icon name="arrow.up.arrow.down" size={13} strokeWidth={2.4} style={{ color: 'var(--accent)', flexShrink: 0 }} />
                 <NativeSelect<string>
-                  label={t('Sort')}
+                  label={t('Sort Katas')}
                   value={premadeSort}
                   options={[
                     { value: 'default', title: t('Curated') },
-                    { value: 'duration-asc', title: t('Shortest First') },
-                    { value: 'duration-desc', title: t('Longest First') },
-                    { value: 'difficulty', title: t('By Level') },
-                    { value: 'name', title: t('Alphabetical') },
+                    { value: 'duration-asc', title: t('Shortest') },
+                    { value: 'duration-desc', title: t('Longest') },
+                    { value: 'difficulty', title: t('Level') },
+                    { value: 'name', title: t('A–Z') },
                   ]}
                   onChange={(val) => setPremadeSort(val as any)}
                 />
@@ -390,53 +404,33 @@ export function LibraryScreen() {
                 }
               />
             ) : (
-              <div className="library-katas-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: '10px', width: '100%', maxWidth: '100%', boxSizing: 'border-box', marginTop: '12px' }}>
+              <div className="library-katas-grid premade-katas-grid" style={{ marginTop: '12px' }}>
                 {filteredPremade.map((kata) => (
-                  <div
+                  <button
                     key={kata.uuid}
-                    className="card pressable"
-                    style={{
-                      display: 'flex',
-                      flexDirection: 'column',
-                      justifyContent: 'space-between',
-                      padding: '14px',
-                      borderRadius: '18px',
-                      background: 'linear-gradient(145deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03))',
-                      border: '1px solid rgba(255, 255, 255, 0.12)',
-                      boxShadow: '0 8px 24px rgba(0, 0, 0, 0.25), inset 0 1px 1px rgba(255, 255, 255, 0.15)',
-                      backdropFilter: 'blur(20px)',
-                      WebkitBackdropFilter: 'blur(20px)',
-                      cursor: 'pointer',
-                      minHeight: '160px',
-                    }}
+                    type="button"
+                    className="premade-kata-card pressable"
+                    style={{ '--tint': tintColor(kata.tint) } as React.CSSProperties}
                     onClick={() => {
                       haptic('selection')
                       nav.push({ name: 'kata', id: kata.uuid })
                     }}
                   >
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '8px' }}>
-                        <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={42} />
-                        <DifficultyBadge difficulty={kata.difficulty} pill />
-                      </div>
-                      <strong style={{ fontSize: '15px', fontWeight: 700, color: 'var(--text)', display: '-webkit-box', WebkitLineClamp: 1, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>
-                        {kata.name}
-                      </strong>
-                      <p style={{ margin: '3px 0 0', fontSize: '12px', color: 'var(--text-secondary)', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden', lineHeight: 1.3 }}>
-                        {kata.subtitle}
-                      </p>
+                    <div className="premade-kata-card-top">
+                      <SymbolTile icon={kata.symbol} tint={tintColor(kata.tint)} size={42} />
+                      <DifficultyBadge difficulty={kata.difficulty} pill />
                     </div>
-
-                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '10px', paddingTop: '8px', borderTop: '1px solid rgba(255, 255, 255, 0.08)', fontSize: '11px', color: 'var(--text-tertiary)' }}>
-                      <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+                    <strong className="premade-kata-card-title">{kata.name}</strong>
+                    <div className="premade-kata-card-bottom">
+                      <span className="premade-kata-card-duration">
                         <Icon name="clock" size={11} strokeWidth={2.4} />
                         {minutes(estimatedSeconds(kata, settings.restSeconds))}
                       </span>
-                      <span>
+                      <span className="premade-kata-card-meta">
                         {kata.items.length} drills
                       </span>
                     </div>
-                  </div>
+                  </button>
                 ))}
               </div>
             )}

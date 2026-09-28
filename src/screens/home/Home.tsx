@@ -153,9 +153,11 @@ export function HomeScreen() {
       </div>
 
       {/* Your Kata's section */}
-      <div className="home-katas-header" style={{ display: 'flex', flexDirection: 'column', gap: '8px', padding: '0 0 8px' }}>
-        <h2 className="home-section-title" style={{ textAlign: 'center', width: '100%' }}>{t("Your Kata's")}</h2>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+      <div className="home-katas-header" style={{ display: 'flex', flexDirection: 'column', gap: '4px', padding: '0 0 2px' }}>
+        <h2 className="home-section-title" style={{ textAlign: 'left', width: '100%', fontSize: '22px', fontWeight: 800, letterSpacing: '-0.025em', margin: 0 }}>
+          {t("Your Kata's")}
+        </h2>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', marginTop: '2px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
             {displayKatas.length > 1 && (
               <>
@@ -315,11 +317,6 @@ export function HomeScreen() {
         )}
       </div>
 
-      {/* Clean Bottom Brand & Version Footer */}
-      <div className="settings-footer" style={{ marginTop: '32px', paddingBottom: '20px' }}>
-        <KiaiMark size={28} />
-        <span>Kiai 2.7.5 · Web</span>
-      </div>
     </Screen>
   )
 }
