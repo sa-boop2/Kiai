@@ -78,7 +78,7 @@
 /* Standalone iOS PWA bookmark safe-area safeguards */
 :root[data-standalone='true'] {
   --safe-top: max(env(safe-area-inset-top, 0px), 44px);
-  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 4px);
+  --safe-bottom: max(env(safe-area-inset-bottom, 0px), 16px);
 }
 
 :root {

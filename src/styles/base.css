@@ -319,11 +319,15 @@ img {
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-top: calc(var(--safe-top) + 52px);
+  padding-top: calc(var(--safe-top) + 44px);
   /* Clear tabbar and safe area without clipping */
-  padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 20px);
+  padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 38px);
   padding-left: var(--safe-left);
   padding-right: var(--safe-right);
+}
+
+.screen-scroll:has(.large-title-row) {
+  padding-top: calc(var(--safe-top) + 8px);
 }
 
 .screen-scroll::-webkit-scrollbar {
@@ -344,7 +348,7 @@ img {
   left: 0;
   right: 0;
   z-index: 5;
-  height: calc(var(--safe-top) + 52px);
+  height: calc(var(--safe-top) + 44px);
   padding: var(--safe-top) calc(var(--safe-right) + 12px) 0 calc(var(--safe-left) + 12px);
   pointer-events: none;
 }
@@ -366,7 +370,7 @@ img {
   display: grid;
   grid-template-columns: minmax(44px, 1fr) auto minmax(44px, 1fr);
   align-items: center;
-  height: 52px;
+  height: 44px;
   max-width: calc(var(--content-max) + 24px);
   margin: 0 auto;
   gap: 8px;
@@ -460,7 +464,7 @@ img {
   right: 0;
   bottom: 0;
   z-index: 4;
-  padding: 18px var(--gutter) calc(var(--tabbar-height) + var(--safe-bottom) + 22px);
+  padding: 18px var(--gutter) calc(var(--tabbar-height) + var(--safe-bottom) + 38px);
   background: linear-gradient(to bottom, transparent, var(--background) 42%);
   pointer-events: none;
 }
@@ -479,11 +483,11 @@ img {
   position: fixed;
   left: 0;
   right: 0;
-  bottom: 3px;
+  bottom: max(calc(var(--safe-bottom) + 12px), 24px);
   z-index: 20;
   display: flex;
   justify-content: center;
-  /* Placed right at the bottom edge with a tiny bit of space */
+  /* Floating iOS capsule with comfortable bottom clearance */
   padding: 0 calc(var(--safe-right) + 12px) 0 calc(var(--safe-left) + 12px);
   pointer-events: none;
 }
@@ -901,7 +905,8 @@ img {
 
 
 
-  .screen-scroll {
+  .screen-scroll,
+  .screen-scroll:has(.large-title-row) {
     padding-top: 64px;
   }
 
