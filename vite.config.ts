@@ -36,7 +36,7 @@ function kiaiServiceWorker(): Plugin {
       const assets = Object.keys(bundle).filter((file) => !file.endsWith('.map'))
       const precache = [...new Set([...PUBLIC_PRECACHE, ...assets])]
       // Bump SW_REVISION whenever the caching logic below changes.
-      const SW_REVISION = 22
+      const SW_REVISION = 23
       const version = hash(`${SW_REVISION}|${precache.join('|')}`)
       const source = `/* Kiai service worker — generated at build time. */
 const CACHE = 'kiai-${version}';

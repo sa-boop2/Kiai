@@ -319,7 +319,7 @@ img {
   overscroll-behavior-y: contain;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-top: calc(var(--safe-top) + 44px);
+  padding-top: max(calc(var(--safe-top) + 36px), 36px);
   /* Clear tabbar and safe area without clipping */
   padding-bottom: calc(var(--tabbar-height) + var(--safe-bottom) + 38px);
   padding-left: var(--safe-left);
@@ -327,7 +327,7 @@ img {
 }
 
 .screen-scroll:has(.large-title-row) {
-  padding-top: calc(var(--safe-top) + 8px);
+  padding-top: max(calc(var(--safe-top) - 4px), 2px);
 }
 
 .screen-scroll::-webkit-scrollbar {
@@ -348,8 +348,8 @@ img {
   left: 0;
   right: 0;
   z-index: 5;
-  height: calc(var(--safe-top) + 44px);
-  padding: var(--safe-top) calc(var(--safe-right) + 12px) 0 calc(var(--safe-left) + 12px);
+  height: max(calc(var(--safe-top) + 38px), 38px);
+  padding: max(calc(var(--safe-top) - 6px), 0px) calc(var(--safe-right) + 12px) 0 calc(var(--safe-left) + 12px);
   pointer-events: none;
 }
 
@@ -436,7 +436,7 @@ img {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 2px var(--gutter) 6px;
+  padding: 0 var(--gutter) 4px;
   max-width: var(--content-max);
   margin: 0 auto;
 }
