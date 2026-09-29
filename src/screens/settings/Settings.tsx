@@ -28,7 +28,7 @@ import { makeSnapshot } from '../../lib/progression'
 import { downloadReminderEvent, requestNotificationPermission, sendSystemNotification, smartTime } from '../../lib/reminders'
 import { useIsPremium, useProfile, useSessions, useSettings } from '../../lib/store'
 
-const VERSION = '2.8.1'
+const VERSION = '2.8.2'
 
 export function SettingsScreen({ back = false }: { back?: boolean }) {
   const settings = useSettings()
@@ -470,14 +470,14 @@ function ProfileCard() {
             setPickerOpen(true)
           }}
         >
-          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={64} />
-          <span className="avatar-camera" style={{ width: 22, height: 22, bottom: 0, right: 0 }}>
-            <Icon name="camera.fill" size={12} style={{ '--icon-knock': 'var(--ember)' } as React.CSSProperties} />
+          <Avatar name={profile.name} src={profile.avatar} symbol={profile.avatarSymbol} tint={profile.avatarTint} size={66} />
+          <span className="avatar-camera">
+            <Icon name="camera.fill" size={11} />
           </span>
         </button>
         <input ref={fileRef} type="file" accept="image/*" hidden onChange={(e) => { pick(e.target.files?.[0]); setPickerOpen(false) }} />
 
-        <div className="profile-text" style={{ flex: 1, minWidth: 0 }}>
+        <div className="profile-text">
           {editing ? (
             <form
               className="name-edit"
@@ -492,7 +492,7 @@ function ProfileCard() {
                 value={draftName}
                 autoFocus
                 maxLength={40}
-                style={{ fontSize: '22px', fontWeight: 800, padding: '2px 8px' }}
+                style={{ fontSize: '20px', fontWeight: 800, padding: '2px 8px' }}
                 onChange={(e) => setDraftName(e.target.value)}
                 onBlur={() => {
                   if (draftName.trim()) updateProfile({ name: draftName.trim() })
@@ -503,37 +503,51 @@ function ProfileCard() {
           ) : (
             <button
               type="button"
-              className="pressable"
+              className="pressable profile-name-btn"
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '6px',
+                gap: '8px',
                 background: 'transparent',
                 border: 'none',
                 padding: 0,
                 cursor: 'pointer',
                 textAlign: 'left',
+                maxWidth: '100%',
               }}
               onClick={() => {
                 setDraftName(profile.name)
                 setEditing(true)
               }}
             >
-              <span style={{ fontSize: '22px', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)' }}>
+              <span style={{ fontSize: '21px', fontWeight: 800, letterSpacing: '-0.02em', color: 'var(--text)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {displayName(profile.name)}
               </span>
-              <Icon name="pencil" size={14} strokeWidth={2.6} style={{ color: 'var(--text-tertiary)', flexShrink: 0 }} />
+              <span
+                style={{
+                  display: 'inline-grid',
+                  placeItems: 'center',
+                  width: '22px',
+                  height: '22px',
+                  borderRadius: '999px',
+                  background: 'color-mix(in srgb, var(--text) 8%, transparent)',
+                  color: 'var(--text-secondary)',
+                  flexShrink: 0,
+                }}
+              >
+                <Icon name="pencil" size={12} strokeWidth={2.4} />
+              </span>
             </button>
           )}
 
           {/* Aesthetic Martial Art Pill */}
-          <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginTop: '4px' }}>
+          <div style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', marginTop: '2px' }}>
             <div
               style={{
                 display: 'inline-flex',
                 alignItems: 'center',
-                gap: '5px',
-                padding: '4px 10px',
+                gap: '6px',
+                padding: '4px 11px',
                 borderRadius: '999px',
                 background: 'color-mix(in srgb, var(--accent) 12%, var(--surface-raised))',
                 border: '1px solid color-mix(in srgb, var(--accent) 26%, transparent)',
@@ -544,7 +558,7 @@ function ProfileCard() {
             >
               <Icon name="figure.martial.arts" size={13} style={{ color: 'var(--accent)' }} />
               <span>{MARTIAL_ARTS.find((a) => a.id === profile.primaryArt)?.name || t('Choose your art')}</span>
-              <Icon name="chevron.up.chevron.down" size={10} style={{ opacity: 0.6 }} />
+              <Icon name="chevron.up.chevron.down" size={10} style={{ opacity: 0.55 }} />
             </div>
             <select
               aria-label="Primary martial art"
@@ -568,64 +582,67 @@ function ProfileCard() {
         </div>
       </div>
 
-      {/* iOS 26 Integrated Minimalist Subelements */}
+      {/* iOS 26 Integrated Minimalist Subelements Shelf */}
       <div
+        className="profile-stats-shelf"
         style={{
           background: 'color-mix(in srgb, var(--text) 4%, transparent)',
-          borderRadius: '12px',
-          padding: '6px 10px',
-          display: 'flex',
+          border: '1px solid color-mix(in srgb, var(--text) 6%, transparent)',
+          borderRadius: '14px',
+          padding: '8px 12px',
+          display: 'grid',
+          gridTemplateColumns: '1fr auto 1fr',
           alignItems: 'center',
-          justifyContent: 'space-between',
-          gap: '6px',
-          margin: '1px 0',
+          gap: '10px',
+          margin: '2px 0',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
-          <RankEmblem rank={snapshot.rank} size={20} />
-          <div style={{ textAlign: 'left' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.15 }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
+          <RankEmblem rank={snapshot.rank} size={26} />
+          <div style={{ textAlign: 'left', minWidth: 0 }}>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.15 }}>
               {t('Level %lld', snapshot.rank.level)}
             </span>
-            <span style={{ fontSize: '10.5px', color: 'var(--text-secondary)' }}>
+            <span style={{ fontSize: '11px', color: 'var(--text-secondary)', display: 'block', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
               {snapshot.rank.title}
             </span>
           </div>
         </div>
 
-        <div style={{ width: '1px', height: '18px', background: 'var(--separator)' }} />
+        <div style={{ width: '1px', height: '22px', background: 'var(--separator)' }} />
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '7px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '8px', minWidth: 0 }}>
           <div
             style={{
-              width: 22,
-              height: 22,
-              borderRadius: 7,
-              background: 'rgba(239, 68, 68, 0.16)',
+              width: 26,
+              height: 26,
+              borderRadius: 8,
+              background: 'rgba(239, 68, 68, 0.14)',
               color: 'var(--ember)',
               display: 'grid',
               placeItems: 'center',
+              flexShrink: 0,
             }}
           >
-            <Icon name="flame.fill" size={13} />
+            <Icon name="flame.fill" size={14} />
           </div>
-          <div style={{ textAlign: 'left' }}>
-            <span style={{ fontSize: '12px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.15 }}>
+          <div style={{ textAlign: 'left', minWidth: 0 }}>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--text)', display: 'block', lineHeight: 1.15 }}>
               {snapshot.currentStreak} {snapshot.currentStreak === 1 ? 'day' : 'days'}
             </span>
-            <span style={{ fontSize: '10.5px', color: 'var(--ember)', fontWeight: 600 }}>
+            <span style={{ fontSize: '11px', color: 'var(--ember)', fontWeight: 600 }}>
               Streak
             </span>
           </div>
         </div>
       </div>
 
-      <div style={{ margin: '1px 0 0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3px', fontSize: '10.5px' }}>
-          <span style={{ color: 'var(--text-secondary)' }}>Rank progress</span>
-          <span style={{ color: 'var(--text-tertiary)' }}>{Math.round(snapshot.rankProgress * 100)}%</span>
+      <div style={{ margin: '2px 0 0' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px', fontSize: '11px' }}>
+          <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Rank progress</span>
+          <span style={{ color: 'var(--text-tertiary)', fontWeight: 600 }}>{Math.round(snapshot.rankProgress * 100)}%</span>
         </div>
-        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={4} label="Rank progress" />
+        <ProgressBar value={snapshot.rankProgress} tint={next?.color ?? snapshot.rank.color} height={5} label="Rank progress" />
       </div>
       {artById(profile.primaryArt) === undefined && <span className="sr-only">No primary art</span>}
 

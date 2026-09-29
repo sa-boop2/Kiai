@@ -39,7 +39,13 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, t
       cancelAnimationFrame(frame.current)
       frame.current = requestAnimationFrame(() => {
         const threshold = largeTitle ? 44 : 12
-        navbarRef.current?.style.setProperty('--collapse', String(Math.min(Math.max(top / threshold, 0), 1)))
+        const collapseVal = Math.min(Math.max(top / threshold, 0), 1)
+        navbarRef.current?.style.setProperty('--collapse', String(collapseVal))
+        if (collapseVal >= 0.7) {
+          navbarRef.current?.setAttribute('data-collapsed', 'true')
+        } else {
+          navbarRef.current?.removeAttribute('data-collapsed')
+        }
       })
     },
     [largeTitle]
@@ -191,7 +197,24 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, t
       <div className={`screen-scroll ${largeTitle ? 'has-large-title' : ''} ${bottomBar ? 'has-bottom-bar' : ''}`} ref={scrollRef} onScroll={onScroll}>
         {largeTitle && !hideNavBar && (
           <div className="large-title-row">
-            <h1 className="large-title">{title}</h1>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', minWidth: 0 }}>
+              {back && (
+                <button
+                  type="button"
+                  className="glass glass-icon-btn pressable nav-back"
+                  style={{ width: 38, height: 38, flexShrink: 0 }}
+                  aria-label="Back"
+                  onClick={() => {
+                    haptic('light')
+                    resetTabbar()
+                    nav.back()
+                  }}
+                >
+                  <Icon name="chevron.left" size={19} strokeWidth={2.6} />
+                </button>
+              )}
+              <h1 className="large-title">{title}</h1>
+            </div>
             {titleTrailing && <div className="large-title-trailing">{titleTrailing}</div>}
           </div>
         )}
@@ -202,7 +225,7 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, t
         <header className="navbar" ref={navbarRef} data-inline={!largeTitle}>
           <div className="navbar-bg" />
           <div className="navbar-inner">
-            <div className="navbar-leading">
+            <div className={`navbar-leading ${largeTitle ? 'collapse-fade' : ''}`}>
               {back ? (
                 <button
                   type="button"

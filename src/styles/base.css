@@ -386,6 +386,16 @@ img {
   pointer-events: auto;
 }
 
+.navbar:not([data-inline='true']) .navbar-leading.collapse-fade {
+  opacity: var(--collapse, 0);
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.navbar[data-collapsed='true'] .navbar-leading.collapse-fade {
+  pointer-events: auto;
+}
+
 .navbar-trailing {
   justify-content: flex-end;
 }
