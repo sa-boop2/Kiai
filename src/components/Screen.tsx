@@ -188,16 +188,12 @@ export function Screen({ title, children, largeTitle, back, leading, trailing, t
   return (
     <div className={`screen ${back ? 'pushed-screen' : ''}`} ref={screenRef}>
 
-      <div className={`screen-scroll ${bottomBar ? 'has-bottom-bar' : ''}`} ref={scrollRef} onScroll={onScroll}>
+      <div className={`screen-scroll ${largeTitle ? 'has-large-title' : ''} ${bottomBar ? 'has-bottom-bar' : ''}`} ref={scrollRef} onScroll={onScroll}>
         {largeTitle && !hideNavBar && (
-          titleTrailing ? (
-            <div className="large-title-row">
-              <h1 className="large-title">{title}</h1>
-              <div className="large-title-trailing">{titleTrailing}</div>
-            </div>
-          ) : (
+          <div className="large-title-row">
             <h1 className="large-title">{title}</h1>
-          )
+            {titleTrailing && <div className="large-title-trailing">{titleTrailing}</div>}
+          </div>
         )}
         {header}
         <div className={`screen-content ${contentClassName ?? ''}`}>{children}</div>

@@ -9,14 +9,15 @@
 }
 
 .screen-scroll:has(.home) {
-  padding-top: max(calc(var(--safe-top) - 8px), 0px);
+  padding-top: max(calc(var(--safe-top) - 12px), 0px);
 }
 
 .home-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 0 2px;
+  padding: 0 0 4px;
+  min-height: 44px;
 }
 
 /* ── Hero "Repeat Last Workout" card ─────────────────────────────────────────────────────── */
